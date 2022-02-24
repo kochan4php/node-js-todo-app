@@ -1,0 +1,105 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Lexend Deca", Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  padding: 1rem;
+  justify-content: center;
+  align-items: flex-start;
+
+  .content {
+    padding: 1rem 2rem;
+    background-color: rgba(180, 154, 231, 0.667);
+    border-radius: 4px;
+
+    &-title {
+      h1 {
+        font-size: 2rem;
+        text-align: center;
+
+        @media screen and (max-width: 400px) {
+          font-size: 1.6rem;
+        }
+
+        @media screen and (max-width: 340px) {
+          font-size: 1.3rem;
+        }
+      }
+    }
+
+    &-main {
+      width: 100%;
+
+      form {
+        text-align: center;
+
+        input {
+          width: 60%;
+          outline: none;
+          padding: 0.35rem 0.1rem;
+          border: none;
+          border: 1px solid rgba($color: #000000, $alpha: 0.5);
+          border-radius: 4px;
+        }
+
+        button {
+          cursor: pointer;
+          padding: 0.3rem 0.3rem;
+        }
+      }
+    }
+
+    &-title,
+    &-main {
+      margin-bottom: 2rem;
+    }
+
+    &-list {
+      .list-item {
+        display: flex;
+        justify-content: space-between;
+        background-color: white;
+        margin-bottom: 1rem;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 5px;
+
+        p {
+          font-size: 1rem;
+        }
+
+        &-action {
+          display: flex;
+
+          form {
+            margin-left: 0.6rem;
+
+            button {
+              cursor: pointer;
+              padding: 10px 15px;
+              border: none;
+              outline: none;
+              background-color: violet;
+              // border: 1px solid rgba($color: #000000, $alpha: 0.6);
+              border-radius: 4px;
+              transition: 0.3s;
+
+              &:hover {
+                background-color: rgb(126, 68, 126);
+                color: #fff;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

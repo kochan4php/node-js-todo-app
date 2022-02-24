@@ -1,0 +1,35 @@
+<div class="content">
+  <div class="content-title">
+    <h1>What's plan today ?</h1>
+  </div>
+  <div class="content-main">
+    <form action="/" method="post">
+      <input type="text" name="kegiatan" id="todo" autofocus autocomplete="off">
+      <button type="submit">Add Todo</button>
+    </form>
+  </div>
+  <div class="content-list">
+    <% if (todos.length !== 0) { %>
+      <% todos.forEach((todo, index) => { %>
+        <div class="list-item">
+          <p>
+            <%= index + 1 %>. <%= todo.kegiatan %>
+          </p>
+          <div class="list-item-action">
+            <!-- <form action="/?_method=PUT" method="post">
+              <input type="hidden" name="_id" value="<%= todo.kegiatan %>">
+              <button type="submit"><i class="bi bi-pencil-square"></i></button>
+            </form> -->
+            <form action="/?_method=DELETE" method="post">
+              <input type="hidden" name="_id" value="<%= todo._id %>">
+              <button type="submit"><i class="bi bi-trash-fill"></i></button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p style="text-align: center; margin-bottom: 5px;">No plan today.</p>
+    <% } %> 
+  </div>
+</div>
+
