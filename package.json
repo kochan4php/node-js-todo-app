@@ -4,8 +4,8 @@
   "description": "Todo List App using Node JS, express & mongoose",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon src/app",
-    "scss": "sass src/scss/style.scss public/css/style.css --watch",
+    "start": "nodemon app",
+    "sass": "sass scss/style.scss public/css/style.css --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
