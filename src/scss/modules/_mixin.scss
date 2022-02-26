@@ -1,0 +1,40 @@
+@mixin button {
+  margin-left: 1rem;
+  cursor: pointer;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  background-color: violet;
+  border-radius: 4px;
+  transition: 0.3s;
+  font-size: 1rem;
+  color: #000;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+
+  &:hover {
+    background-color: rgb(126, 68, 126);
+    color: #fff;
+  }
+}
+
+@mixin buttonNoMargin {
+  cursor: pointer;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  background-color: violet;
+  border-radius: 4px;
+  transition: 0.3s;
+  font-size: 1rem;
+  color: #000;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+
+  &:hover {
+    background-color: rgb(126, 68, 126);
+    color: #fff;
+  }
+}

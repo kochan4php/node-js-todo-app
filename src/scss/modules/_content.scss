@@ -1,0 +1,205 @@
+@use "mixin";
+
+.container {
+  width: 100%;
+  display: flex;
+  padding: 1rem;
+  justify-content: center;
+  align-items: flex-start;
+
+  .content {
+    padding: 1rem 2rem;
+    background-color: rgba(180, 154, 231, 0.667);
+    border-radius: 4px;
+
+    &-title {
+      h1 {
+        font-size: 2rem;
+        text-align: center;
+
+        @media screen and (max-width: 400px) {
+          font-size: 1.6rem;
+        }
+
+        @media screen and (max-width: 340px) {
+          font-size: 1.3rem;
+        }
+      }
+    }
+
+    &-main {
+      width: 100%;
+
+      a {
+        display: inline-block;
+        width: 100%;
+        @include mixin.button();
+        margin: 0;
+        background-color: rgb(89, 0, 255);
+        border-radius: 5px;
+        color: #fff;
+      }
+    }
+
+    &-title,
+    &-main {
+      margin-bottom: 2rem;
+    }
+
+    &-list {
+      .list-item {
+        display: flex;
+        justify-content: space-between;
+        background-color: white;
+        margin-bottom: 1rem;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 5px;
+
+        p {
+          font-size: 1rem;
+        }
+
+        &-action {
+          display: flex;
+
+          a {
+            @include mixin.button();
+          }
+
+          form {
+            button {
+              @include mixin.button();
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .add-todo {
+    padding: 1rem 2rem;
+    background-color: rgba(180, 154, 231, 0.667);
+    border-radius: 4px;
+    // min-width: 600px;
+    width: 50%;
+
+    @media screen and (max-width: 900px) {
+      width: 70%;
+    }
+
+    @media screen and (max-width: 600px) {
+      width: 100%;
+    }
+
+    &-title,
+    &-main {
+      margin-bottom: 1rem;
+    }
+
+    &-title {
+      h1 {
+        margin-bottom: 8px;
+      }
+
+      p {
+        color: rgb(255, 30, 0);
+        font-style: italic;
+        font-size: 1.3rem;
+      }
+    }
+
+    &-main {
+      form {
+        margin-bottom: 1.5rem;
+
+        input,
+        button {
+          width: 100%;
+          border: none;
+          outline: none;
+          margin-bottom: 10px;
+        }
+
+        input {
+          border-radius: 5px;
+          padding: 0.5rem 1rem;
+        }
+
+        button {
+          @include mixin.buttonNoMargin();
+          padding: 0.5rem 1rem;
+        }
+      }
+
+      a {
+        @include mixin.button();
+        width: 100%;
+        margin: 0;
+      }
+    }
+  }
+
+  .edit-todo {
+    padding: 1rem 2rem;
+    background-color: rgba(180, 154, 231, 0.667);
+    border-radius: 4px;
+    width: 50%;
+
+    @media screen and (max-width: 900px) {
+      width: 70%;
+    }
+
+    @media screen and (max-width: 600px) {
+      width: 100%;
+    }
+
+    &-title,
+    &-main {
+      margin-bottom: 1rem;
+    }
+
+    &-title {
+      h1 {
+        margin-bottom: 8px;
+      }
+
+      p {
+        color: rgb(255, 30, 0);
+        font-style: italic;
+        font-size: 1.3rem;
+      }
+    }
+
+    &-main {
+      form {
+        margin-bottom: 1.5rem;
+
+        input,
+        button {
+          width: 100%;
+          border: none;
+          outline: none;
+          margin-bottom: 10px;
+        }
+
+        input {
+          border-radius: 5px;
+          padding: 0.5rem 1rem;
+        }
+
+        button {
+          @include mixin.buttonNoMargin();
+          padding: 0.5rem 1rem;
+        }
+      }
+
+      a {
+        @include mixin.button();
+        width: 100%;
+        margin: 0;
+        // padding: 0%;
+      }
+    }
+  }
+}

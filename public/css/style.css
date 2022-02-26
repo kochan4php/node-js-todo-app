@@ -36,20 +36,30 @@
 .container .content-main {
   width: 100%;
 }
-.container .content-main form {
-  text-align: center;
-}
-.container .content-main form input {
-  width: 60%;
-  outline: none;
-  padding: 0.35rem 0.1rem;
-  border: none;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  border-radius: 4px;
-}
-.container .content-main form button {
+.container .content-main a {
+  display: inline-block;
+  width: 100%;
+  margin-left: 1rem;
   cursor: pointer;
-  padding: 0.3rem 0.3rem;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  background-color: violet;
+  border-radius: 4px;
+  transition: 0.3s;
+  font-size: 1rem;
+  color: #000;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  margin: 0;
+  background-color: #5900ff;
+  border-radius: 5px;
+  color: #fff;
+}
+.container .content-main a:hover {
+  background-color: #7e447e;
+  color: #fff;
 }
 .container .content-title, .container .content-main {
   margin-bottom: 2rem;
@@ -69,10 +79,8 @@
 .container .content-list .list-item-action {
   display: flex;
 }
-.container .content-list .list-item-action form {
-  margin-left: 0.6rem;
-}
-.container .content-list .list-item-action form button {
+.container .content-list .list-item-action a {
+  margin-left: 1rem;
   cursor: pointer;
   padding: 10px 15px;
   border: none;
@@ -80,8 +88,194 @@
   background-color: violet;
   border-radius: 4px;
   transition: 0.3s;
+  font-size: 1rem;
+  color: #000;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+}
+.container .content-list .list-item-action a:hover {
+  background-color: #7e447e;
+  color: #fff;
+}
+.container .content-list .list-item-action form button {
+  margin-left: 1rem;
+  cursor: pointer;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  background-color: violet;
+  border-radius: 4px;
+  transition: 0.3s;
+  font-size: 1rem;
+  color: #000;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
 }
 .container .content-list .list-item-action form button:hover {
+  background-color: #7e447e;
+  color: #fff;
+}
+.container .add-todo {
+  padding: 1rem 2rem;
+  background-color: rgba(180, 154, 231, 0.667);
+  border-radius: 4px;
+  width: 50%;
+}
+@media screen and (max-width: 900px) {
+  .container .add-todo {
+    width: 70%;
+  }
+}
+@media screen and (max-width: 600px) {
+  .container .add-todo {
+    width: 100%;
+  }
+}
+.container .add-todo-title, .container .add-todo-main {
+  margin-bottom: 1rem;
+}
+.container .add-todo-title h1 {
+  margin-bottom: 8px;
+}
+.container .add-todo-title p {
+  color: #ff1e00;
+  font-style: italic;
+  font-size: 1.3rem;
+}
+.container .add-todo-main form {
+  margin-bottom: 1.5rem;
+}
+.container .add-todo-main form input,
+.container .add-todo-main form button {
+  width: 100%;
+  border: none;
+  outline: none;
+  margin-bottom: 10px;
+}
+.container .add-todo-main form input {
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+}
+.container .add-todo-main form button {
+  cursor: pointer;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  background-color: violet;
+  border-radius: 4px;
+  transition: 0.3s;
+  font-size: 1rem;
+  color: #000;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  padding: 0.5rem 1rem;
+}
+.container .add-todo-main form button:hover {
+  background-color: #7e447e;
+  color: #fff;
+}
+.container .add-todo-main a {
+  margin-left: 1rem;
+  cursor: pointer;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  background-color: violet;
+  border-radius: 4px;
+  transition: 0.3s;
+  font-size: 1rem;
+  color: #000;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+}
+.container .add-todo-main a:hover {
+  background-color: #7e447e;
+  color: #fff;
+}
+.container .edit-todo {
+  padding: 1rem 2rem;
+  background-color: rgba(180, 154, 231, 0.667);
+  border-radius: 4px;
+  width: 50%;
+}
+@media screen and (max-width: 900px) {
+  .container .edit-todo {
+    width: 70%;
+  }
+}
+@media screen and (max-width: 600px) {
+  .container .edit-todo {
+    width: 100%;
+  }
+}
+.container .edit-todo-title, .container .edit-todo-main {
+  margin-bottom: 1rem;
+}
+.container .edit-todo-title h1 {
+  margin-bottom: 8px;
+}
+.container .edit-todo-title p {
+  color: #ff1e00;
+  font-style: italic;
+  font-size: 1.3rem;
+}
+.container .edit-todo-main form {
+  margin-bottom: 1.5rem;
+}
+.container .edit-todo-main form input,
+.container .edit-todo-main form button {
+  width: 100%;
+  border: none;
+  outline: none;
+  margin-bottom: 10px;
+}
+.container .edit-todo-main form input {
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+}
+.container .edit-todo-main form button {
+  cursor: pointer;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  background-color: violet;
+  border-radius: 4px;
+  transition: 0.3s;
+  font-size: 1rem;
+  color: #000;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  padding: 0.5rem 1rem;
+}
+.container .edit-todo-main form button:hover {
+  background-color: #7e447e;
+  color: #fff;
+}
+.container .edit-todo-main a {
+  margin-left: 1rem;
+  cursor: pointer;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  background-color: violet;
+  border-radius: 4px;
+  transition: 0.3s;
+  font-size: 1rem;
+  color: #000;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+}
+.container .edit-todo-main a:hover {
   background-color: #7e447e;
   color: #fff;
 }
