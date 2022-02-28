@@ -202,4 +202,20 @@
       }
     }
   }
+
+  .not-found {
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    h1 {
+      font-size: 5rem;
+    }
+
+    h3 {
+      font-size: 3rem;
+    }
+  }
 }

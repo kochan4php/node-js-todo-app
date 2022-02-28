@@ -279,5 +279,18 @@
   background-color: #7e447e;
   color: #fff;
 }
+.container .not-found {
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.container .not-found h1 {
+  font-size: 5rem;
+}
+.container .not-found h3 {
+  font-size: 3rem;
+}
 
 /*# sourceMappingURL=style.css.map */
