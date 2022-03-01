@@ -1,11 +1,46 @@
 @use "mixin";
 
+body {
+  background-color: #eee;
+}
+
+nav {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: 5px 0;
+
+  p {
+    text-align: center;
+    padding: 10px 15px;
+    transition: 0.3s;
+    font-size: 1rem;
+    color: #000;
+
+    a {
+      text-decoration: none;
+      color: #000;
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: #ffc500;
+      }
+    }
+  }
+}
+
 .container {
   width: 100%;
   display: flex;
-  padding: 1rem;
   justify-content: center;
   align-items: flex-start;
+  margin-top: 2rem;
+  padding: 2rem;
+
+  @media screen and (max-width: 900px) {
+    padding: 1rem;
+  }
 
   .content {
     padding: 1rem 2rem;

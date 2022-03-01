@@ -21,13 +21,13 @@ npm install
 ## run server
 
 ```
-yarn start
+yarn run dev
 ```
 
 <p>Open new terminal</p>
 
 ```
-npm start
+npm run dev
 ```
 
 ## compile SASS/SCSS
