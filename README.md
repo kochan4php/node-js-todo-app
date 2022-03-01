@@ -47,5 +47,5 @@ npm run sass
 ## open this server at your browser
 
 ```
-http://localhost:8080
+http://localhost:3000
 ```
