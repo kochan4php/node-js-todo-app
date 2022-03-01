@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon app",
     "sass": "sass scss/style.scss public/css/style.css --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
   },
   "keywords": [],
   "author": "Deo Subarno",
