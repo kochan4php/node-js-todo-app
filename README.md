@@ -24,7 +24,7 @@ npm install
 yarn run dev
 ```
 
-<p>Open new terminal</p>
+<p>or</p>
 
 ```
 npm run dev
@@ -38,7 +38,7 @@ npm run dev
 yarn run sass
 ```
 
-<p>Open new terminal</p>
+<p>or</p>
 
 ```
 npm run sass
