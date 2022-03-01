@@ -1,10 +1,11 @@
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
+const dotenv = require("dotenv").config({ path: "config.env" });
 const methodOverride = require("method-override");
-require("./server/database/database");
+const connectDB = require("./server/database/database");
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT || 3000;
 
 // Set ejs
 app.set("views", __dirname + "/views");
@@ -15,6 +16,9 @@ app.use(expressLayouts);
 // Middleware
 app.use(methodOverride("_method"));
 app.use(express.urlencoded({ extended: true }));
+
+// Connect db
+connectDB();
 
 // router
 app.use(require("./server/routes/routes"));
