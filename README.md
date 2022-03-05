@@ -30,20 +30,6 @@ yarn run dev
 npm run dev
 ```
 
-## compile SASS/SCSS
-
-<p>Open new terminal</p>
-
-```
-yarn run sass
-```
-
-<p>or</p>
-
-```
-npm run sass
-```
-
 ## open this server at your browser
 
 ```

@@ -11,35 +11,11 @@ body {
   background-color: #eee;
 }
 
-nav {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  padding: 5px 0;
-}
-nav p {
-  text-align: center;
-  padding: 10px 15px;
-  transition: 0.3s;
-  font-size: 1.3rem;
-  color: #000;
-}
-nav p a {
-  text-decoration: none;
-  color: #000;
-  transition: all 0.3s ease;
-}
-nav p a:hover {
-  color: #ffc500;
-}
-
 .container {
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  margin-top: 2rem;
+  align-items: center;
   padding: 2rem;
 }
 @media screen and (max-width: 900px) {
@@ -154,7 +130,7 @@ nav p a:hover {
   padding: 1rem 2rem;
   background-color: rgba(180, 154, 231, 0.667);
   border-radius: 4px;
-  width: 50%;
+  width: 40%;
 }
 @media screen and (max-width: 900px) {
   .container .add-todo {
@@ -235,7 +211,7 @@ nav p a:hover {
   padding: 1rem 2rem;
   background-color: rgba(180, 154, 231, 0.667);
   border-radius: 4px;
-  width: 50%;
+  width: 40%;
 }
 @media screen and (max-width: 900px) {
   .container .edit-todo {
