@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app",
-    "sass": "sass scss/style.scss public/css/style.css --watch",
+    "sass": "sass --watch scss/style.scss:public/css/style.css",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app"
   },
