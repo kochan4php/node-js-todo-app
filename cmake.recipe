@@ -1,0 +1,42 @@
+{
+    
+    "package":
+    {
+        "kind":                         "image",
+        "name":                         "cmake",    
+        "registry":                     "github",
+        "platforms":                    ["arm64", "amd64"]
+    },
+
+    "substrate":
+    {
+        "registry":                    "github",
+        "name":                        "rainfall-one/crucible",
+        "tag":                         "latest",
+        "needs_auth":                  true
+    },
+
+    "source":
+    {
+        "registry":                    "github",
+        "name":                        "Kitware/CMake",
+        "kind":                        "code",
+        "version":
+        {
+            "kind":                    "tag",
+            "value":                   "latest"
+        },                                
+        "needs_auth":                  false
+    },
+
+    "actions":
+    [
+        "cd CMake",
+        "./bootstrap --parallel=${N_CORES} ",
+        "make -j ${N_CORES}",
+        "make install",
+        "cd ..",
+        "rm -rf CMake"
+    ]
+
+}   
