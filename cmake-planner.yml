@@ -1,0 +1,282 @@
+name: Planner
+on: 
+  workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description:  'Force Rebuild'
+        required:     false
+        default:      false
+        type:         boolean
+
+  push:   
+    branches: [ "main" ]
+    paths:
+      - '**/cmake-**.yml'
+      - '**/cmake-**.json'
+
+  schedule:
+    - cron:  '0 0 * * 0' # “At 00:00 on every Sunday”
+
+jobs:
+
+  params:
+    runs-on: self-hosted
+    defaults:
+      run:
+        shell: bash
+    
+    outputs:
+      src-repo:                       ${{ steps.inputs.outputs.src_repo }}
+      crucible-registry:              ${{ steps.inputs.outputs.crucible_registry }}
+      base-registry:                  ${{ steps.inputs.outputs.base_registry }}
+      base-img-name:                  ${{ steps.inputs.outputs.base_image_name }}
+      base-img-tag:                   ${{ steps.inputs.outputs.base_image_tag }}
+    
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v3
+
+      - name: Get Inputs
+        id:   inputs
+        uses: zoexx/github-action-json-file-properties@release
+        with:
+          file_path: "./artefacts/inputs.json"
+
+      - name: Echo Inputs
+        run: |
+          echo ${{steps.inputs.outputs.src_repo}}
+          echo ${{steps.inputs.outputs.crucible_registry}}
+          echo ${{steps.inputs.outputs.base_registry}}
+          echo ${{steps.inputs.outputs.base_image_name}}
+          echo ${{steps.inputs.outputs.base_image_tag}}
+
+
+
+  prelude:
+    needs:                              params 
+    runs-on:                            ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    
+    permissions:
+      packages:                         read
+      contents:                         read
+    
+    outputs:
+
+      src-upstream-rel-version:         ${{ steps.src-info.outputs.version }}
+      src-upstream-rel-time:            ${{ steps.src-info.outputs.published_at }}
+
+      src-current-version:              ${{ steps.crucible-src.outputs.version }}
+      src-current-build-time:           ${{ steps.crucible-src.outputs.created_at }}
+
+      base-img-name:                    ${{ steps.base-image.outputs.name }}
+      base-img-tag:                     ${{ steps.base-image.outputs.tag }}
+
+      img-digest:                       ${{ steps.crucible-meta.outputs.version }}
+      img-scavenge-timestamps:          ${{ steps.scavenge-info.outputs.timestamps }}
+      img-scavenge-versions:            ${{ steps.scavenge-info.outputs.versions }}
+
+
+      will-rebuild-src:                 ${{ steps.recommender.outputs.rebuild }}
+    
+    steps:
+
+      - name: Get Latest Source Release Info
+        id:   src-info
+        run:  |
+          BASE_URL="https://api.github.com/repos/${{ needs.params.outputs.src-repo }}"
+          RELEASE_SUFFIX="releases/latest"
+          COMMITS_SUFFIX="commits"
+
+          TAG=$(curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "${BASE_URL}/$RELEASE_SUFFIX")
+          VERSION=$(echo $TAG | jq -r '.tag_name')
+          echo "version=${VERSION:=main}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION:=main}" 
+
+          if [ -z "$VERSION"  ]; then
+            COMMITS=$(curl -L -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28" "${BASE_URL}/${COMMITS_SUFFIX}")
+            TIMESTAMP=$(echo $COMMITS | jq -r '.[0]' | jq -r '.commit.committer.date')
+          else
+            TIMESTAMP=$(echo $TAG | jq -r '.published_at')
+          fi
+          
+          echo "published_at=${TIMESTAMP}" >> "$GITHUB_OUTPUT"
+
+      - name: Authenticate With Crucible Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ needs.params.outputs.crucible-registry }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Crucible Metadata
+        id:   crucible-meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ needs.params.outputs.crucible-registry }}/${{ github.repository }}
+        continue-on-error: true
+
+      - name: Get Packaged Source Meta
+        id:   crucible-src
+        run: |
+          export VERSION=${{ fromJSON(steps.crucible-meta.outputs.json).labels['org.opencontainers.image.version'] }}
+          echo "version=${VERSION:=v0.00.0}" >> "$GITHUB_OUTPUT"
+
+          export CREATED_AT=${{ fromJSON(steps.crucible-meta.outputs.json).labels['org.opencontainers.image.created'] }}
+          echo "created_at=${CREATED_AT}" >> "$GITHUB_OUTPUT"
+
+      - name: Get Base Image Tag 
+        id:   base-image
+        run: |
+          echo "name=${{ needs.params.outputs.base-img-name }}" >> "$GITHUB_OUTPUT"
+          echo "tag=$( docker buildx imagetools inspect ${{ needs.params.outputs.base-img-name }}:${{ needs.params.outputs.base-img-tag}}  --format "{{json .Manifest}}"  | jq -r '.digest' )" >> "$GITHUB_OUTPUT"
+  
+
+      - name: Scavenge Stale Packages 
+        id:   scavenge-info
+        run: |
+          URL="https://api.github.com/orgs/${{ github.repository_owner }}/packages/container/${{ github.event.repository.name }}"
+          COUNTS=$(curl -L \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          ${URL}  | jq -r '.version_count' )
+          
+          echo "Counts= $COUNTS"
+          N_DELS=$(($COUNTS-2))
+          echo "#Scavenge Targets = $N_DELS"
+          echo "counts=$N_DELS" >> "$GITHUB_OUTPUT"
+
+          VERSIONS=$( curl -L \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          ${URL}/versions )
+          
+          SCAVENGE_TARGETS=$( echo $VERSIONS | jq -r --arg idx "$N_DELS" '.[-($idx|tonumber):]')
+          SCAVENGE_TIMESTAMPS=$(echo $SCAVENGE_TARGETS |  jq -r  '.[]' | jq '.updated_at')
+          SCAVENGE_VERS=$(echo $SCAVENGE_TARGETS |  jq -r  '.[]' | jq '.metadata.tags[0]')
+
+          echo "timestamps=${SCAVENGE_TIMESTAMPS:=unknown}" >> "$GITHUB_OUTPUT"
+          echo "versions=${SCAVENGE_TAGS:=v0.00.0}" >> "$GITHUB_OUTPUT"
+
+          echo "Timestamps: $SCAVENGE_TIMESTAMPS"
+          echo "Tags: $SCAVENGE_VERS"
+
+        continue-on-error: true
+        
+      - name: Generate Recommendations
+        id:   recommender
+        run: |
+          if [[ "${{ github.event.inputs.force_rebuild }}" == "true" || "${{ steps.crucible-src.outputs.version }}" != "${{ steps.src-info.outputs.version }}" ]]  ; then
+            echo "rebuild=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "rebuild=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Echo Output
+        id:   echoer
+        run: |
+          echo "Upstream Source Release Version                                                                   : ${{ steps.src-info.outputs.version }}"
+          echo "Upstream Source Publish Time                                                                      : ${{ steps.src-info.outputs.published_at }}"
+
+          echo "Current Source Version                                                                            : ${{ steps.crucible-src.outputs.version }}"
+          echo "Current Source Publish Time                                                                       : ${{ steps.crucible-src.outputs.created_at }}"
+       
+          echo "${{ needs.params.outputs.base-img-tag }} resolves to tag                                                          : ${{ steps.base-image.outputs.tag }}"
+        
+
+          echo "Will delete                                                                                       : ${{ steps.scavenge-info.outputs.counts }} version(s)"
+          echo "Will scavenge these versions                                                                      : ${{ steps.scavenge-info.outputs.versions }}"
+          echo "With timestamps                                                                                   : ${{ steps.scavenge-info.outputs.timestamps }}"
+          echo "Will rebuild source                                                                               : ${{ steps.recommender.outputs.rebuild }}"
+          
+   
+          
+  planner:
+
+    needs: [params, prelude]
+
+    runs-on: self-hosted
+
+
+    defaults:
+      run:
+        shell: bash
+    
+    permissions:
+      packages:       write
+      actions:        write
+      id-token:       write
+      contents:       write
+      pull-requests:  write
+
+    steps:
+
+      - name: Code Checkout
+        uses: actions/checkout@v3
+
+      - name:   Plan Creator
+        id:     planner
+        uses:   jsdaniell/create-json@v1.2.2
+        with: 
+          name: "plan.json"
+          dir:  "artefacts/"
+          json: 
+            '{
+                "src_upstream_rel_version":     "${{ needs.prelude.outputs.src-upstream-rel-version }}",
+                "src_upstream_rel_time":        "${{ needs.prelude.outputs.src-upstream-rel-time }}",
+                "src_current_release":          "${{ needs.prelude.outputs.src-current-version }}",
+                "src_current_timestamp":        "${{ needs.prelude.outputs.src-current-build-time }}",
+                "base_img_tag":                 "${{ needs.prelude.outputs.base-img-tag }}",
+                "base_img_name":                "${{ needs.prelude.outputs.base-img-name }}"
+            }'
+
+  
+
+      - name:               Plan Scribe
+        id:                 descriptor
+        working-directory: ./artefacts
+        run: |
+          SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-8)
+          NOW=$(date +'%Y-%m-%d, %H:%M:%S')
+          DESCRIPTOR="bauplan.md"
+          echo "descriptor=$DESCRIPTOR" >> "$GITHUB_OUTPUT"
+          
+          echo "# Bauplan for Commit *${SHORT_SHA}* " > $DESCRIPTOR
+          echo "## *${NOW}*" >> $DESCRIPTOR
+          if  [ ${{ needs.prelude.outputs.will-rebuild-src }} ]
+          then
+          echo -e "\`\`\`diff \n- Current CMake-${{ needs.prelude.outputs.src-current-version }} created at ${{ needs.prelude.outputs.src-current-build-time }} \n+ will be updated to upstream CMake-${{ needs.prelude.outputs.src-upstream-rel-version }} \n@@ using ${{ needs.params.outputs.base-img-name }}@(${{ needs.prelude.outputs.base-img-tag }}) @@ \n \`\`\`" >> $DESCRIPTOR
+          echo -e "\`\`\`diff \n- Packages with versions ${{ needs.prelude.outputs.img-scavenge-versions }} with timestamps ${{needs.prelude.outputs.img-scavenge-timestamps}} \n+ Package with version ${{ needs.prelude.outputs.src-upstream-rel-version }} \n \`\`\`" >> $DESCRIPTOR
+
+            echo "---" >> $DESCRIPTOR
+            cat  run-summaries.md >> $DESCRIPTOR
+
+          else
+            echo "*CMake${{ needs.prelude.outputs.src-current-version }} is current*. No rebuild required currently." >> $DESCRIPTOR
+            echo "No further action will be taken by *rainfall-flowbot* at this time." >> $DESCRIPTOR
+          fi
+
+      - name: GitSign Creator
+        uses:  chainguard-dev/actions/setup-gitsign@main  
+
+      - name: Pull Request Creator
+        uses: peter-evans/create-pull-request@v5
+        with:
+            token:          ${{ secrets.RAINFALL_FLOWBOT_TOKEN }}
+            commit-message: "Checking in new Bauplan ${{ github.run_id }} for CMake: ${{ needs.prelude.outputs.src-upstream-rel-version }}"
+            branch:         "bauplan-approval/${{ needs.prelude.outputs.src-upstream-rel-version }}"
+            delete-branch:  true
+            draft:          false
+            title:          "Update to ${{ needs.prelude.outputs.src-upstream-rel-version }} Bauplan: ${{ github.run_id }}"
+            body-path:      artefacts/${{ steps.descriptor.outputs.descriptor }}
+            labels:         ${{ needs.prelude.outputs.src-upstream-rel-version }}, workflow
+            committer:      "rainfall-flowbot[bot] <rainfall-flowbot[bot]@users.noreply.github.com>"
+            author:         "rainfall-flowbot[bot] <rainfall-flowbot[bot]@users.noreply.github.com>"
+            assignees:      'rainfall-flowbot' 
+            team-reviewers: DevOps
+          
