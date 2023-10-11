@@ -22,6 +22,7 @@ import authRoute from './routes/auth.route';
 import healthCheckRoute from './routes/health-check.route';
 import mainRoute from './routes/main.route';
 import todoRoute from './routes/todo.route';
+import { render } from './app/helpers/render';
 
 /**
  * @description Init express application
@@ -50,7 +51,7 @@ const init = function (): Application {
     app.use(methodOverride('_method'));
 
     // * Todo Route with view engine
-    app.use(todoRoute);
+    app.use('/', todoRoute);
 
     // * Main Route
     app.use('/api', mainRoute);
@@ -65,7 +66,7 @@ const init = function (): Application {
     app.use('/api/admin/users', auth, isAdmin, userRoute);
 
     // * 404 Not Found
-    app.use((_, res) => resFailed(res, 404, 'Path Not Found. Please go to /api'));
+    app.use((_, res) => render(res, '404', { title: '404 Not Found', layout: 'layouts/mainLayout' }));
 
     // * Return express app
     return app;

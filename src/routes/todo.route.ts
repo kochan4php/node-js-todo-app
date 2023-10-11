@@ -3,21 +3,16 @@
  * @author {Deo Sbrn}
  */
 
-import express, { Request, Response, Router } from 'express';
+import express, { Router } from 'express';
+import TodoController from '../app/controllers/todo.controller';
 
 const router: Router = express.Router();
 
 /**
  * @method GET
  * @access public
- * @endpoint /api
+ * @endpoint /
  */
-router.get('/todo', (_: Request, res: Response) => {
-    return res.render('index', {
-        title: 'Node JS Todo App',
-        layout: 'layouts/mainLayout',
-        todos: [],
-    });
-});
+router.get('/', TodoController.index);
 
 export default router;
