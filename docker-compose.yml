@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+    server-app:
+        container_name: server-app
+        build:
+            context: .
+            dockerfile: ./dockerfiles/production/Dockerfile
+        image: express_ts_starter:latest
+        restart: always
+        ports:
+            - 8000:8000
+        healthcheck:
+            test:
+                [
+                    'CMD',
+                    'curl',
+                    '-f',
+                    'http://localhost:8000/api/health-check'
+                ]
+            interval: 30s
+            timeout: 30s
+            retries: 5
+            start_period: 5s
+        env_file: ./env/.env.production.local
+        environment:
+            PORT: 8000
+            MONGO_URI: mongodb://mongodb:27017/db_express_ts
+            ACCESS_TOKEN_SECRET: das9807asd908a90d8sa09d323
+            REFRESH_TOKEN_SECRET: c9sddc8s90cuscuj90ew8r09w3
+            SESSION_TOKEN_SECRET: das90d8sad7sa8d7as89d7asdsad
+            # TRUSTED_DOMAINS: http://localhost:4000
+        networks:
+            - express-ts-starter-network
+        depends_on:
+            - mongodb
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.50'
+                    memory: 512M
+
+    mongodb:
+        container_name: mongodb
+        image: mongo:latest
+        restart: always
+        ports:
+            - 27017:27017
+        volumes:
+            - mongodb-data:/data/db
+        networks:
+            - express-ts-starter-network
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.50'
+                    memory: 512M
+
+networks:
+    express-ts-starter-network:
+        name: express-ts-starter-network
+        driver: bridge
+
+volumes:
+    mongodb-data:
+        name: mongodb-data

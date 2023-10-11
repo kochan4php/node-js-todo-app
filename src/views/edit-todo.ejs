@@ -1,0 +1,16 @@
+<div class="edit-todo" style="text-align: center;">
+    <div class="edit-todo-title">
+        <h1>Edit Todo</h1>
+        <% if (typeof error !== 'undefined') { %>
+        <p><%= error %></p>
+        <% } %>
+    </div>
+    <div class="edit-todo-main">
+        <form action="/?_method=PUT" method="post">
+            <input type="hidden" name="_id" value="<%= todo._id %>">
+            <input type="text" name="kegiatan" id="kegiatan" value="<%= todo.kegiatan %>" autocomplete="off" />
+            <button type="submit"><i class="fa-solid fa-pen-to-square"></i>&nbsp;Edit Todo</button>
+        </form>
+        <a href="/">Cancel</a>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+<div class="content">
+    <div class="content-title">
+        <h1>What's plan today ?</h1>
+    </div>
+    <div class="content-main">
+        <a href="/add-todo"><i class="fa-solid fa-plus"></i>&nbsp;Add Todo</a>
+    </div>
+    <div class="content-list">
+        <% if (todos.length !== 0) { %>
+        <% todos.forEach((todo, index) => { %>
+        <div class="list-item">
+            <p>
+                <%= index + 1 %>. <%= todo.kegiatan %>
+            </p>
+            <div class="list-item-action">
+                <a href="/edit-todo/<%= todo._id %>">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </a>
+                <form action="/?_method=DELETE" method="post">
+                    <input type="hidden" name="_id" value="<%= todo._id %>">
+                    <button type="submit" onclick="return confirm('Hapus todo?');"><i class="fa-solid fa-trash-can"></i></button>
+                </form>
+            </div>
+        </div>
+        <% }) %>
+        <% } else { %>
+        <p style="text-align: center; margin-bottom: 5px;">No plan today.</p>
+        <% } %>
+    </div>
+</div>
