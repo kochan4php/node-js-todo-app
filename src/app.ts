@@ -12,7 +12,6 @@ import expressLayouts from 'express-ejs-layouts';
 import { rateLimit } from 'express-rate-limit';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
-import { resFailed } from './app/helpers/response.helper';
 import auth from './app/middlewares/auth.middleware';
 import isAdmin from './app/middlewares/is-admin.middleware';
 import { corsConfig, limitterConfig } from './config/app';
@@ -21,8 +20,8 @@ import userRoute from './routes/admin/user.route';
 import authRoute from './routes/auth.route';
 import healthCheckRoute from './routes/health-check.route';
 import mainRoute from './routes/main.route';
+import notFoundRoute from './routes/not-found.route';
 import todoRoute from './routes/todo.route';
-import { render } from './app/helpers/render';
 
 /**
  * @description Init express application
@@ -66,7 +65,7 @@ const init = function (): Application {
     app.use('/api/admin/users', auth, isAdmin, userRoute);
 
     // * 404 Not Found
-    app.use((_, res) => render(res, '404', { title: '404 Not Found', layout: 'layouts/mainLayout' }));
+    app.use(notFoundRoute);
 
     // * Return express app
     return app;
