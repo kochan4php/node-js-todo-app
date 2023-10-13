@@ -51,7 +51,7 @@
         "@types/jsonwebtoken": "^9.0.3",
         "@types/method-override": "^0.0.33",
         "@types/morgan": "^1.9.6",
-        "@types/node": "^20.8.4",
+        "@types/node": "^20.8.5",
         "@types/npmlog": "^4.1.4",
         "@typescript-eslint/eslint-plugin": "^6.7.5",
         "@typescript-eslint/parser": "^6.7.5",
