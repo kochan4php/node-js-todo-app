@@ -30,8 +30,8 @@ dependencies:
     specifier: ^2.5.1
     version: 2.5.1
   express-rate-limit:
-    specifier: ^7.1.1
-    version: 7.1.1(express@4.18.2)
+    specifier: ^7.1.2
+    version: 7.1.2(express@4.18.2)
   jsonwebtoken:
     specifier: ^9.0.2
     version: 9.0.2
@@ -799,7 +799,7 @@ packages:
     resolution: {integrity: sha512-C3nQxfFZxFRVoJoGKKI8y3MOEo129NQ+FgQ08iye+Mk4zNZZGdjfs06bVTr+DBSlA66Q2VEcMki/cUCP4SercQ==}
     dependencies:
       function-bind: 1.1.2
-      get-intrinsic: 1.2.1
+      get-intrinsic: 1.2.2
       set-function-length: 1.1.1
     dev: false
 
@@ -1016,9 +1016,9 @@ packages:
     resolution: {integrity: sha512-E7uGkTzkk1d0ByLeSc6ZsFS79Axg+m1P/VsgYsxHgiuc3tFSj+MjMIwe90FC4lOAZzNBdY7kkO2P2wKdsQ1vgQ==}
     engines: {node: '>= 0.4'}
     dependencies:
-      get-intrinsic: 1.2.1
+      get-intrinsic: 1.2.2
       gopd: 1.0.1
-      has-property-descriptors: 1.0.0
+      has-property-descriptors: 1.0.1
     dev: false
 
   /delegates@1.0.0:
@@ -1305,8 +1305,8 @@ packages:
     resolution: {integrity: sha512-IXROv9n3xKga7FowT06n1Qn927JR8ZWDn5Dc9CJQoiiaaDqbhW5PDmWShzbpAa2wjWT1vJqaIM1S6vJwwX11gA==}
     dev: false
 
-  /express-rate-limit@7.1.1(express@4.18.2):
-    resolution: {integrity: sha512-o5ye/a4EHCPQPju25Y4HChHybrCM9v37QtQDqXUDZGuD+HB7Cbu8ZhJP6/9RORcSNtkCpnEssa6oUgJgzc7ckQ==}
+  /express-rate-limit@7.1.2(express@4.18.2):
+    resolution: {integrity: sha512-uvkFt5JooXDhUhrfgqXLyIsAMRCtU1o8W/p0Q2p5U2ude7fEOfFaP0kSYbHOHmPbA9ZEm1JqrRne3vL9pVCBXA==}
     engines: {node: '>= 16'}
     peerDependencies:
       express: ^4 || ^5
@@ -1505,13 +1505,13 @@ packages:
       wide-align: 1.1.5
     dev: false
 
-  /get-intrinsic@1.2.1:
-    resolution: {integrity: sha512-2DcsyfABl+gVHEfCOaTrWgyt+tb6MSEGmKq+kI5HwLbIYgjgmMcV8KQ41uaKz1xxUcn9tJtgFbQUEVcEbd0FYw==}
+  /get-intrinsic@1.2.2:
+    resolution: {integrity: sha512-0gSo4ml/0j98Y3lngkFEot/zhiCeWsbYIlZ+uZOVgzLyLaUw7wxUL+nCTP0XJvJg1AXulJRI3UJi8GsbDuxdGA==}
     dependencies:
       function-bind: 1.1.2
-      has: 1.0.4
       has-proto: 1.0.1
       has-symbols: 1.0.3
+      hasown: 2.0.0
     dev: false
 
   /get-stream@8.0.1:
@@ -1565,7 +1565,7 @@ packages:
   /gopd@1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
     dependencies:
-      get-intrinsic: 1.2.1
+      get-intrinsic: 1.2.2
     dev: false
 
   /graphemer@1.4.0:
@@ -1581,10 +1581,10 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
-  /has-property-descriptors@1.0.0:
-    resolution: {integrity: sha512-62DVLZGoiEBDHQyqG4w9xCuZ7eJEwNmJRWw2VY84Oedb7WFcA27fiEVe8oUQx9hAUJ4ekurquucTGwsyO1XGdQ==}
+  /has-property-descriptors@1.0.1:
+    resolution: {integrity: sha512-VsX8eaIewvas0xnvinAe9bw4WfIeODpGYikiWYLH+dma0Jw6KHYqWiWfhQlgOVK8D6PvjubK5Uc4P0iIhIcNVg==}
     dependencies:
-      get-intrinsic: 1.2.1
+      get-intrinsic: 1.2.2
     dev: false
 
   /has-proto@1.0.1:
@@ -1601,9 +1601,11 @@ packages:
     resolution: {integrity: sha512-8Rf9Y83NBReMnx0gFzA8JImQACstCYWUplepDa9xprwwtmgEZUF0h/i5xSA625zB/I37EtrswSST6OXxwaaIJQ==}
     dev: false
 
-  /has@1.0.4:
-    resolution: {integrity: sha512-qdSAmqLF6209RFj4VVItywPMbm3vWylknmB3nvNiUIs72xAimcM8nVYxYr7ncvZq5qzk9MKIZR8ijqD/1QuYjQ==}
-    engines: {node: '>= 0.4.0'}
+  /hasown@2.0.0:
+    resolution: {integrity: sha512-vUptKVTpIJhcczKBbgnS+RtcuYMB8+oNzPK2/Hp3hanz8JmpATdmmgLgSaadVREkDm+e2giHwY3ZRkyjSIDDFA==}
+    engines: {node: '>= 0.4'}
+    dependencies:
+      function-bind: 1.1.2
     dev: false
 
   /http-errors@2.0.0:
@@ -2564,9 +2566,9 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       define-data-property: 1.1.1
-      get-intrinsic: 1.2.1
+      get-intrinsic: 1.2.2
       gopd: 1.0.1
-      has-property-descriptors: 1.0.0
+      has-property-descriptors: 1.0.1
     dev: false
 
   /setprototypeof@1.2.0:
@@ -2589,7 +2591,7 @@ packages:
     resolution: {integrity: sha512-q5XPytqFEIKHkGdiMIrY10mvLRvnQh42/+GoBlFW3b2LXLE2xxJpZFdm94we0BaoV3RwJyGqg5wS7epxTv0Zvw==}
     dependencies:
       call-bind: 1.0.5
-      get-intrinsic: 1.2.1
+      get-intrinsic: 1.2.2
       object-inspect: 1.13.1
     dev: false
 
