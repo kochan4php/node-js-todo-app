@@ -3,7 +3,7 @@ import { render } from '../helpers/render.ts';
 
 function index(_: Request, res: Response) {
     res.status(404);
-    return render(res, '404', { title: '404 Not Found', layout: 'layouts/main' });
+    return render(res, '404', { title: 'Halaman tidak ditemukan', layout: 'layouts/main' });
 }
 
 export default { index };

@@ -1,304 +1,1353 @@
-@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&display=swap");
-* {
+/* ==========================================================================
+   DESIGN SYSTEM — Rencana
+   Tema: Frosted Glassmorphism · mobile-first · aksesibel
+   Token dipakai oleh SEMUA komponen — jangan hardcode nilai di bawah.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. TOKENS
+   -------------------------------------------------------------------------- */
+:root {
+    color-scheme: light dark;
+
+    /* Warna dasar */
+    --clr-bg: #141223;
+    --clr-bg-base: #ede8fa;
+    --clr-surface: rgba(255, 255, 255, 0.5);
+    --clr-surface-strong: rgba(255, 255, 255, 0.72);
+    --clr-surface-solid: #ffffff;
+    --clr-border: rgba(124, 108, 180, 0.22);
+    --clr-text: #1a1726;
+    --clr-text-muted: #6b6b82;
+
+    /* Aksen & semantik */
+    --clr-accent: #7a5cff;
+    --clr-accent-2: #b16dff;
+    --clr-accent-ink: #ffffff;
+    --clr-danger: #d6455d;
+    --clr-danger-soft: rgba(214, 69, 93, 0.12);
+    --clr-danger-ink: #ffffff;
+    --clr-success: #1f9d61;
+    --clr-success-soft: rgba(49, 196, 141, 0.16);
+    --clr-warning: #b45309;
+    --clr-focus: rgba(122, 92, 255, 0.45);
+    --clr-blob-1: rgba(168, 85, 247, 0.55);
+    --clr-blob-2: rgba(34, 211, 238, 0.42);
+
+    /* Kaca */
+    --glass-bg: var(--clr-surface);
+    --glass-bg-strong: var(--clr-surface-strong);
+    --glass-border: rgba(255, 255, 255, 0.35);
+    --glass-border-ink: rgba(124, 108, 180, 0.22);
+    --glass-blur: 14px;
+    --glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+
+    /* Bayeran */
+    --shadow-sm: 0 1px 2px rgba(30, 20, 80, 0.08), 0 2px 6px rgba(30, 20, 80, 0.06);
+    --shadow-md: 0 8px 32px rgba(30, 20, 80, 0.14);
+    --shadow-lg: 0 16px 48px rgba(30, 20, 80, 0.2);
+    --shadow-primary: 0 4px 16px rgba(122, 92, 255, 0.35);
+    --shadow-danger: 0 4px 16px rgba(214, 69, 93, 0.3);
+
+    /* Spacing scale */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --space-8: 64px;
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-xl: 24px;
+    --radius-full: 999px;
+
+    /* Tipografi */
+    --ff-sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --fs-xs: 0.75rem;
+    --fs-sm: 0.875rem;
+    --fs-md: 1rem;
+    --fs-lg: 1.25rem;
+    --fs-xl: 1.5rem;
+    --fs-2xl: clamp(1.5rem, 3vw, 2.2rem);
+    --lh-tight: 1.2;
+    --lh-body: 1.6;
+    --ls-head: -0.01em;
+
+    /* Gerak */
+    --ease: cubic-bezier(0.2, 0.8, 0.3, 1);
+    --dur: 200ms;
+
+    /* Tata letak */
+    --shell: 640px;
+}
+
+[data-theme="dark"] {
+    color-scheme: dark;
+
+    --clr-bg-base: var(--clr-bg);
+    --clr-surface: rgba(25, 22, 45, 0.55);
+    --clr-surface-strong: rgba(25, 22, 45, 0.82);
+    --clr-surface-solid: #1d1936;
+    --clr-border: rgba(185, 182, 202, 0.22);
+    --clr-text: #f0eff6;
+    --clr-text-muted: #b9b6ca;
+
+    --clr-focus: rgba(177, 109, 255, 0.55);
+    --clr-blob-1: rgba(124, 58, 237, 0.4);
+    --clr-blob-2: rgba(8, 145, 178, 0.3);
+
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-container-border: 1px solid var(--glass-border);
+    --glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET & DASAR
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
-    font-family: "Lexend Deca", Arial, Helvetica, sans-serif;
-    font-weight: normal;
     box-sizing: border-box;
 }
 
-body {
-    background-color: #eee;
+html {
+    -webkit-text-size-adjust: 100%;
 }
 
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem;
-}
-@media screen and (max-width: 900px) {
-    .container {
-        padding: 1rem;
-    }
-}
-.container .content {
-    padding: 1rem 2rem;
-    background-color: rgba(180, 154, 231, 0.667);
-    border-radius: 4px;
-}
-.container .content-title h1 {
-    font-size: 2rem;
-    text-align: center;
-}
-@media screen and (max-width: 400px) {
-    .container .content-title h1 {
-        font-size: 1.6rem;
-    }
-}
-@media screen and (max-width: 340px) {
-    .container .content-title h1 {
-        font-size: 1.3rem;
-    }
-}
-.container .content-main {
-    width: 100%;
-}
-.container .content-main a {
-    display: inline-block;
-    width: 100%;
-    margin: 0;
-    padding: 10px 15px;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-    background-color: #5900ff;
-    color: #fff;
-    font-size: 1rem;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.container .content-main a:hover {
-    background-color: #7e447e;
-    color: #fff;
-}
-.container .content-title,
-.container .content-main {
-    margin-bottom: 2rem;
-}
-.container .content-list .list-item {
-    display: flex;
-    justify-content: space-between;
-    background-color: white;
-    margin-bottom: 1rem;
-    align-items: center;
-    padding: 1rem;
-    border-radius: 5px;
-    overflow: auto;
-}
-.container .content-list .list-item p {
-    font-size: 1rem;
-}
-.container .content-list .list-item-action {
-    display: flex;
-    text-align: center;
-}
-@media screen and (max-width: 600px) {
-    .container .content-list .list-item-action {
-        flex-direction: column;
-    }
-}
-.container .content-list .list-item-action a {
-    margin-left: 1rem;
-    cursor: pointer;
-    padding: 10px 15px;
-    border: none;
-    outline: none;
-    background-color: violet;
-    border-radius: 4px;
-    transition: 0.3s;
-    font-size: 1rem;
-    color: #000;
-    display: inline-block;
-    text-decoration: none;
-    text-align: center;
-    margin-bottom: 5px;
-}
-.container .content-list .list-item-action a:hover {
-    background-color: #7e447e;
-    color: #fff;
-}
-.container .content-list .list-item-action form button {
-    margin-left: 1rem;
-    cursor: pointer;
-    padding: 10px 15px;
-    border: none;
-    outline: none;
-    background-color: violet;
-    border-radius: 4px;
-    transition: 0.3s;
-    font-size: 1rem;
-    color: #000;
-    display: inline-block;
-    text-decoration: none;
-    text-align: center;
-}
-.container .content-list .list-item-action form button:hover {
-    background-color: #7e447e;
-    color: #fff;
-}
-.container .add-todo {
-    padding: 1rem 2rem;
-    background-color: rgba(180, 154, 231, 0.667);
-    border-radius: 4px;
-    width: 40%;
-}
-@media screen and (max-width: 900px) {
-    .container .add-todo {
-        width: 70%;
-    }
-}
-@media screen and (max-width: 600px) {
-    .container .add-todo {
-        width: 100%;
-    }
-}
-.container .add-todo-title,
-.container .add-todo-main {
-    margin-bottom: 1rem;
-}
-.container .add-todo-title h1 {
-    margin-bottom: 8px;
-}
-.container .add-todo-title p {
-    color: #ff1e00;
-    font-style: italic;
-    font-size: 1.3rem;
-}
-.container .add-todo-main form {
-    margin-bottom: 1.5rem;
-}
-.container .add-todo-main form input,
-.container .add-todo-main form button {
-    width: 100%;
-    border: none;
-    outline: none;
-    margin-bottom: 10px;
-}
-.container .add-todo-main form input {
-    border-radius: 5px;
-    padding: 0.5rem 1rem;
-}
-.container .add-todo-main form button {
-    width: 100%;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-    background-color: #5900ff;
-    color: #fff;
-    padding: 0.5rem 1rem;
-    margin-bottom: 10px;
-    font-size: 1rem;
-    text-align: center;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.container .add-todo-main form button:hover {
-    background-color: #7e447e;
-    color: #fff;
-}
-.container .add-todo-main a {
-    margin: 0;
-    width: 100%;
-    padding: 10px 15px;
-    border: none;
-    outline: none;
-    display: inline-block;
-    background-color: violet;
-    border-radius: 4px;
-    color: #000;
-    font-size: 1rem;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.container .add-todo-main a:hover {
-    background-color: #7e447e;
-    color: #fff;
-}
-.container .edit-todo {
-    padding: 1rem 2rem;
-    background-color: rgba(180, 154, 231, 0.667);
-    border-radius: 4px;
-    width: 40%;
-}
-@media screen and (max-width: 900px) {
-    .container .edit-todo {
-        width: 70%;
-    }
-}
-@media screen and (max-width: 600px) {
-    .container .edit-todo {
-        width: 100%;
-    }
-}
-.container .edit-todo-title,
-.container .edit-todo-main {
-    margin-bottom: 1rem;
-}
-.container .edit-todo-title h1 {
-    margin-bottom: 8px;
-}
-.container .edit-todo-title p {
-    color: #ff1e00;
-    font-style: italic;
-    font-size: 1.3rem;
-}
-.container .edit-todo-main form {
-    margin-bottom: 1.5rem;
-}
-.container .edit-todo-main form input,
-.container .edit-todo-main form button {
-    width: 100%;
-    border: none;
-    outline: none;
-    margin-bottom: 10px;
-}
-.container .edit-todo-main form input {
-    border-radius: 5px;
-    padding: 0.5rem 1rem;
-}
-.container .edit-todo-main form button {
-    width: 100%;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-    background-color: #5900ff;
-    color: #fff;
-    padding: 0.5rem 1rem;
-    margin-bottom: 10px;
-    font-size: 1rem;
-    text-align: center;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.container .edit-todo-main form button:hover {
-    background-color: #7e447e;
-    color: #fff;
-}
-.container .edit-todo-main a {
-    margin: 0;
-    width: 100%;
-    padding: 10px 15px;
-    border: none;
-    outline: none;
-    display: inline-block;
-    background-color: violet;
-    border-radius: 4px;
-    color: #000;
-    font-size: 1rem;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.container .edit-todo-main a:hover {
-    background-color: #7e447e;
-    color: #fff;
-}
-.container .not-found {
-    height: 90vh;
+body {
+    font-family: var(--ff-sans);
+    font-size: var(--fs-md);
+    font-weight: 400;
+    line-height: var(--lh-body);
+    color: var(--clr-text);
+    background-color: var(--clr-bg-base);
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
+    overflow-x: clip;
+    transition:
+        background-color var(--dur) var(--ease),
+        color var(--dur) var(--ease);
+}
+
+/* Blob latar — murni CSS, fixed, di belakang konten */
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    z-index: -1;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.6;
+    pointer-events: none;
+    will-change: transform;
+}
+
+body::before {
+    width: 60vmax;
+    height: 60vmax;
+    top: -22vmax;
+    left: -16vmax;
+    background: radial-gradient(circle, var(--clr-blob-1), transparent 62%);
+    animation: blob-drift 16s var(--ease) infinite alternate;
+}
+
+body::after {
+    width: 55vmax;
+    height: 55vmax;
+    bottom: -24vmax;
+    right: -18vmax;
+    background: radial-gradient(circle, var(--clr-blob-2), transparent 62%);
+    animation: blob-drift 18s var(--ease) infinite alternate-reverse;
+}
+
+@keyframes blob-drift {
+    from {
+        transform: translate(0, 0) scale(1);
+    }
+    to {
+        transform: translate(3vw, 2vh) scale(1.08);
+    }
+}
+
+h1,
+h2,
+h3,
+h4 {
+    line-height: var(--lh-tight);
+    letter-spacing: var(--ls-head);
+    font-weight: 700;
+}
+
+p {
+    overflow-wrap: anywhere;
+}
+
+img,
+svg {
+    display: block;
+    flex-shrink: 0;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+}
+
+a {
+    color: var(--clr-accent);
+}
+
+::selection {
+    background: rgba(122, 92, 255, 0.25);
+}
+
+:focus-visible {
+    outline: 2px solid var(--clr-focus);
+    outline-offset: 3px;
+}
+
+.is-hidden,
+.empty-state.is-hidden,
+.all-done.is-hidden,
+.empty-filtered.is-hidden {
+    display: none;
+}
+
+.todo-item[hidden] {
+    display: none;
+}
+
+/* --------------------------------------------------------------------------
+   3. KERANGKA
+   -------------------------------------------------------------------------- */
+.app-shell {
+    width: 100%;
+    max-width: var(--shell);
+    margin-inline: auto;
+    flex: 1;
+    padding: var(--space-5) var(--space-2) var(--space-6);
+}
+
+.app-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    text-decoration: none;
+    color: var(--clr-text);
+    min-height: 44px;
+    border-radius: var(--radius-md);
+}
+
+.brand:focus-visible {
+    outline-offset: 4px;
+}
+
+.brand-mark {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #a855f7, var(--clr-accent));
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(141, 88, 247, 0.4);
+}
+
+.brand-mark svg {
+    width: 22px;
+    height: 22px;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.brand-name {
+    font-weight: 800;
+    font-size: 1.125rem;
+    letter-spacing: var(--ls-head);
+}
+
+.brand-date {
+    font-size: var(--fs-xs);
+    color: var(--clr-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   4. PANEL KACA
+   -------------------------------------------------------------------------- */
+.glass {
+    background: var(--glass-bg-strong);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-md), var(--glass-inner);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+}
+
+/* --------------------------------------------------------------------------
+   5. TOMBOL
+   -------------------------------------------------------------------------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    padding: 10px 18px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: var(--fs-md);
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+        background-color var(--dur) var(--ease),
+        color var(--dur) var(--ease),
+        border-color var(--dur) var(--ease),
+        box-shadow var(--dur) var(--ease),
+        filter var(--dur) var(--ease),
+        transform var(--dur) var(--ease);
+}
+
+.btn svg {
+    width: 1.1em;
+    height: 1.1em;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--clr-focus);
+    outline-offset: 3px;
+}
+
+.btn-primary {
+    background: linear-gradient(120deg, var(--clr-accent), var(--clr-accent-2));
+    color: var(--clr-accent-ink);
+    box-shadow: var(--shadow-primary);
+}
+
+.btn-primary:hover {
+    filter: brightness(1.07);
+    box-shadow: 0 6px 22px rgba(122, 92, 255, 0.45);
+}
+
+.btn-ghost {
+    background: var(--clr-surface);
+    border-color: var(--clr-border);
+    color: var(--clr-text);
+    box-shadow: var(--shadow-sm), var(--glass-inner);
+}
+
+.btn-ghost:hover {
+    background: var(--clr-surface-strong);
+}
+
+.btn-danger {
+    background: linear-gradient(120deg, #e05a6f, var(--clr-danger));
+    color: var(--clr-danger-ink);
+    box-shadow: var(--shadow-danger);
+}
+
+.btn-danger:hover {
+    filter: brightness(1.06);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn[disabled],
+.btn.is-loading {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn.is-loading::after {
+    content: "";
+    width: 14px;
+    height: 14px;
+    margin-left: 2px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Tombol ikon */
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--clr-text-muted);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+        background-color var(--dur) var(--ease),
+        color var(--dur) var(--ease),
+        transform var(--dur) var(--ease),
+        border-color var(--dur) var(--ease);
+}
+
+.icon-btn:hover {
+    background: var(--clr-surface-strong);
+    color: var(--clr-text);
+    border-color: var(--clr-border);
+}
+
+.icon-btn svg {
+    width: 1.1em;
+    height: 1.1em;
+}
+
+.icon-btn-lg {
+    width: 48px;
+    height: 48px;
+}
+
+.icon-btn-danger:hover {
+    background: var(--clr-danger-soft);
+    color: var(--clr-danger);
+    border-color: transparent;
+}
+
+/* Toggle tema: hanya tampilkan ikon sesuai mode */
+[data-theme="light"] .icon-moon,
+[data-theme="dark"] .icon-sun {
+    display: none;
+}
+
+/* --------------------------------------------------------------------------
+   6. JUDUL HALAMAN
+   -------------------------------------------------------------------------- */
+.section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-4);
+}
+
+.page-title {
+    font-size: var(--fs-2xl);
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.page-sub {
+    margin-top: var(--space-1);
+    color: var(--clr-text-muted);
+    font-size: var(--fs-sm);
+}
+
+.page-head {
+    margin-bottom: var(--space-4);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    padding-right: var(--space-2);
+    text-decoration: none;
+    color: var(--clr-text-muted);
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    border-radius: var(--radius-sm);
+    transition: color var(--dur) var(--ease);
+}
+
+.back-link:hover {
+    color: var(--clr-text);
+}
+
+.back-link svg {
+    width: 1.1em;
+    height: 1.1em;
+}
+
+/* --------------------------------------------------------------------------
+   7. FORM
+   -------------------------------------------------------------------------- */
+.form-card {
+    max-width: 480px;
+    margin-inline: auto;
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg-strong);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-md), var(--glass-inner);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+}
+
+.form-title {
+    font-size: var(--fs-xl);
+    font-weight: 800;
+    margin-bottom: var(--space-1);
+}
+
+.form-hint {
+    color: var(--clr-text-muted);
+    font-size: var(--fs-sm);
+    margin-bottom: var(--space-5);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.form-field label {
+    font-weight: 600;
+    font-size: var(--fs-sm);
+}
+
+.form-field input {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--clr-text);
+    background: var(--clr-surface);
+    border: 1px solid var(--glass-border-ink);
+    border-radius: var(--radius-md);
+    box-shadow: inset 0 1px 2px rgba(30, 20, 80, 0.06);
+    transition:
+        border-color var(--dur) var(--ease),
+        box-shadow var(--dur) var(--ease),
+        background-color var(--dur) var(--ease);
+}
+
+.form-field input::placeholder {
+    color: var(--clr-text-muted);
+    opacity: 0.8;
+}
+
+.form-field input:focus {
+    outline: none;
+    border-color: var(--clr-accent);
+    box-shadow: 0 0 0 3px var(--clr-focus);
+}
+
+.form-field.is-error input {
+    border-color: var(--clr-danger);
+}
+
+.form-field.is-error input:focus {
+    box-shadow: 0 0 0 3px rgba(214, 69, 93, 0.25);
+}
+
+.form-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--clr-danger);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+}
+
+.form-error svg {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+}
+
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+/* --------------------------------------------------------------------------
+   8. STATISTIK & PROGRES
+   -------------------------------------------------------------------------- */
+.stats-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-3);
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    background: var(--clr-surface);
+    border: 1px solid var(--glass-border-ink);
+    box-shadow: var(--shadow-sm), var(--glass-inner);
+    color: var(--clr-text-muted);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+}
+
+.chip strong {
+    color: var(--clr-text);
+    font-weight: 700;
+}
+
+.chip-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.chip-dot-done {
+    background: var(--clr-success);
+}
+
+.chip-dot-active {
+    background: var(--clr-accent);
+}
+
+.progress-block {
+    margin-bottom: var(--space-4);
+}
+
+.progress {
+    height: 8px;
+    border-radius: var(--radius-full);
+    background: var(--clr-surface);
+    border: 1px solid var(--glass-border-ink);
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(30, 20, 80, 0.08);
+}
+
+.progress-bar {
+    display: block;
+    height: 100%;
+    border-radius: var(--radius-full);
+    background: linear-gradient(90deg, #2ecc8f, var(--clr-success));
+    transition: width 300ms var(--ease);
+}
+
+.progress-caption {
+    margin-top: var(--space-2);
+    color: var(--clr-text-muted);
+    font-size: var(--fs-xs);
+}
+
+.all-done {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    padding: 8px 14px;
+    border-radius: var(--radius-full);
+    background: var(--clr-success-soft);
+    border: 1px solid rgba(49, 196, 141, 0.35);
+    color: var(--clr-success);
+    font-weight: 600;
+    font-size: var(--fs-sm);
+}
+
+.all-done svg {
+    width: 1.1em;
+    height: 1.1em;
+}
+
+/* --------------------------------------------------------------------------
+   9. TOOLBAR: PENCARIAN & FILTER
+   -------------------------------------------------------------------------- */
+.toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.search {
+    position: relative;
+    display: flex;
     align-items: center;
 }
-.container .not-found h1 {
-    font-size: 5rem;
+
+.search > svg {
+    position: absolute;
+    left: 14px;
+    width: 18px;
+    height: 18px;
+    color: var(--clr-text-muted);
+    pointer-events: none;
 }
-.container .not-found h3 {
-    font-size: 3rem;
+
+.search input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 44px 10px 42px;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--clr-text);
+    background: var(--clr-surface-strong);
+    border: 1px solid var(--glass-border-ink);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm), var(--glass-inner);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    transition:
+        border-color var(--dur) var(--ease),
+        box-shadow var(--dur) var(--ease);
+}
+
+.search input:focus {
+    outline: none;
+    border-color: var(--clr-accent);
+    box-shadow: 0 0 0 3px var(--clr-focus);
+}
+
+.search input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+}
+
+.search-clear {
+    position: absolute;
+    right: 8px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--clr-text-muted);
+    cursor: pointer;
+    transition:
+        background-color var(--dur) var(--ease),
+        color var(--dur) var(--ease);
+}
+
+.search-clear[hidden] {
+    display: none;
+}
+
+.search-clear:hover {
+    background: var(--clr-surface-solid);
+    color: var(--clr-text);
+}
+
+.search-clear svg {
+    width: 16px;
+    height: 16px;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 6px 14px;
+    border: 1px solid var(--glass-border-ink);
+    border-radius: var(--radius-full);
+    background: var(--clr-surface);
+    color: var(--clr-text-muted);
+    font-family: inherit;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: var(--shadow-sm), var(--glass-inner);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    transition:
+        background-color var(--dur) var(--ease),
+        color var(--dur) var(--ease),
+        box-shadow var(--dur) var(--ease),
+        transform var(--dur) var(--ease);
+}
+
+.filter-chip:active {
+    transform: scale(0.97);
+}
+
+.filter-chip:hover {
+    color: var(--clr-text);
+}
+
+.filter-chip.is-active {
+    background: linear-gradient(120deg, var(--clr-accent), var(--clr-accent-2));
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(122, 92, 255, 0.35);
+}
+
+.filter-count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.22);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.filter-chip.is-active .filter-count {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* --------------------------------------------------------------------------
+   10. DAFTAR TODO
+   -------------------------------------------------------------------------- */
+.todo-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    background: var(--clr-surface-strong);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-sm), var(--glass-inner);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    transition:
+        transform var(--dur) var(--ease),
+        box-shadow var(--dur) var(--ease),
+        opacity var(--dur) var(--ease);
+}
+
+.todo-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md), var(--glass-inner);
+}
+
+.todo-check {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 9px;
+    border: 2px solid var(--clr-border);
+    background: var(--clr-surface-solid);
+    color: transparent;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+        background-color var(--dur) var(--ease),
+        border-color var(--dur) var(--ease),
+        color var(--dur) var(--ease),
+        transform var(--dur) var(--ease);
+}
+
+.todo-check-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.todo-check:hover {
+    border-color: var(--clr-accent);
+}
+
+.todo-check:focus-visible {
+    outline: 2px solid var(--clr-focus);
+    outline-offset: 3px;
+}
+
+.todo-check:active {
+    transform: scale(0.92);
+}
+
+.todo-item.is-done .todo-check {
+    background: linear-gradient(120deg, #2ecc8f, var(--clr-success));
+    border-color: transparent;
+    color: #fff;
+}
+
+.todo-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.todo-name {
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.todo-item.is-done .todo-name {
+    text-decoration: line-through;
+    text-decoration-thickness: 1.5px;
+    color: var(--clr-text-muted);
+}
+
+.todo-meta {
+    font-size: var(--fs-xs);
+    color: var(--clr-text-muted);
+}
+
+.todo-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.todo-actions .icon-btn {
+    width: 40px;
+    height: 40px;
+}
+
+.todo-actions .icon-btn:first-child:hover svg {
+    transform: rotate(-8deg);
+}
+
+.todo-actions .icon-btn svg {
+    width: 1.1em;
+    height: 1.1em;
+    transition: transform var(--dur) var(--ease);
+}
+
+/* --------------------------------------------------------------------------
+   11. STATE KOSONG
+   -------------------------------------------------------------------------- */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-2);
+    padding: var(--space-7) var(--space-5);
+    border-radius: var(--radius-lg);
+    background: var(--clr-surface);
+    border: 1px dashed var(--clr-border);
+    box-shadow: var(--glass-inner);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+}
+
+.empty-state h2 {
+    font-size: var(--fs-lg);
+    margin-top: var(--space-2);
+}
+
+.empty-state p {
+    color: var(--clr-text-muted);
+    font-size: var(--fs-sm);
+    max-width: 36ch;
+}
+
+.empty-state .btn {
+    margin-top: var(--space-3);
+}
+
+.empty-art {
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(122, 92, 255, 0.2));
+    color: var(--clr-accent);
+}
+
+.empty-art svg {
+    width: 28px;
+    height: 28px;
+    animation: empty-float 3s var(--ease) infinite alternate;
+}
+
+@keyframes empty-float {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-4px);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   12. HALAMAN TIDAK DITEMUKAN
+   -------------------------------------------------------------------------- */
+.not-found {
+    min-height: 64vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: var(--space-2);
+}
+
+.not-found-art {
+    display: grid;
+    place-items: center;
+    width: 68px;
+    height: 68px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(122, 92, 255, 0.2));
+    color: var(--clr-accent);
+    margin-bottom: var(--space-3);
+}
+
+.not-found-art svg {
+    width: 32px;
+    height: 32px;
+}
+
+.not-found-title {
+    font-size: clamp(3.5rem, 12vw, 6rem);
+    font-weight: 800;
+    background: linear-gradient(120deg, var(--clr-accent), var(--clr-accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.not-found-sub {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+}
+
+.not-found-desc {
+    color: var(--clr-text-muted);
+    font-size: var(--fs-sm);
+    max-width: 36ch;
+    margin-bottom: var(--space-4);
+}
+
+/* --------------------------------------------------------------------------
+   13. TOAST
+   -------------------------------------------------------------------------- */
+.toast-stack {
+    position: fixed;
+    left: 50%;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: min(100% - 32px, 400px);
+    pointer-events: none;
+}
+
+.toast {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: var(--clr-surface-strong);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-lg), var(--glass-inner);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    color: var(--clr-text);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    animation: toast-in 250ms var(--ease);
+}
+
+.toast[data-leave] {
+    animation: toast-out 200ms var(--ease) forwards;
+}
+
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+@keyframes toast-out {
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+.toast-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--clr-accent);
+    flex-shrink: 0;
+}
+
+.toast-success .toast-dot {
+    background: var(--clr-success);
+}
+
+.toast-error .toast-dot {
+    background: var(--clr-danger);
+}
+
+.toast-warning .toast-dot {
+    background: var(--clr-warning);
+}
+
+.toast-text {
+    flex: 1;
+}
+
+.toast-close {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--clr-text-muted);
+    cursor: pointer;
+    transition:
+        background-color var(--dur) var(--ease),
+        color var(--dur) var(--ease);
+}
+
+.toast-close:hover {
+    background: var(--clr-surface-solid);
+    color: var(--clr-text);
+}
+
+.toast-close svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* --------------------------------------------------------------------------
+   14. MODAL KONFIRMASI
+   -------------------------------------------------------------------------- */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: grid;
+    place-items: center;
+    padding: var(--space-4);
+}
+
+.modal[hidden] {
+    display: none;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 16, 40, 0.4);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    animation: fade-in 200ms var(--ease);
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+}
+
+.modal-card {
+    position: relative;
+    width: min(100%, 400px);
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    background: var(--clr-surface-strong);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-lg), var(--glass-inner);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    animation: modal-in 200ms var(--ease);
+}
+
+@keyframes modal-in {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+}
+
+.modal-title {
+    font-size: var(--fs-lg);
+    font-weight: 800;
+    margin-bottom: var(--space-2);
+}
+
+.modal-desc {
+    color: var(--clr-text-muted);
+    font-size: var(--fs-sm);
+}
+
+.modal-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+}
+
+.modal-actions .btn {
+    flex: 1;
+}
+
+/* --------------------------------------------------------------------------
+   15. FOOTER
+   -------------------------------------------------------------------------- */
+.app-footer {
+    padding: var(--space-4) var(--space-4) max(24px, env(safe-area-inset-bottom));
+    text-align: center;
+    color: var(--clr-text-muted);
+    font-size: var(--fs-xs);
+}
+
+.footer-heart {
+    color: var(--clr-danger);
+}
+
+/* --------------------------------------------------------------------------
+   16. RESPONSIF (mobile-first, breakpoint diberi aturan tambahan)
+   -------------------------------------------------------------------------- */
+@media (min-width: 600px) {
+    .app-shell {
+        padding: var(--space-6) var(--space-5) var(--space-8);
+    }
+
+    .form-actions {
+        flex-direction: row;
+    }
+
+    .todo-item {
+        padding: var(--space-4) var(--space-5);
+    }
+}
+
+@media (min-width: 900px) {
+    .app-shell {
+        padding-top: var(--space-7);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   17. FALLBACK: tanpa backdrop-filter, kaca jadi solid agar tetap terbaca
+   -------------------------------------------------------------------------- */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass,
+    .form-card,
+    .toast,
+    .modal-card,
+    .todo-item,
+    .chip,
+    .filter-chip {
+        background: var(--clr-surface-solid);
+    }
+
+    .todo-item:hover {
+        transform: none;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   18. PREFERENSI PENGGUNA
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-transparency: reduce) {
+    .glass,
+    .form-card,
+    .toast,
+    .modal-card,
+    .todo-item,
+    .chip,
+    .filter-chip,
+    .empty-state {
+        background: var(--clr-surface-solid);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+
+    body::before,
+    body::after {
+        opacity: 0.12;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        /* biome-ignore lint/complexity/noImportantStyles: perlu menimpa durasi animasi author yang lebih spesifik */
+        animation-duration: 0.01ms !important;
+        /* biome-ignore lint/complexity/noImportantStyles: perlu menimpa durasi animasi author yang lebih spesifik */
+        animation-iteration-count: 1 !important;
+        /* biome-ignore lint/complexity/noImportantStyles: perlu menimpa durasi animasi author yang lebih spesifik */
+        transition-duration: 0.01ms !important;
+        /* biome-ignore lint/complexity/noImportantStyles: perlu menimpa durasi animasi author yang lebih spesifik */
+        scroll-behavior: auto !important;
+    }
+
+    .todo-item:hover {
+        transform: none;
+    }
+
+    .empty-art svg {
+        animation: none;
+    }
 }

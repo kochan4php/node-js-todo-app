@@ -9,6 +9,7 @@ function ensureDefaults(todos: Todo[]): Todo[] {
     return todos.map((todo, index) => ({
         id: todo.id || String(index + 1),
         name: todo.name,
+        completed: todo.completed ?? false,
         createdAt: todo.createdAt || now,
         updatedAt: todo.updatedAt || now,
     }));

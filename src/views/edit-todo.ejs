@@ -1,16 +1,49 @@
-<div class="edit-todo" style="text-align: center;">
-    <div class="edit-todo-title">
-        <h1>Edit Todo</h1>
-        <% if (typeof error !== 'undefined') { %>
-        <p><%= error %></p>
-        <% } %>
-    </div>
-    <div class="edit-todo-main">
-        <form action="/?_method=PUT" method="post">
-            <input type="hidden" name="id" value="<%= todo.id %>">
-            <input type="text" name="name" id="name" value="<%= todo.name %>" autocomplete="off" />
-            <button type="submit"><i class="fa-solid fa-pen-to-square"></i>&nbsp;Edit Todo</button>
-        </form>
-        <a href="/">Cancel</a>
-    </div>
+<%- include('partials/header') %>
+
+<div class="page-head">
+    <a class="back-link" href="/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 12H5M11 18l-6-6 6-6" />
+        </svg>
+        Kembali ke daftar
+    </a>
 </div>
+
+<main class="form-card">
+    <h1 class="form-title">Ubah rencana</h1>
+    <p class="form-hint">Perbaiki nama rencana, lalu simpan perubahannya.</p>
+
+    <form method="post" action="/?_method=PUT" class="form" novalidate>
+        <input type="hidden" name="id" value="<%= todo.id %>">
+
+        <div class="form-field <%= typeof error !== 'undefined' ? 'is-error' : '' %>">
+            <label for="todo-name">Nama rencana</label>
+            <input type="text"
+                   id="todo-name"
+                   name="name"
+                   value="<%= todo.name %>"
+                   placeholder="Mis. Beli susu sebelum jam 8"
+                   maxlength="200"
+                   autocomplete="off"
+                   autofocus>
+            <% if (typeof error !== 'undefined') { %>
+            <p class="form-error" id="todo-name-error" role="alert">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+                </svg>
+                <%= error %>
+            </p>
+            <% } %>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-block">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                </svg>
+                Simpan Perubahan
+            </button>
+            <a class="btn btn-ghost btn-block" href="/">Batal</a>
+        </div>
+    </form>
+</main>
