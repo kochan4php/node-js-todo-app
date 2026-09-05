@@ -1,84 +1,102 @@
 <%- include('partials/header') %>
 
 <main class="content">
-<section class="section-head">
-    <div>
-        <h2 class="page-title">Apa rencanamu hari ini?</h2>
+    <section class="masthead" data-reveal>
+        <div class="masthead-copy">
+            <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Buku rencana · harian</p>
+            <h1 class="masthead-title">Apa rencanamu <em>hari ini?</em></h1>
+            <p class="masthead-lede">Catat, selesaikan, dan rayakan langkah kecilmu — semua tersimpan di perangkatmu, tanpa akun, tanpa database.</p>
+
+            <div class="masthead-actions">
+                <a class="btn btn-cta" href="/add-todo">
+                    <span class="btn-label">Tambah Rencana</span>
+                    <span class="btn-ico" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg>
+                    </span>
+                </a>
+            </div>
+        </div>
+
         <% if (stats.total > 0) { %>
-        <p class="page-sub"><%= stats.total %> rencana · <%= stats.active %> aktif</p>
+        <aside class="ledger" data-reveal style="--d: 0.12s">
+            <div class="ledger-shell">
+                <div class="ledger-core">
+                    <p class="ledger-eyebrow">Rekap hari ini</p>
+
+                    <div class="ledger-body">
+                        <div class="ledger-cell">
+                            <span class="ledger-num"><strong id="stat-done"><%= stats.completed %></strong></span>
+                            <span class="ledger-cap">selesai</span>
+                        </div>
+                        <div class="ledger-cell">
+                            <span class="ledger-num"><strong id="stat-active"><%= stats.active %></strong></span>
+                            <span class="ledger-cap">tersisa</span>
+                        </div>
+                    </div>
+
+                    <div class="progress"
+                         role="progressbar"
+                         aria-label="Progres penyelesaian"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         aria-valuenow="<%= stats.percent %>">
+                        <span class="progress-bar" id="progress-bar" style="--p: <%= stats.percent / 100 %>"></span>
+                    </div>
+                    <p class="progress-caption" id="progress-text"><%= stats.completed %> dari <%= stats.total %> selesai</p>
+
+                    <div class="all-done <%= stats.active === 0 ? '' : 'is-hidden' %>" id="all-done" role="status">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M8.2 12.4l2.6 2.6 5-5" />
+                        </svg>
+                        Semua selesai — mantap!
+                    </div>
+                </div>
+            </div>
+        </aside>
         <% } %>
-    </div>
-    <a class="btn btn-primary" href="/add-todo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
-            <path d="M12 5v14M5 12h14" />
-        </svg>
-        Tambah Rencana
-    </a>
-</section>
+    </section>
 
-<% if (stats.total > 0) { %>
-<div class="stats-row" aria-label="Ringkasan rencana">
-    <span class="chip">
-        <span class="chip-dot chip-dot-done" aria-hidden="true"></span>
-        <strong id="stat-done"><%= stats.completed %></strong>
-        <span>selesai</span>
-    </span>
-    <span class="chip">
-        <span class="chip-dot chip-dot-active" aria-hidden="true"></span>
-        <strong id="stat-active"><%= stats.active %></strong>
-        <span>tersisa</span>
-    </span>
-</div>
+    <section class="deck" data-reveal>
+        <div class="deck-shell">
+            <div class="deck-core">
 
-<div class="progress-block">
-    <div class="progress"
-         role="progressbar"
-         aria-label="Progres penyelesaian"
-         aria-valuemin="0"
-         aria-valuemax="100"
-         aria-valuenow="<%= stats.percent %>">
-        <span class="progress-bar" id="progress-bar" style="width: <%= stats.percent %>%"></span>
-    </div>
-    <p class="progress-caption" id="progress-text"><%= stats.completed %> dari <%= stats.total %> selesai</p>
-</div>
+                <% if (stats.total > 0) { %>
+                <div class="toolbar">
+                    <div class="search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="11" cy="11" r="7" />
+                            <path d="M21 21l-4.3-4.3" />
+                        </svg>
+                        <input type="search" id="todo-search" placeholder="Cari rencana…" autocomplete="off" aria-label="Cari rencana">
+                        <button type="button" class="search-clear" id="search-clear" aria-label="Bersihkan pencarian" hidden>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                                <path d="M6 6l12 12M18 6L6 18" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="filters" role="group" aria-label="Filter status">
+                        <button type="button" class="filter-chip is-active" data-filter="all" aria-pressed="true">Semua <span class="filter-count"><%= stats.total %></span></button>
+                        <button type="button" class="filter-chip" data-filter="active" aria-pressed="false">Aktif <span class="filter-count"><%= stats.active %></span></button>
+                        <button type="button" class="filter-chip" data-filter="done" aria-pressed="false">Selesai <span class="filter-count"><%= stats.completed %></span></button>
+                    </div>
+                </div>
+                <% } %>
 
-<div class="all-done <%= stats.active === 0 ? '' : 'is-hidden' %>" id="all-done" role="status">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6Z" />
-        <path d="M19 14l.9 2.1L22 17l-2.1.9L19 20l-.9-2.1L16 17l2.1-.9Z" />
-    </svg>
-    Semua selesai — mantap!
-</div>
+                <div class="todo-list" id="todo-list">
+                    <% if (stats.total === 0) { %>
+                    <%- include('partials/empty-list') %>
+                    <% } else { %>
+                    <% todos.forEach((todo) => { %>
+                    <%- include('partials/todo-item', { todo }) %>
+                    <% }) %>
+                    <%- include('partials/empty-filtered') %>
+                    <% } %>
+                </div>
 
-<div class="toolbar">
-    <div class="search">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="7" />
-            <path d="M21 21l-4.3-4.3" />
-        </svg>
-        <input type="search" id="todo-search" placeholder="Cari rencana…" autocomplete="off" aria-label="Cari rencana">
-        <button type="button" class="search-clear" id="search-clear" aria-label="Bersihkan pencarian" hidden>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
-                <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-        </button>
-    </div>
-    <div class="filters" role="group" aria-label="Filter status">
-        <button type="button" class="filter-chip is-active" data-filter="all" aria-pressed="true">Semua <span class="filter-count"><%= stats.total %></span></button>
-        <button type="button" class="filter-chip" data-filter="active" aria-pressed="false">Aktif <span class="filter-count"><%= stats.active %></span></button>
-        <button type="button" class="filter-chip" data-filter="done" aria-pressed="false">Selesai <span class="filter-count"><%= stats.completed %></span></button>
-    </div>
-</div>
-<% } %>
-
-<div class="todo-list" id="todo-list">
-    <% if (stats.total === 0) { %>
-    <%- include('partials/empty-list') %>
-    <% } else { %>
-    <% todos.forEach((todo) => { %>
-    <%- include('partials/todo-item', { todo }) %>
-    <% }) %>
-    <%- include('partials/empty-filtered') %>
-    <% } %>
-</div>
+            </div>
+        </div>
+    </section>
 </main>

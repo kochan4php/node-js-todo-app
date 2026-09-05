@@ -2,6 +2,30 @@
     const theme = document.documentElement;
 
     /* ------------------------------------------------------------------
+       Masker reveal — IntersectionObserver (tanpa listener scroll)
+    ------------------------------------------------------------------ */
+    const revealEls = document.querySelectorAll('[data-reveal]');
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        revealEls.forEach((el) => {
+            el.classList.add('is-in');
+        });
+    } else {
+        const revealObserver = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('is-in');
+                    revealObserver.unobserve(entry.target);
+                });
+            },
+            { threshold: 0.1, rootMargin: '0px 0px -6% 0px' },
+        );
+        revealEls.forEach((el) => {
+            revealObserver.observe(el);
+        });
+    }
+
+    /* ------------------------------------------------------------------
        Tema terang / gelap
     ------------------------------------------------------------------ */
     const themeToggle = document.getElementById('theme-toggle');
@@ -172,7 +196,7 @@
         const bar = document.getElementById('progress-bar');
         if (bar) {
             const percent = total ? Math.round((done / total) * 100) : 0;
-            bar.style.width = `${percent}%`;
+            bar.style.setProperty('--p', String(percent / 100));
             bar.parentElement.setAttribute('aria-valuenow', String(percent));
         }
 

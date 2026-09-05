@@ -1,11 +1,14 @@
 <div class="modal" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc" hidden>
     <div class="modal-backdrop" data-modal-close></div>
-    <div class="modal-card">
-        <h2 class="modal-title" id="confirm-title">Hapus rencana?</h2>
-        <p class="modal-desc" id="confirm-desc">Rencana <strong data-confirm-name></strong> akan dihapus permanen dan tidak bisa dikembalikan.</p>
-        <div class="modal-actions">
-            <button type="button" class="btn btn-ghost" data-modal-close>Batal</button>
-            <button type="button" class="btn btn-danger" data-confirm-ok>Hapus</button>
+    <div class="modal-shell">
+        <div class="modal-card">
+            <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Hapus permanen</p>
+            <h2 class="modal-title" id="confirm-title">Hapus rencana ini?</h2>
+            <p class="modal-desc" id="confirm-desc">Rencana <strong data-confirm-name></strong> akan dihapus permanen dan tidak bisa dikembalikan.</p>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-ghost" data-modal-close>Batal</button>
+                <button type="button" class="btn btn-danger" data-confirm-ok>Hapus</button>
+            </div>
         </div>
     </div>
 </div>
