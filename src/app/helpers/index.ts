@@ -1,2 +1,2 @@
-export * from './render.js';
-export * from './response.helper.js';
+export * from './render.ts';
+export * from './response.helper.ts';

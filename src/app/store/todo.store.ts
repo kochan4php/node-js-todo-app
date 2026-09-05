@@ -1,8 +1,8 @@
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { DATA_FILE } from '../../config/app.js';
-import type { Todo } from '../../interfaces/todo.js';
-import { logger } from '../../logger/index.js';
+import { DATA_FILE } from '../../config/app.ts';
+import type { Todo } from '../../interfaces/todo.ts';
+import { logger } from '../../logger/index.ts';
 
 function ensureDefaults(todos: Todo[]): Todo[] {
     const now = new Date().toISOString();

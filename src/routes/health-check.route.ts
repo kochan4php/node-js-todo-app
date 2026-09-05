@@ -4,7 +4,7 @@
  */
 
 import express, { type Router } from 'express';
-import healthCheckController from '../app/controllers/health-check.controller.js';
+import healthCheckController from '../app/controllers/health-check.controller.ts';
 
 const router: Router = express.Router();
 

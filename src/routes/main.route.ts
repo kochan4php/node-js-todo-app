@@ -4,7 +4,7 @@
  */
 
 import express, { type Router } from 'express';
-import MainController from '../app/controllers/main.controller.js';
+import MainController from '../app/controllers/main.controller.ts';
 
 const router: Router = express.Router();
 

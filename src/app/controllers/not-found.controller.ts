@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { render } from '../helpers/render.js';
+import { render } from '../helpers/render.ts';
 
 function index(_: Request, res: Response) {
     res.status(404);

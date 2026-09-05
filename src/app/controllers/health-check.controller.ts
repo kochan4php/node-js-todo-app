@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { resSuccess } from '../helpers/response.helper.js';
+import { resSuccess } from '../helpers/response.helper.ts';
 
 function healthCheck(_: Request, res: Response): Response {
     const health = {

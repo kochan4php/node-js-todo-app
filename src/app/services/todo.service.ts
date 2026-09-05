@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import type { Todo } from '../../interfaces/todo.js';
-import { readTodos, writeTodos } from '../store/todo.store.js';
+import type { Todo } from '../../interfaces/todo.ts';
+import { readTodos, writeTodos } from '../store/todo.store.ts';
 
 export function getAll(): Todo[] {
     return readTodos();

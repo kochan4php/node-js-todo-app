@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import { render } from '../helpers/render.js';
-import * as TodoService from '../services/todo.service.js';
+import { render } from '../helpers/render.ts';
+import * as TodoService from '../services/todo.service.ts';
 
 function sanitize(value: unknown): string {
     if (typeof value !== 'string') return '';

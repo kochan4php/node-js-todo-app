@@ -1,7 +1,7 @@
 import { createServer } from 'node:http';
-import init from './app.js';
-import { PORT } from './config/app.js';
-import { logger } from './logger/index.js';
+import init from './app.ts';
+import { PORT } from './config/app.ts';
+import { logger } from './logger/index.ts';
 
 const app = init();
 const server = createServer(app);
