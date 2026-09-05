@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import type { Response } from 'express';
 
 export function render(res: Response, view: string, data?: object) {
     return res.render(view, data);

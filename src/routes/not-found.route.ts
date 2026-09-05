@@ -3,8 +3,8 @@
  * @author {Deo Sbrn}
  */
 
-import express, { Router } from 'express';
-import NotFoundController from '../app/controllers/not-found.controller';
+import express, { type Router } from 'express';
+import NotFoundController from '../app/controllers/not-found.controller.js';
 
 const router: Router = express.Router();
 
@@ -13,6 +13,6 @@ const router: Router = express.Router();
  * @access public
  * @endpoint /
  */
-router.all('*', NotFoundController.index);
+router.all('/{*splat}', NotFoundController.index);
 
 export default router;

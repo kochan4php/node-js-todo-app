@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
-import { render } from '../helpers/render';
+import type { Request, Response } from 'express';
+import { render } from '../helpers/render.js';
 
 function index(_: Request, res: Response) {
-    const data = { title: '404 Not Found', layout: 'layouts/main' };
-    return render(res, '404', data);
+    res.status(404);
+    return render(res, '404', { title: '404 Not Found', layout: 'layouts/main' });
 }
 
 export default { index };

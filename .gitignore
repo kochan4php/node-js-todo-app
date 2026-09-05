@@ -1,6 +1,5 @@
 node_modules
 dist
-env/.env.local
-env/.env.production*
-env/.env.staging
-env/.env.development
+data
+*.log
+.DS_Store

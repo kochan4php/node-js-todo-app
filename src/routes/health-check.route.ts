@@ -3,8 +3,8 @@
  * @author {Deo Sbrn}
  */
 
-import express, { Router } from 'express';
-import healthCheckController from '../app/controllers/health-check.controller';
+import express, { type Router } from 'express';
+import healthCheckController from '../app/controllers/health-check.controller.js';
 
 const router: Router = express.Router();
 

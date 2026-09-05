@@ -1,25 +1,19 @@
-/**
- * @description This file is the entry point of the application
- * @description It will bootstrap the application and start the server using IIFE (Immediately Invoked Function Expression)
- * @description It will also initialize socket.io and listen to connection event
- * @author {Deo Sbrn}
- */
+import { createServer } from 'node:http';
+import init from './app.js';
+import { PORT } from './config/app.js';
+import { logger } from './logger/index.js';
 
-import { Application } from 'express';
-import { Server, Socket } from 'socket.io';
-import { DefaultEventsMap } from 'socket.io/dist/typed-events';
-import init from './app';
-import SocketController from './app/controllers/socket.controller';
-import { socketConfig } from './config/app';
-import { PORT } from './config/env';
-import { logger } from './logger';
+const app = init();
+const server = createServer(app);
 
-/**
- * Bootstrap the application
- */
-(async function () {
-    const app: Application = init();
-    const server = app.listen(PORT, () => logger.info('Server', `started on port ${PORT}`));
-    const io: Server<DefaultEventsMap> = new Server(server, socketConfig());
-    io.on('connection', (socket: Socket<DefaultEventsMap>) => SocketController(socket, io));
-})();
+server.listen(PORT, () => {
+    logger.info(`Server berjalan di http://localhost:${PORT}`);
+});
+
+for (const signal of ['SIGINT', 'SIGTERM'] as const) {
+    process.on(signal, () => {
+        logger.info(`Menerima sinyal ${signal}, menutup server...`);
+        server.close(() => process.exit(0));
+        setTimeout(() => process.exit(1), 5000).unref();
+    });
+}

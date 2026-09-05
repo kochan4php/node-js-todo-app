@@ -1,95 +1,37 @@
-/**
- * @description This file contain all functions to interact with todos collection in MongoDB database
- * @author {Deo Sbrn}
- */
+import { randomUUID } from 'node:crypto';
+import type { Todo } from '../../interfaces/todo.js';
+import { readTodos, writeTodos } from '../store/todo.store.js';
 
-import mongoose, { FilterQuery, ProjectionType, UpdateQuery } from 'mongoose';
-import { TodoModel } from '../models';
-import { Todo } from '../models/todo.model';
-
-/**
- * @description Get all todos
- * @param {FilterQuery<Todo>} filter - Filter query
- * @returns {Promise<Todo[]>} - Array of todos
- */
-async function getAllTodos(filter: FilterQuery<Todo> = {}): Promise<Todo[]> {
-    return await TodoModel.find(filter);
+export function getAll(): Todo[] {
+    return readTodos();
 }
 
-/**
- * @description Get one todo by id
- * @param {string | mongoose.Types.ObjectId} id - Todo id
- * @param {ProjectionType<Todo>} selectedField - Selected field
- * @returns {Promise<Todo | null>} - Todo object or null
- */
-async function getOneTodoById(id: string | mongoose.Types.ObjectId, selectedField: ProjectionType<Todo> = {}): Promise<Todo | null> {
-    return await getOneTodo({ _id: id }, selectedField);
+export function getById(id: string): Todo | null {
+    return readTodos().find((todo) => todo.id === id) ?? null;
 }
 
-/**
- * @description Get one todo by filter
- * @param {FilterQuery<Todo>} filter - Filter query
- * @param {ProjectionType<Todo>} selectedField - Selected field
- * @returns {Promise<Todo | null>} - Todo object or null
- */
-async function getOneTodo(filter: FilterQuery<Todo> = {}, selectedField: ProjectionType<Todo> = {}): Promise<Todo | null> {
-    return await TodoModel.findOne(filter, selectedField);
+export function create(name: string): Todo {
+    const todos = readTodos();
+    const now = new Date().toISOString();
+    const todo: Todo = { id: randomUUID(), name, createdAt: now, updatedAt: now };
+    todos.push(todo);
+    writeTodos(todos);
+    return todo;
 }
 
-/**
- * @description Create new todo
- * @param {Todo | object} data - Todo data
- * @returns {Promise<Todo>} - Todo object
- */
-async function createTodo(data: Todo | object): Promise<Todo> {
-    return await TodoModel.create(data);
+export function update(id: string, name: string): Todo | null {
+    const todos = readTodos();
+    const index = todos.findIndex((todo) => todo.id === id);
+    if (index === -1) return null;
+    todos[index] = { ...todos[index], name, updatedAt: new Date().toISOString() };
+    writeTodos(todos);
+    return todos[index];
 }
 
-/**
- * @description Update todo by id
- * @param {string | mongoose.Types.ObjectId} id - Todo id
- * @param {UpdateQuery<Todo>} data - Todo data
- * @returns {Promise<Todo | null>} - Todo object or null
- */
-async function updateOneTodoById(id: string | mongoose.Types.ObjectId, data: UpdateQuery<Todo>): Promise<Todo | null> {
-    return await TodoModel.findByIdAndUpdate(id, data, { new: true });
+export function remove(id: string): boolean {
+    const todos = readTodos();
+    const filtered = todos.filter((todo) => todo.id !== id);
+    if (filtered.length === todos.length) return false;
+    writeTodos(filtered);
+    return true;
 }
-
-/**
- * @description Update todo by filter
- * @param {FilterQuery<Todo>} filter - Filter query
- * @param {UpdateQuery<Todo>} data - Todo data
- * @returns {Promise<any>} - Todo object or null
- */
-async function updateOneTodo(filter: FilterQuery<Todo>, data: UpdateQuery<Todo>): Promise<any> {
-    return await TodoModel.updateOne(filter, data, { new: true });
-}
-
-/**
- * @description Delete one todo by filter
- * @param {FilterQuery<Todo>} filter - Filter query
- * @returns {Promise<any>} - Result
- */
-async function deleteOneTodo(filter: FilterQuery<Todo>): Promise<any> {
-    return await TodoModel.deleteOne(filter);
-}
-
-/**
- * @description Delete one todo by id
- * @param {string | mongoose.Types.ObjectId} id - Todo id
- * @returns {Promise<Todo | null>} - Todo object or null
- */
-async function deleteOneTodoById(id: string | mongoose.Types.ObjectId): Promise<Todo | null> {
-    return await TodoModel.findByIdAndDelete(id);
-}
-
-export default {
-    createTodo,
-    deleteOneTodo,
-    deleteOneTodoById,
-    getAllTodos,
-    getOneTodo,
-    getOneTodoById,
-    updateOneTodo,
-    updateOneTodoById,
-};

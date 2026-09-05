@@ -1,3 +1,2 @@
-export * from './hash.helper';
-export * from './response.helper';
-export * from './str.helper';
+export * from './render.js';
+export * from './response.helper.js';

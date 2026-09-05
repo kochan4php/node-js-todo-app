@@ -4,7 +4,7 @@
  * @author {Deo Sbrn}
  */
 
-import { Response } from 'express';
+import type { Response } from 'express';
 
 /**
  * @description Make success response
@@ -14,7 +14,7 @@ import { Response } from 'express';
  * @param {object | any} data - Data response
  * @returns {Response} - Express response object
  */
-export function resSuccess(res: Response, status: number, message: string, data?: object | any): Response {
+export function resSuccess(res: Response, status: number, message: string, data?: object): Response {
     return res.status(status).type('application/json').json({ success: true, message, data });
 }
 
@@ -23,9 +23,9 @@ export function resSuccess(res: Response, status: number, message: string, data?
  * @param {Response} res - Express response object
  * @param {number} status - Status code
  * @param {string} message - Message response
- * @param {object | any} error - Error response
+ * @param {object} error - Error response
  * @returns {Response} - Express response object
  */
-export function resFailed(res: Response, status: number, message: string, error?: object | any): Response {
+export function resFailed(res: Response, status: number, message: string, error?: object): Response {
     return res.status(status).type('application/json').json({ success: false, message, error });
 }

@@ -1,73 +1,36 @@
-/**
- * @description This file contain a method to init express application
- * @description It will connect to database MongoDB and use all middlewares
- * @description It also contain all routes for all endpoints
- * @author {Deo Sbrn}
- */
-
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import express, { Application } from 'express';
+import { resolve } from 'node:path';
+import compression from 'compression';
+import express, { type Application } from 'express';
 import expressLayouts from 'express-ejs-layouts';
-import { rateLimit } from 'express-rate-limit';
+import helmet from 'helmet';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
-import auth from './app/middlewares/auth.middleware';
-import isAdmin from './app/middlewares/is-admin.middleware';
-import { corsConfig, limitterConfig } from './config/app';
-import database from './config/database';
-import userRoute from './routes/admin/user.route';
-import authRoute from './routes/auth.route';
-import healthCheckRoute from './routes/health-check.route';
-import mainRoute from './routes/main.route';
-import notFoundRoute from './routes/not-found.route';
-import todoRoute from './routes/todo.route';
+import healthCheckRoute from './routes/health-check.route.js';
+import mainRoute from './routes/main.route.js';
+import notFoundRoute from './routes/not-found.route.js';
+import todoRoute from './routes/todo.route.js';
 
-/**
- * @description Init express application
- * @returns {Application} - Express application
- */
-const init = function (): Application {
-    // * Init express app
+const init = (): Application => {
     const app: Application = express();
 
-    // * Connect to database
-    database();
-
-    // * Set Views
-    app.set('views', __dirname + '/views');
+    app.set('views', resolve(__dirname, '../src/views'));
     app.set('view engine', 'ejs');
+    app.set('view cache', process.env.NODE_ENV === 'production');
 
-    // * Middlewares
-    app.use(cors(corsConfig()));
-    app.use(rateLimit(limitterConfig()));
-    app.use(cookieParser());
-    app.use(express.json());
-    app.use(express.static('public'));
-    app.use(express.urlencoded({ extended: true }));
+    app.use(helmet());
+    app.use(compression());
     app.use(morgan('dev'));
+    app.use(express.json({ limit: '10kb' }));
+    app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+    app.use(express.static(resolve(__dirname, '../public'), { maxAge: '7d' }));
     app.use(expressLayouts);
     app.use(methodOverride('_method'));
 
-    // * Todo Route with view engine
     app.use('/', todoRoute);
-
-    // * Main Route
     app.use('/api', mainRoute);
-
-    // * Health Check Route
     app.use('/api/health-check', healthCheckRoute);
-
-    // * Auth Route
-    app.use('/api/auth', authRoute);
-
-    // * Admin Route
-    app.use('/api/admin/users', auth, isAdmin, userRoute);
-
-    // * 404 Not Found
     app.use(notFoundRoute);
 
-    // * Return express app
     return app;
 };
 

@@ -7,8 +7,8 @@
     </div>
     <div class="edit-todo-main">
         <form action="/?_method=PUT" method="post">
-            <input type="hidden" name="_id" value="<%= todo._id %>">
-            <input type="text" name="kegiatan" id="kegiatan" value="<%= todo.kegiatan %>" autocomplete="off" />
+            <input type="hidden" name="id" value="<%= todo.id %>">
+            <input type="text" name="name" id="name" value="<%= todo.name %>" autocomplete="off" />
             <button type="submit"><i class="fa-solid fa-pen-to-square"></i>&nbsp;Edit Todo</button>
         </form>
         <a href="/">Cancel</a>

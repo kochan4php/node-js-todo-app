@@ -3,8 +3,8 @@
  * @author {Deo Sbrn}
  */
 
-import express, { Router } from 'express';
-import MainController from '../app/controllers/main.controller';
+import express, { type Router } from 'express';
+import MainController from '../app/controllers/main.controller.js';
 
 const router: Router = express.Router();
 
