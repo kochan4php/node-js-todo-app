@@ -310,6 +310,35 @@
     }
 
     /* ------------------------------------------------------------------
+       CTA magnetik — ikut kursor halus via CSS var (--mx/--my)
+       Dipakai hanya bila pointer presisi (mouse), bukan raba layar.
+    ------------------------------------------------------------------ */
+    (() => {
+        const btn = document.querySelector('.btn-cta');
+        if (!btn || window.matchMedia('(pointer: coarse)').matches) return;
+        const MAX = 8;
+        let frame = 0;
+        const place = (mx, my) => {
+            const rect = btn.getBoundingClientRect();
+            const dx = Math.max(-MAX, Math.min(MAX, mx - (rect.left + rect.width / 2)));
+            const dy = Math.max(-MAX, Math.min(MAX, my - (rect.top + rect.height / 2)));
+            btn.style.setProperty('--mx', `${dx}px`);
+            btn.style.setProperty('--my', `${dy}px`);
+        };
+        btn.addEventListener('pointerenter', () => btn.setAttribute('data-hover', ''));
+        btn.addEventListener('pointermove', (event) => {
+            cancelAnimationFrame(frame);
+            frame = requestAnimationFrame(() => place(event.clientX, event.clientY));
+        });
+        btn.addEventListener('pointerleave', () => {
+            cancelAnimationFrame(frame);
+            btn.style.setProperty('--mx', '0px');
+            btn.style.setProperty('--my', '0px');
+            btn.removeAttribute('data-hover');
+        });
+    })();
+
+    /* ------------------------------------------------------------------
        Indikator loading saat submit form add/edit (anti submit ganda)
     ------------------------------------------------------------------ */
     document.querySelectorAll('form.form').forEach((form) => {
