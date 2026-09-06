@@ -15,7 +15,7 @@
             <div class="form-core">
                 <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Rencana baru</p>
                 <h1 class="form-title">Apa yang ingin <em>kamu selesaikan?</em></h1>
-                <p class="form-hint">Tulis satu rencana — ringkas dan jelas. Maksimal 200 karakter.</p>
+                <p class="form-hint">Tulis satu rencana — ringkas dan jelas. Tekan Enter untuk menambah, maksimal 200 karakter.</p>
 
                 <form method="post" action="/" class="form" novalidate>
                     <div class="form-field <%= typeof error !== 'undefined' ? 'is-error' : '' %>">
@@ -28,6 +28,7 @@
                                maxlength="200"
                                autocomplete="off"
                                autofocus>
+                        <p class="field-counter" data-counter-for="todo-name" aria-hidden="true"></p>
                         <% if (typeof error !== 'undefined') { %>
                         <p class="form-error" id="todo-name-error" role="alert">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

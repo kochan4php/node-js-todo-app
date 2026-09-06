@@ -233,6 +233,11 @@ strong {
     }
 }
 
+.app-header-inner.is-scrolled {
+    box-shadow: var(--shadow-lift), var(--gloss);
+    border-color: var(--border-strong);
+}
+
 .brand {
     display: inline-flex;
     align-items: center;
@@ -1116,6 +1121,15 @@ strong {
     transform: scale(0.92);
 }
 
+.icon-btn svg,
+.icon-btn-danger svg {
+    transition: transform 0.3s var(--ease-spring);
+}
+
+.icon-btn[href]:hover svg {
+    transform: rotate(8deg);
+}
+
 /* --------------------------------------------------------------------------
    12. KONDISI KOSONG
    -------------------------------------------------------------------------- */
@@ -1309,6 +1323,38 @@ strong {
     background: var(--ink);
     border-color: transparent;
     color: var(--surface);
+}
+
+.field-counter {
+    margin: 0.35rem 0 0;
+    font-family: var(--f-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-mute);
+    text-align: right;
+}
+
+@keyframes field-shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    20% {
+        transform: translateX(-5px);
+    }
+    40% {
+        transform: translateX(5px);
+    }
+    60% {
+        transform: translateX(-3px);
+    }
+    80% {
+        transform: translateX(3px);
+    }
+}
+
+.form-field.is-error {
+    animation: field-shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
 }
 
 .pri-chip:has(input:focus-visible) {

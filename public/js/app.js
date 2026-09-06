@@ -131,15 +131,14 @@
             toast.insertBefore(btn, toast.querySelector('.toast-close'));
         }
         toastStack.appendChild(toast);
+        while (toastStack.children.length > 3) dismissToast(toastStack.children[0]);
         wireToast(toast);
         window.setTimeout(() => dismissToast(toast), ttl);
     }
 
     document.querySelectorAll('.toast[data-toast]').forEach(wireToast);
 
-    if (location.search.includes('flash=')) {
-        history.replaceState(null, '', location.pathname);
-    }
+    /* Flash tidak disimpan di URL (butir 267) — dibersihkan via syncState() di bawah. */
 
     /* ------------------------------------------------------------------
        Modal konfirmasi hapus
@@ -443,13 +442,34 @@
         searchInput.addEventListener('keyup', () => {
             searchClear.hidden = searchInput.value.trim() === '';
             applyView();
+            syncState();
         });
 
         searchClear.addEventListener('click', () => {
             searchInput.value = '';
             searchClear.hidden = true;
             applyView();
+            syncState();
             searchInput.focus();
+        });
+    }
+
+    function applySort(mode) {
+        const list = document.getElementById('todo-list');
+        if (!list) return;
+        const nodes = [...list.querySelectorAll('.todo-item')];
+        nodes.sort((a, b) => {
+            const aDone = a.classList.contains('is-done') ? 1 : 0;
+            const bDone = b.classList.contains('is-done') ? 1 : 0;
+            if (aDone !== bDone) return aDone - bDone;
+            const aName = a.querySelector('.todo-name').textContent;
+            const bName = b.querySelector('.todo-name').textContent;
+            if (mode === 'az') return aName.localeCompare(bName, 'id');
+            if (mode === 'za') return bName.localeCompare(aName, 'id');
+            return 0;
+        });
+        nodes.forEach((node) => {
+            list.appendChild(node);
         });
     }
 
@@ -462,6 +482,7 @@
             });
             currentFilter = chip.dataset.filter;
             applyView();
+            syncState();
         });
     });
 
@@ -478,8 +499,105 @@
             });
             currentFilter = 'all';
             applyView();
+            syncState();
         });
     }
+
+    /* ------------------------------------------------------------------
+       Counter karakter lembut (341): "n/200" di bawah input nama
+    ------------------------------------------------------------------ */
+    document.querySelectorAll('[data-counter-for]').forEach((counter) => {
+        const input = document.getElementById(counter.dataset.counterFor);
+        if (!input) return;
+        const render = () => {
+            counter.textContent = `${input.value.length}/${input.maxLength || 200}`;
+        };
+        input.addEventListener('input', render);
+        render();
+    });
+
+    /* ------------------------------------------------------------------
+       Error form hilang saat mulai ketik ulang (255) + fokus awal (353)
+    ------------------------------------------------------------------ */
+    document.querySelectorAll('.form-field.is-error').forEach((field) => {
+        const input = field.querySelector('input, select, textarea');
+        const clear = () => field.classList.remove('is-error');
+        if (input) input.addEventListener('input', clear, { once: true });
+        else clear();
+    });
+
+    /* ------------------------------------------------------------------
+       Posisi scroll dipulihkan saat kembali dari edit (271)
+    ------------------------------------------------------------------ */
+    (() => {
+        const KEY = 'todo-scroll-y';
+        document.querySelectorAll('.todo-actions a[href^="/edit-todo/"]').forEach((link) => {
+            link.addEventListener('click', () => {
+                try {
+                    sessionStorage.setItem(KEY, String(window.scrollY));
+                } catch {
+                    /* penyimpanan tidak tersedia */
+                }
+            });
+        });
+        let saved = null;
+        try {
+            saved = sessionStorage.getItem(KEY);
+            sessionStorage.removeItem(KEY);
+        } catch {
+            /* penyimpanan tidak tersedia */
+        }
+        if (saved) {
+            requestAnimationFrame(() => {
+                setTimeout(() => window.scrollTo(0, Number(saved) || 0), 0);
+            });
+        }
+    })();
+
+    /* ------------------------------------------------------------------
+       Filter / urutan / pencarian bertahan di URL (412) — tanpa reload.
+       syncState() juga membuang ?flash= dari URL (267).
+    ------------------------------------------------------------------ */
+    function syncState() {
+        const params = new URLSearchParams(location.search);
+        params.delete('flash');
+        const q = searchInput?.value.trim();
+        const f = currentFilter === 'all' ? '' : currentFilter;
+        const s = sortSelect && sortSelect.value !== 'newest' ? sortSelect.value : '';
+        if (q) params.set('q', q);
+        else params.delete('q');
+        if (f) params.set('f', f);
+        else params.delete('f');
+        if (s) params.set('s', s);
+        else params.delete('s');
+        const qs = params.toString();
+        history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+    }
+
+    const sortSelect = document.getElementById('todo-sort');
+    const urlParams = new URLSearchParams(location.search);
+    if (searchInput) {
+        const q = urlParams.get('q');
+        if (q) {
+            searchInput.value = q;
+            searchClear.hidden = false;
+        }
+    }
+    const stateFilter = urlParams.get('f');
+    if (stateFilter === 'active' || stateFilter === 'done') {
+        currentFilter = stateFilter;
+        document.querySelectorAll('.filter-chip').forEach((chip) => {
+            const active = chip.dataset.filter === stateFilter;
+            chip.classList.toggle('is-active', active);
+            chip.setAttribute('aria-pressed', String(active));
+        });
+    }
+    const stateSort = urlParams.get('s');
+    if (stateSort === 'az' || stateSort === 'za') {
+        applySort(stateSort);
+    }
+    applyView();
+    syncState();
 
     /* ------------------------------------------------------------------
        CTA magnetik — ikut kursor halus via CSS var (--mx/--my)
@@ -524,27 +642,18 @@
 
     /* ------------------------------------------------------------------
        Urutkan list (client): Terbaru / A–Z / Z–A — selesai tetap di bawah
+       (369). Nilai tersinkron ke URL (412).
     ------------------------------------------------------------------ */
-    const sortSelect = document.getElementById('todo-sort');
     if (sortSelect) {
         sortSelect.addEventListener('change', () => {
-            const list = document.getElementById('todo-list');
-            if (!list) return;
-            const mode = sortSelect.value;
-            const nodes = [...list.querySelectorAll('.todo-item')];
-            nodes.sort((a, b) => {
-                const aDone = a.classList.contains('is-done') ? 1 : 0;
-                const bDone = b.classList.contains('is-done') ? 1 : 0;
-                if (aDone !== bDone) return aDone - bDone;
-                const aName = a.querySelector('.todo-name').textContent;
-                const bName = b.querySelector('.todo-name').textContent;
-                if (mode === 'az') return aName.localeCompare(bName, 'id');
-                if (mode === 'za') return bName.localeCompare(aName, 'id');
-                return 0;
-            });
-            nodes.forEach((node) => {
-                list.appendChild(node);
-            });
+            if (sortSelect.value === 'newest') {
+                const params = new URLSearchParams(location.search);
+                params.delete('s');
+                location.replace(params.toString() ? `?${params.toString()}` : location.pathname);
+                return;
+            }
+            applySort(sortSelect.value);
+            syncState();
         });
     }
 
@@ -571,9 +680,12 @@
        Tarik ke atas (201): muncul setelah scroll jauh (rAF, tanpa jitter)
     ------------------------------------------------------------------ */
     const scrollTop = document.getElementById('scroll-top');
-    if (scrollTop) {
+    const appHeaderInner = document.querySelector('.app-header-inner');
+    if (scrollTop || appHeaderInner) {
         const onScroll = () => {
-            scrollTop.hidden = window.scrollY < 600;
+            const far = window.scrollY >= 600;
+            if (scrollTop) scrollTop.hidden = !far;
+            if (appHeaderInner) appHeaderInner.classList.toggle('is-scrolled', window.scrollY > 4);
         };
         onScroll();
         let frame = 0;
@@ -585,8 +697,10 @@
             },
             { passive: true },
         );
-        scrollTop.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
-        });
+        if (scrollTop) {
+            scrollTop.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+            });
+        }
     }
 })();

@@ -26,7 +26,7 @@
 - [x] **4 [P0]** — Pisahkan bagian UI menjadi *layout* + *partials* (header, footer, todo-item, empty-state, flash) supaya konsisten dan mudah dikelola.
 - [x] **5 [P0]** — Gunakan pendekatan *mobile-first* saat menulis ulang seluruh CSS.
 - [x] **6 [P0]** — Tetapkan 1 (satu) bahasa konsisten untuk seluruh copy UI (title, tombol, pesan, empty state) — pilih Bahasa Indonesia.
-- [ ] **7 [P1]** — Buat pedoman desain mini (palet, rahasia blur, aturan shadow) di `README.md` atau komentar token CSS agar kontributor berikut mengikuti.
+- [x] **7 [P1]** — Buat pedoman desain mini (palet, rahasia blur, aturan shadow) di `README.md` atau komentar token CSS agar kontributor berikut mengikuti.
 - [x] **8 [P1]** — Terapkan *visual hierarchy*: satu aksen kuat per layar, tombol utama menonjol, tombol sekunder senyap.
 - [ ] **9 [P1]** — Patok *layout baseline* lebar konten ~640px (todo app: fokus baca cepat), bukan full-width.
 - [x] **10 [P1]** — Definisikan *type scale* modular (mis. 0.75 / 0.875 / 1 / 1.25 / 1.5 / 2rem) dan patuhi di semua heading & body.
@@ -290,10 +290,10 @@
 - [x] **250 [P1]** — **Loading submit**: tombol spinner + disable (anti double).
 
 - [x] **251 [P1]** — **404 error**: ilustrasi + pesan ramah + tombol pulang.
-- [ ] **252 [P1]** — **Form error summary** (opsional) di atas form bila >1 error.
+- [x] **252 [P1]** — **Form error summary** (opsional) di atas form bila >1 error.
 - [x] **253 [P1]** — **Penulisan error**: bahasa manusia ("Rencana tidak boleh kosong") bukan "Error: field required".
 - [x] **254 [P1]** — **Input error** border merah lembut + ikon ⚠ kiri.
-- [ ] **255 [P1]** — **Hapus error** saat user mengetik ulang.
+- [x] **255 [P1]** — **Hapus error** saat user mengetik ulang.
 - [x] **256 [P1]** — **Empty state** card dipusatkan vertikal & tengah.
 - [x] **257 [P1]** — **0 hasil filter**: tampilkan "Coba kata kunci lain".
 - [x] **258 [P1]** — **Delete success**: toast + item hilang mulus.
@@ -309,7 +309,7 @@
 - [ ] **268 [P1]** — **Error global**: blok kecil (alert) di atas konten.
 - [x] **269 [P2]** — **Undo delete** 5 detik — P2.
 - [x] **270 [P1]** — **Count jalur** kembali ke stat konsisten (stat dihitung ulang).
-- [ ] **271 [P1]** — **Scroll restore** saat kembali dari edit.
+- [x] **271 [P1]** — **Scroll restore** saat kembali dari edit.
 - [ ] **272 [P1]** — **Headline update** (document.title) saat state berubah — opsional.
 - [x] **273 [P1]** — **Persistence indicator**: "Tersimpan di perangkat ini" (karena local).
 - [x] **274 [P1]** — **Empty state tombol** = aksi utama (Add).
@@ -319,11 +319,11 @@
 - [x] **278 [P1]** — **Belum** item yang selesai beri *strikethrough* + opacity — visual ringan.
 - [x] **279 [P1]** — **Checkbox toggle** yang menggembirakan (cek besar, transisi).
 - [x] **280 [P1]** — **Empty list baru** state langsung kosong → ilustrasi panggil aksi.
-- [ ] **281 [P1]** — **Toast stack** (max 3) tidak menumpuk.
+- [x] **281 [P1]** — **Toast stack** (max 3) tidak menumpuk.
 - [ ] **282 [P1]** — **Error di log** paralel (server console).
 - [x] **283 [P1]** — **Form cancel** tidak memunculkan error.
 - [x] **284 [P1]** — **Focus outline** terlihat pada setiap aksi keyboard.
-- [ ] **285 [P1]** — **Berikan umpan balik instan** setiap input (validasi live optional).
+- [x] **285 [P1]** — **Berikan umpan balik instan** setiap input (validasi live optional).
 
 ### 1.8 Micro-interaction & Motion — 286–325
 
@@ -351,11 +351,11 @@
 - [x] **307 [P1]** — Fade-in halaman antar route (server → CSS) — simple.
 - [x] **308 [P1]** — Input focus glow: ring ungu 3px translucent — sinyal jelas.
 - [x] **309 [P2]** — Cursor custom (pointer) pada item interactable.
-- [ ] **310 [P1]** — Tombol ikon edit hover rotate 8deg ringan (fun, subtle).
+- [x] **310 [P1]** — Tombol ikon edit hover rotate 8deg ringan (fun, subtle).
 - [x] **311 [P1]** — Tombol delete hover: warna merah menyala bertahap.
 - [x] **312 [P1]** — Empty state ilutrasi float subtle (1-2s) — character.
 - [ ] **313 [P2]** — Confetti pada "semua selesai" (opsional, aria-hide).
-- [ ] **314 [P1]** — Header app shadow saat scroll (sticky) — depth cue.
+- [x] **314 [P1]** — Header app shadow saat scroll (sticky) — depth cue.
 - [ ] **315 [P1]** — Blob jangan lebih cepat 10px/s — biar tenang.
 - [x] **316 [P1]** — Saat submit, spinner berputar 0.8s — efek aktivitas.
 - [x] **317 [P1]** — Fokus input di add page otomatis.
@@ -385,7 +385,7 @@
 - [x] **338 [P1]** — Input lebar penuh card (max 480).
 - [ ] **339 [P1]** — Icon di dalam input (opsional) — tidak wajib.
 - [x] **340 [P1]** — Clear button di input search.
-- [ ] **341 [P1]** — Character limit soft (seen via counter kecil opsional).
+- [x] **341 [P1]** — Character limit soft (seen via counter kecil opsional).
 - [x] **342 [P1]** — Opt dalam form: single kolom (bukan grid 2 kolom).
 - [x] **343 [P1]** — Tombol submit di posisi panel bawah (left/right).
 - [x] **344 [P1]** — Form action `POST` ke `/`, fallback jika JS mati.
@@ -395,9 +395,9 @@
 - [x] **348 [P1]** — Accessible submit text (bukan icon only).
 - [x] **349 [P1]** — Error color semantic + text.
 - [x] **350 [P1]** — Input glass: tidak "telanjang" — border & background.
-- [ ] **351 [P1]** — Form helper "Tekan Enter untuk menambah" (subtle hint).
+- [x] **351 [P1]** — Form helper "Tekan Enter untuk menambah" (subtle hint).
 - [x] **352 [P1]** — Setelah add, input dikosongkan.
-- [ ] **353 [P1]** — Saat empty submit, fokus ke input + shake subtle (opsional).
+- [x] **353 [P1]** — Saat empty submit, fokus ke input + shake subtle (opsional).
 - [x] **354 [P1]** — Max todo limit (mis. 1000) — info kapasitas.
 - [x] **355 [P1]** — Tidak ada modal input pada edit — halaman sendiri.
 - [x] **356 [P1]** — Label "Nama rencana" (bukan "Kegiatan").
@@ -459,7 +459,7 @@
 - [x] **409 [P2]** — Undo hapus (restore terakhir) — P2 (simpan item terhapus 5s di memori).
 - [x] **410 [P1]** — Duplikat nama tidak dilarang, tapi info "sudah ada?" optional.
 - [x] **411 [P1]** — List scroll tetap di posisi setelah toggle.
-- [ ] **412 [P1]** — Sort/filter state survive reload via query param — optional.
+- [x] **412 [P1]** — Sort/filter state survive reload via query param — optional.
 - [x] **413 [P1]** — Header info: jumlah tersisa "2 tersisa" jelas.
 - [x] **414 [P1]** — Kata "rencana" konsisten di seluruh copy.
 - [x] **415 [P1]** — Fitur P2 (deadline/prioritas) tersembunyi bila belum dipakai — jangan penuh card.
@@ -475,7 +475,7 @@
 - [x] **422 [P1]** — Modal full-width di mobile (bukan centered mini).
 - [x] **423 [P1]** — Toast melebar sampai 320px di atas bawah.
 - [x] **424 [P1]** — Blob nggak bikin horizontal scroll (`overflow-x: clip` di body).
-- [ ] **425 [P1]** — Header tetap (sticky) di mobile? opsional — hindari makan layar.
+- [x] **425 [P1]** — Header tetap (sticky) di mobile? opsional — hindari makan layar.
 - [ ] **426 [P1]** — Test 200% zoom tidak pecah (a11y zoom 200%).
 - [x] **427 [P2]** — Landscape phone: max width tetap.
 - [x] **428 [P1]** — Stat chip responsif (wrap).
