@@ -676,6 +676,47 @@
     }
 
     /* ------------------------------------------------------------------
+       Cadangan data (1030): unduh via /api/export (anchor), impor lewat
+       input file → POST /api/import → muat ulang. Tanpa dependency.
+    ------------------------------------------------------------------ */
+    const importBtn = document.getElementById('import-btn');
+    const importFile = document.getElementById('import-file');
+    if (importBtn && importFile) {
+        importBtn.addEventListener('click', () => importFile.click());
+
+        importFile.addEventListener('change', () => {
+            const file = importFile.files?.[0];
+            importFile.value = '';
+            if (!file) return;
+            if (file.type !== 'application/json' && !file.name.toLowerCase().endsWith('.json')) {
+                showToast('Pilih berkas .json.', 'error', 7000);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                const json = reader.result;
+                if (typeof json !== 'string') return;
+                fetch('/api/import', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: json,
+                })
+                    .then((response) => response.json())
+                    .then((result) => {
+                        if (result?.success) return location.reload();
+                        throw new Error('payload invalid');
+                    })
+                    .catch(() => {
+                        showToast('Impor gagal. Periksa format berkas JSON.', 'error', 7000);
+                    });
+            };
+            reader.onerror = () => showToast('Gagal membaca berkas.', 'error', 7000);
+            reader.readAsText(file);
+        });
+    }
+
+    /* ------------------------------------------------------------------
        Pintasan keyboard (221): "/" cari, "n" buat rencana baru
     ------------------------------------------------------------------ */
     document.addEventListener('keydown', (event) => {

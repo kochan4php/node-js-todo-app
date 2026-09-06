@@ -1148,51 +1148,51 @@
 
 ## 9. PROJECT / DX / DEVOPS — butir 1006–1050
 
-- [ ] **1006 [P0]** — Tulis `README.md`: deskripsi, setup (`pnpm install`, `pnpm dev`), struktur, scripts, data lokasi.
-- [ ] **1007 [P0]** — Hapus env setelah kehadiran local data; dokumentasi port.
-- [ ] **1008 [P1]** — `.gitignore`: tambah `data/`, hapus pengecualian env? (Biarkan).
-- [ ] **1009 [P1]** — Build script cross-platform (`rm -rf` di Windows gagal) → gunakan `rimraf` (dev) OR `pnpm dlx rimraf`? — perbaiki.
-- [ ] **1010 [P1]** — Script dev: `nodemon src/index.ts` tanpa NODE_ENV paksa.
-- [ ] **1011 [P1]** — Set `"type": "module"`? tetapkan CJS (biar stabil) — dokumentasikan.
-- [ ] **1012 [P1]** — Node engines: `"node": ">=20"`.
-- [ ] **1013 [P1]** — Package manager field: `pnpm@>=9`.
-- [ ] **1014 [P1]** — Hapus `.npmrc` bila tak digunakan.
-- [ ] **1015 [P1]** — Update `.prettierignore` → hapus (Biome handles); padahal file masih boleh.
-- [ ] **1016 [P1]** — Docker: lokal tak perlu (hapus) atau buat `Dockerfile` single-stage sederhana bila deploy — P2.
+- [x] **1006 [P0]** — Tulis `README.md`: deskripsi, setup (`pnpm install`, `pnpm dev`), struktur, scripts, data lokasi.
+- [x] **1007 [P0]** — Hapus env setelah kehadiran local data; dokumentasi port.
+- [x] **1008 [P1]** — `.gitignore`: tambah `data/`, hapus pengecualian env? (Biarkan).
+- [x] **1009 [P1]** — Build script cross-platform (`rm -rf` di Windows gagal) → gunakan `rimraf` (dev) OR `pnpm dlx rimraf`? — perbaiki.
+- [x] **1010 [P1]** — Script dev: `nodemon src/index.ts` tanpa NODE_ENV paksa.
+- [x] **1011 [P1]** — Set `"type": "module"`? tetapkan CJS (biar stabil) — dokumentasikan.
+- [x] **1012 [P1]** — Node engines: `"node": ">=20"`.
+- [x] **1013 [P1]** — Package manager field: `pnpm@>=9`.
+- [x] **1014 [P1]** — Hapus `.npmrc` bila tak digunakan.
+- [x] **1015 [P1]** — Update `.prettierignore` → hapus (Biome handles); padahal file masih boleh.
+- [x] **1016 [P1]** — Docker: lokal tak perlu (hapus) atau buat `Dockerfile` single-stage sederhana bila deploy — P2.
 - [ ] **1017 [P1]** — PM2 ecosystem bila prod — P2.
-- [ ] **1018 [P1]** — Deploy target: VPS/Railway/Fly — dokumentasi.
-- [ ] **1019 [P1]** — Health endpoint dipakai untuk uptime check.
-- [ ] **1020 [P1]** — CI GitHub Actions: lint+build+test.
+- [x] **1018 [P1]** — Deploy target: VPS/Railway/Fly — dokumentasi.
+- [x] **1019 [P1]** — Health endpoint dipakai untuk uptime check.
+- [x] **1020 [P1]** — CI GitHub Actions: lint+build+test.
 - [ ] **1021 [P1]** — CD optional (workspace deploy).
-- [ ] **1022 [P1]** — Versioning `0.2.0`.
-- [ ] **1023 [P1]** — Changelog sederhana.
-- [ ] **1024 [P1]** — GitHub metrics? Tidak.
-- [ ] **1025 [P1]** — Editorconfig konsisten (ada).
-- [ ] **1026 [P1]** — `eslintrc/prettier` files dihapus — bersih.
-- [ ] **1027 [P1]** — Docs: arsitektur data (JSON local) — sekilas di README.
-- [ ] **1028 [P1]** — Ke mana upgrade ketika butuh multi-user → imbuhan dokumentasi.
-- [ ] **1029 [P1]** — Backup data: copy `data/todos.json` ke manual.
-- [ ] **1030 [P1]** — Export/Import sebagai JSON (fitur P2: tombol unduh/unggah).
-- [ ] **1031 [P1]** — Git tags semver.
-- [ ] **1032 [P1]** — CI pin pnpm version.
-- [ ] **1033 [P1]** — Lockfile commited — ya.
-- [ ] **1034 [P1]** — Audit dependencies rutin.
-- [ ] **1035 [P1]** — Checklist PR kecil (format + test).
-- [ ] **1036 [P1]** — VSCode settings: `format on save` pakai biome — P2.
-- [ ] **1037 [P1]** — Kontribusi: CONTRIBUTING brief bila publik.
-- [ ] **1038 [P1]** — License Apache sudah.
+- [x] **1022 [P1]** — Versioning `0.2.0`.
+- [x] **1023 [P1]** — Changelog sederhana.
+- [x] **1024 [P1]** — GitHub metrics? Tidak.
+- [x] **1025 [P1]** — Editorconfig konsisten (ada).
+- [x] **1026 [P1]** — `eslintrc/prettier` files dihapus — bersih.
+- [x] **1027 [P1]** — Docs: arsitektur data (JSON local) — sekilas di README.
+- [x] **1028 [P1]** — Ke mana upgrade ketika butuh multi-user → imbuhan dokumentasi.
+- [x] **1029 [P1]** — Backup data: copy `data/todos.json` ke manual.
+- [x] **1030 [P1]** — Export/Import sebagai JSON (fitur P2: tombol unduh/unggah).
+- [x] **1031 [P1]** — Git tags semver.
+- [x] **1032 [P1]** — CI pin pnpm version.
+- [x] **1033 [P1]** — Lockfile commited — ya.
+- [x] **1034 [P1]** — Audit dependencies rutin.
+- [x] **1035 [P1]** — Checklist PR kecil (format + test).
+- [x] **1036 [P1]** — VSCode settings: `format on save` pakai biome — P2.
+- [x] **1037 [P1]** — Kontribusi: CONTRIBUTING brief bila publik.
+- [x] **1038 [P1]** — License Apache sudah.
 - [ ] **1039 [P1]** — Monitoring up (uptime check) — P2.
 - [ ] **1040 [P1]** — Manual deploy script (opsional).
-- [ ] **1041 [P1]** — Time zone default lokal.
-- [ ] **1042 [P1]** — Adopt codegen? Tidak.
-- [ ] **1043 [P1]** — Refactor documentasi singkat penting.
+- [x] **1041 [P1]** — Time zone default lokal.
+- [x] **1042 [P1]** — Adopt codegen? Tidak.
+- [x] **1043 [P1]** — Refactor documentasi singkat penting.
 - [ ] **1044 [P1]** — Performance test deployment — P2.
-- [ ] **1045 [P1]** — Storage path custom via `DATA_PATH` env — dokumentasi.
-- [ ] **1046 [P1]** — Semua app local — privasi penuh (POI selling point).
-- [ ] **1047 [P1]** — Hapus sisa `express-ts-starter` branding dari README — ganti todo-app.
-- [ ] **1048 [P1]** — `pnpm build` verifikasi outDir.
-- [ ] **1049 [P1]** — `.editorconfig` charset/lf.
-- [ ] **1050 [P1]** — Jalankan audit penuh setelah refactor & catat item yang fix.
+- [x] **1045 [P1]** — Storage path custom via `DATA_PATH` env — dokumentasi.
+- [x] **1046 [P1]** — Semua app local — privasi penuh (POI selling point).
+- [x] **1047 [P1]** — Hapus sisa `express-ts-starter` branding dari README — ganti todo-app.
+- [x] **1048 [P1]** — `pnpm build` verifikasi outDir.
+- [x] **1049 [P1]** — `.editorconfig` charset/lf.
+- [x] **1050 [P1]** — Jalankan audit penuh setelah refactor & catat item yang fix.
 
 ---
 

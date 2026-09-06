@@ -37,10 +37,40 @@ src/
 
 - Rute RESTful: `GET /`, `POST /`, `GET /add-todo`, `GET /edit-todo/:id`,
   `POST /toggle/:id`, `PUT /` (update), `DELETE /` (hapus), `POST /restore` (undo).
+- Rute cadangan: `GET /api/export` (unduh JSON), `POST /api/import` (ganti data).
 - Variabel design: Geist/Geist Mono self-host, Bento neutral zinc/slate,
   satu aksen teal. Tema gelap persist di `localStorage`.
 - Storage: JSON dimuat sekali ke memori, mutasi ditulis atomic (tmp + rename);
   file dibuat otomatis saat run pertama; korup dicadangkan ke `.bak`.
+
+## Cadangan data
+
+Data hanya `data/todos.json` di perangkatmu. Untuk memastikan aman:
+
+- **Unduh salinan** — tombol unduh di beranda atau `GET /api/export` menghasilkan
+  berkas `todos.json` berisi seluruh rencana. Simpan di tempat aman.
+- **Pulihkan** — tombol impor di beranda (pilih berkas `.json`) atau
+  `POST /api/import` mengganti seluruh data saat ini. Impor menolak format yang
+  tidak valid atau melebihi batas (`MAX_TODOS`) tanpa mengubah data lama.
+
+## Deploy & skala
+
+Aplikasi murni lokal dan stateful terhadap file — cukup untuk satu pengguna atau
+satu keluarga di perangkat/pribadi-pribadi.
+
+- **VPS/Railway/Fly**: jalankan `pnpm build && pnpm start`, set `PORT`,
+  `SITE_URL`, dan `DATA_PATH` ke volume persisten, dan arahkan
+  `GET /api/health-check` sebagai uptime check (mis. UptimeRobot/Cronitor).
+  `trust proxy` sudah diset untuk satu reverse proxy (Nginx/Caddy).
+- **Privasi**: tak ada akun, cookie, maupun database — seluruh data di
+  perangkat. Ini justru keunggulan; jangan pasarkan sebagai multi-user.
+- **Butuh multi-user?** Saat benar-benar diperlukan, ganti lapisan store dengan
+  DB (SQLite untuk jejak kecil, kemudian Postgres) tanpa menyentuh UI — semua
+  akses data lewat `src/app/store/todo.store.ts`. Jangan lakukan lebih awal
+  dari yang dibutuhkan (YAGNI); model JSON cukup sampai puluhan ribu rencana.
+
+Saat memilih multi-user, pertimbangkan sesi/auth di sisi aplikasi karena saat
+ini tidak ada (lihat Keamanan).
 
 ## Keamanan
 
@@ -72,8 +102,10 @@ menjalankan Node 24 langsung untuk request TypeScript — mencakup unit
 produksi. `pretest` menjalankan typecheck dulu; `test:coverage` gagal bila
 cakupan garis `src/` di bawah 80%.
 
-Husky pre-commit menjalankan biome + lint-staged. Commit memakai
-conventional (feat:/fix:/perf:).
+Husky pre-commit menjalankan biome + lint-staged; pre-push menjalankan
+`pnpm test`. Commit memakai conventional (feat:/fix:/perf:). Rincian siklus
+rilis ada di [CHANGELOG.md](CHANGELOG.md) dan panduan kontribusi ada di
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Lisensi
 

@@ -51,7 +51,13 @@ const init = (): Application => {
 
     app.use(compression());
     app.use(express.static(resolve(import.meta.dirname, '../public'), { maxAge: '7d', etag: true }));
-    app.use(express.json({ limit: '10kb' }));
+    /* 846 — body dibatasi 10kb; /api/import dikecualikan karena memuat cadangan
+       JSON (parsernya sendiri berlaku batas 1mb di rute). */
+    const jsonParser = express.json({ limit: '10kb' });
+    app.use((req, res, next: NextFunction) => {
+        if (req.path === '/api/import') return next();
+        jsonParser(req, res, next);
+    });
     app.use(express.urlencoded({ extended: true, limit: '10kb' }));
     app.use(expressLayouts);
     app.use(methodOverride('_method'));

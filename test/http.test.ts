@@ -198,4 +198,85 @@ test('rute HTTP end-to-end (server Express asli)', async (t) => {
         const api = await req('/api');
         assert.equal(api.status, 200);
     });
+
+    await t.test('1030 — GET /api/export mengunduh semua data sebagai JSON', async () => {
+        const res = await req('/api/export');
+        assert.equal(res.status, 200);
+        assert.ok(String(res.headers.get('content-type')).startsWith('application/json'));
+        assert.equal(String(res.headers.get('content-disposition')).includes('todos.json'), true);
+
+        const todos = (await res.json()) as Array<{ name: string }>;
+        assert.ok(todos.length >= 3, `sisa data belum kosong (${todos.length})`);
+        assert.ok(
+            todos.some((todo) => todo.name === 'a'.repeat(200)),
+            'nama 200 karakter ikut ter-ekspor',
+        );
+    });
+
+    await t.test('1030 — POST /api/import valid mengganti seluruh data', async () => {
+        const payload = [
+            {
+                id: 'abc-1',
+                name: '  Rencana   dari   cadangan  ',
+                completed: true,
+                priority: 'high',
+                due: '2026-09-09',
+                createdAt: '2026-01-01T00:00:00.000Z',
+            },
+            { name: 'Tanpa id & tanggal', completed: false },
+        ];
+        const res = await req('/api/import', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+        assert.equal(res.status, 200);
+        const body = (await res.json()) as { success: boolean; data: { imported: number } };
+        assert.equal(body.success, true);
+        assert.equal(body.data.imported, 2);
+
+        const html = await htmlOf('/');
+        assert.ok(html.includes('Rencana dari cadangan'), 'spasi berlebihan dirapikan oleh sanitiser');
+        assert.ok(html.includes('Tanpa id &amp; tanggal'), '& di-escape saat render');
+        assert.ok(!html.includes('a'.repeat(200)), 'data lama benar-benar diganti');
+    });
+
+    await t.test('1030 — POST /api/import menolak payload tidak valid tanpa menyentuh data', async () => {
+        const notArray = await req('/api/import', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ nama: 'bukan array' }),
+        });
+        assert.equal(notArray.status, 400);
+
+        const noName = await req('/api/import', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify([{ name: '   ' }]),
+        });
+        assert.equal(noName.status, 400);
+
+        const nullItem = await req('/api/import', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify([null]),
+        });
+        assert.equal(nullItem.status, 400);
+
+        const html = await htmlOf('/');
+        assert.ok(html.includes('Rencana dari cadangan'), 'data tetap utuh setelah penolakan');
+    });
+
+    await t.test('1030 — POST /api/import menolak melebihi MAX_TODOS (dan melampaui batas body global)', async () => {
+        const items = Array.from({ length: 1001 }, (_, i) => ({ name: `x${i}` }));
+        const res = await req('/api/import', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(items),
+        });
+        assert.equal(res.status, 400);
+        const body = (await res.json()) as { success: boolean; message: string };
+        assert.equal(body.success, false);
+        assert.match(body.message, /Maksimal 1000/);
+    });
 });

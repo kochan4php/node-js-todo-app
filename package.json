@@ -5,6 +5,7 @@
     "license": "Apache-2.0",
     "author": "Deo Subarno",
     "type": "module",
+    "packageManager": "pnpm@11.22.0",
     "engines": {
         "node": ">=24"
     },

@@ -1,0 +1,36 @@
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+
+permissions:
+    contents: read
+
+jobs:
+    quality:
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: pnpm/action-setup@v4
+              # Versi pnpm dibaca dari field `packageManager` (pinned).
+              with:
+                  run_install: false
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: pnpm
+
+            - run: pnpm install --frozen-lockfile
+
+            - run: pnpm lint
+            - run: pnpm typecheck
+            - run: pnpm test
+            - run: pnpm build
+
+            - name: Cek kerentanan dependensi (produksi)
+              run: pnpm audit --prod

@@ -558,6 +558,11 @@ strong {
     padding: 0.4rem 1.3rem;
 }
 
+/* Tombol ikon saja (cadangan/unduh, impor) — bubble simetris. */
+.btn-icoonly {
+    padding: 0.4rem;
+}
+
 .btn:disabled {
     pointer-events: none;
     opacity: 0.55;

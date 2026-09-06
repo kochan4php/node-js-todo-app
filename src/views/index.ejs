@@ -16,6 +16,23 @@
                         </svg>
                     </span>
                 </a>
+
+                <a class="btn btn-ghost btn-icoonly" href="/api/export" download aria-label="Unduh salinan data (JSON)" title="Unduh salinan data (JSON)">
+                    <span class="btn-ico" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+                        </svg>
+                    </span>
+                </a>
+
+                <button type="button" class="btn btn-ghost btn-icoonly" id="import-btn" aria-label="Impor data dari berkas JSON" title="Impor data dari berkas JSON">
+                    <span class="btn-ico" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 21V9m0 0 4 4m-4-4-4 4M4 7V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2" />
+                        </svg>
+                    </span>
+                </button>
+                <input type="file" id="import-file" accept="application/json,.json" hidden />
             </div>
         </div>
 
