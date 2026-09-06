@@ -2,7 +2,7 @@ import type { Priority } from '../../interfaces/todo.ts';
 
 const PRIORITIES: readonly string[] = ['low', 'medium', 'high'];
 
-/* 963 — validator input yang dapat di-unit-test. */
+/* 963 — input validators that are unit-testable. */
 export function sanitizeName(value: unknown): string {
     if (typeof value !== 'string') return '';
     return value.trim().replace(/\s+/g, ' ').slice(0, 200);
@@ -19,8 +19,8 @@ export function sanitizeDue(value: unknown): string | null {
     const year = Number(match[1]);
     const month = Number(match[2]);
     const day = Number(match[3]);
-    /* Bandingkan komponen UTC: mencekal tanggal mustahil (mis. 2023-02-30)
-       yang oleh JS di-roll ke bulan berikutnya. */
+    /* Compare UTC components: rejects impossible dates (e.g. 2023-02-30)
+       which JS would silently roll over to the following month. */
     const date = new Date(Date.UTC(year, month - 1, day));
     const valid = date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
     return valid ? value.trim() : null;

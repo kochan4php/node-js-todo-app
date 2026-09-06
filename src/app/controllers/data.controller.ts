@@ -4,7 +4,7 @@ import { logger } from '../../logger/index.ts';
 import { sanitizeDue, sanitizeName, sanitizePriority } from '../helpers/validate.ts';
 import { getAll, importTodos } from '../services/todo.service.ts';
 
-/* 1030 — cadangan manual: unduh salinan JSON dari seluruh data. */
+/* 1030 — manual backup: download a JSON copy of all data. */
 async function exportData(_req: Request, res: Response) {
     res.set('Content-Disposition', 'attachment; filename="todos.json"');
     res.set('Cache-Control', 'no-store');
@@ -15,7 +15,7 @@ function badRequest(res: Response, message: string) {
     res.status(400).json({ success: false, message, data: {} });
 }
 
-/* 1030 — pemulihan: ganti seluruh data dari JSON yang pernah diekspor. */
+/* 1030 — restore: replace all data from a previously exported JSON. */
 async function importData(req: Request, res: Response) {
     const body: unknown = req.body;
     if (!Array.isArray(body)) return badRequest(res, 'Format salah: kirim array JSON (isi berkas todos.json).');
@@ -43,7 +43,7 @@ async function importData(req: Request, res: Response) {
     }
 
     await importTodos(imports);
-    logger.info(`Impor ${imports.length} rencana`);
+    logger.info(`Imported ${imports.length} todos`);
     res.json({ success: true, message: `${imports.length} rencana diimpor.`, data: { imported: imports.length } });
 }
 

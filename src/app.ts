@@ -20,10 +20,10 @@ const init = (): Application => {
     app.set('views', resolve(import.meta.dirname, '../src/views'));
     app.set('view engine', 'ejs');
     app.set('view cache', process.env.NODE_ENV === 'production');
-    app.set('trust proxy', 1); /* 602 — di belakang satu reverse proxy */
+    app.set('trust proxy', 1); /* 602 — behind a single reverse proxy */
 
-    /* Urutan (592): helmet → compression → static → parser body → rute. */
-    /* Nonce per-request agar script inline tema bisa jalan tanpa 'unsafe-inline'. */
+    /* Order (592): helmet → compression → static → body parsers → routes. */
+    /* Per-request nonce so the inline theme script can run without 'unsafe-inline'. */
     app.use((_req, res, next: NextFunction) => {
         res.locals.cspNonce = randomBytes(16).toString('base64');
         next();
@@ -32,10 +32,11 @@ const init = (): Application => {
         helmet({
             contentSecurityPolicy: {
                 directives: {
-                    /* Upgrade-insecure-requests (default helmet) dihapus:
-                       aplikasi 100% self-host dan dilayani HTTP lokal/LAN —
-                       directive justru membuat browser meng-upgrade redirect
-                       fetch ke https dan semua aksi async (toggle/delete) gagal. */
+                    /* Upgrade-insecure-requests (a helmet default) removed:
+                       the app is fully self-hosted and served over local/LAN
+                       HTTP — the directive makes the browser upgrade our fetch
+                       redirects to https and every async action
+                       (toggle/delete) fails. */
                     'upgrade-insecure-requests': null,
                     'script-src': [
                         "'self'",
@@ -48,7 +49,7 @@ const init = (): Application => {
             },
         }),
     );
-    /* 851 — Permissions-Policy: tolak geolokasi/kamera/mikro di semua halaman. */
+    /* 851 — Permissions-Policy: deny geolocation/camera/microphone on every page. */
     app.use((_req, res, next: NextFunction) => {
         res.set('Permissions-Policy', 'geolocation=(), camera=(), microphone=()');
         next();
@@ -56,8 +57,8 @@ const init = (): Application => {
 
     app.use(compression());
     app.use(express.static(resolve(import.meta.dirname, '../public'), { maxAge: '7d', etag: true }));
-    /* 846 — body dibatasi 10kb; /api/import dikecualikan karena memuat cadangan
-       JSON (parsernya sendiri berlaku batas 1mb di rute). */
+    /* 846 — body limited to 10kb; /api/import is exempt because it uploads JSON
+       backups (its own parser enforces a 1mb limit at the route). */
     const jsonParser = express.json({ limit: '10kb' });
     app.use((req, res, next: NextFunction) => {
         if (req.path === '/api/import') return next();
@@ -66,15 +67,15 @@ const init = (): Application => {
     app.use(express.urlencoded({ extended: true, limit: '10kb' }));
     app.use(expressLayouts);
     app.use(methodOverride('_method'));
-    /* 594 — di produksi log cukup short (status ringkas), dev cukup dev.
-       725/732 — endpoint health tidak banjiri log. */
+    /* 594 — in production the 'short' format suffices (terse status); dev gets
+       the verbose one. 725/732 — health endpoint must not flood the logs. */
     app.use(
         morgan(process.env.NODE_ENV === 'production' ? 'short' : 'dev', {
             skip: (req) => req.path.startsWith('/api/health'),
         }),
     );
 
-    /* 500 — mutasi tidak boleh di-cache oleh intermediate; GET HTML revalidasi (537). */
+    /* 500 — mutations must not be cached by intermediaries; HTML GET revalidates (537). */
     app.use((req, res, next: NextFunction) => {
         if (!['GET', 'HEAD'].includes(req.method)) res.set('Cache-Control', 'no-store');
         next();
@@ -86,7 +87,7 @@ const init = (): Application => {
     app.use('/api/health-check', healthCheckRoute);
     app.use(notFoundRoute);
 
-    /* 527/726 — error tak terduga: stack di dev, pesan singkat di prod, halaman 500. */
+    /* 527/726 — unexpected errors: full stack in dev, short message in prod, 500 page. */
     app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
         logger.error(process.env.NODE_ENV === 'production' ? err.message : (err.stack ?? err.message));
         res.status(500);

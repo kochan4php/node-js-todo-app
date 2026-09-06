@@ -1,1215 +1,1215 @@
-# REKOMENDASI IMPROVEMENT — Node.js Todo App (Express + TypeScript + EJS)
+# RECOMMENDATIONS — Node.js Todo App (Express + TypeScript + EJS)
 
-> Dokumen ini berisi **1.050 rekomendasi** improvement yang dikelompokkan dalam 9 kategori.
-> Nilai prioritas: **[P0]** = langsung diterapkan / *wajib* untuk redesign ini · **[P1]** = segera / penting · **[P2]** = nanti / nice-to-have.
-> Status: **[x]** = sudah diterapkan · **[ ]** = belum diterapkan (pilih per fase).
+> This document contains **1,050 improvement recommendations** grouped into 9 categories.
+> Priority values: **[P0]** = apply immediately / *required* for this redesign · **[P1]** = soon / important · **[P2]** = later / nice-to-have.
+> Status: **[x]** = already applied · **[ ]** = not yet applied (pick per phase).
 
 ---
 
-## 🏷️ Legenda Prioritas
+## Priority Legend
 
-| Prioritas | Arti |
+| Priority | Meaning |
 |---|---|
-| **P0** | Wajib untuk redesign UI/UX & pembenahan fondasi sekarang |
-| **P1** | Penting, kerjakan segera setelah P0 |
-| **P2** | Opsional / penambah nilai saat skala naik |
+| **P0** | Required for UI/UX redesign & foundation fix now |
+| **P1** | Important, work on immediately after P0 |
+| **P2** | Optional / value-add at scale |
 
 ---
 
-## 1. UI/UX REDESIGN (Frosted Glassmorphism) — butir 1–460
+## 1. UI/UX REDESIGN (Frosted Glassmorphism) — items 1–460
 
-### 1.1 Strategi & Arah Desain — 001–020
+### 1.1 Strategy & Design Direction — 001–020
 
-- [x] **1 [P0]** — Adopsi arah visual *Frosted Glassmorphism*: latar gradient ungu/lembut yang hidup (blobs), panel transparan berblur (`backdrop-filter: blur`), border 1px translucent putih, dan aksen gradient — beri identitas visual yang jelas, bukan tema "default browser".
-- [x] **2 [P0]** — Hapus seluruh duplikasi CSS (blok tombol yang disalin 7×) dan ganti dengan satu sistem token global lewat CSS Custom Properties (`:root`).
-- [x] **3 [P0]** — Bangun dulu *design tokens* (warna, tipografi, spacing, radius, shadow, easing) sebelum menulis komponen — semua komponen hanya memakai token.
-- [x] **4 [P0]** — Pisahkan bagian UI menjadi *layout* + *partials* (header, footer, todo-item, empty-state, flash) supaya konsisten dan mudah dikelola.
-- [x] **5 [P0]** — Gunakan pendekatan *mobile-first* saat menulis ulang seluruh CSS.
-- [x] **6 [P0]** — Tetapkan 1 (satu) bahasa konsisten untuk seluruh copy UI (title, tombol, pesan, empty state) — pilih Bahasa Indonesia.
-- [x] **7 [P1]** — Buat pedoman desain mini (palet, rahasia blur, aturan shadow) di `README.md` atau komentar token CSS agar kontributor berikut mengikuti.
-- [x] **8 [P1]** — Terapkan *visual hierarchy*: satu aksen kuat per layar, tombol utama menonjol, tombol sekunder senyap.
-- [x] **9 [P1]** — Patok *layout baseline* lebar konten ~640px (todo app: fokus baca cepat), bukan full-width.
-- [x] **10 [P1]** — Definisikan *type scale* modular (mis. 0.75 / 0.875 / 1 / 1.25 / 1.5 / 2rem) dan patuhi di semua heading & body.
-- [x] **11 [P1]** — Rancang *information architecture* ulang: index = daftar + aksi utama; add/edit = satu fokus tugas; 404 = menolong pengguna kembali pulang.
-- [x] **12 [P1]** — Hindari *decorative-only* blur berlebihan pada area teks — kekontrasan teks lebih dulu, glassmen dressing kedua.
-- [x] **13 [P2]** — Siapkan *design system* versi ringan (komponen: button, input, badge, toast, modal, checkbox) sebagai patokan kode bersama.
-- [x] **14 [P1]** — Lakukan *design audit* sebelum coding: daftar semua halaman (index, add, edit, 404) + semua state → buat kisi desainnya.
-- [x] **15 [P2]** — Sedangkan animasi dibuat halus dan singkat (150–300ms), bukan mengganti unsur fungsional.
-- [x] **16 [P1]** — Semua elemen interaktif wajib punya *hit area* minimal 44×44px (standar aksesibilitas sentuh).
-- [x] **17 [P2]** — Sediakan *micro-copy* yang membimbing: placeholder input = contoh, label bantu = sumber kebingungan.
-- [x] **18 [P1]** — Sertakan *affordance*: tombol terlihat bisa diklik (elevasi/chip), link terlihat link (bukan teks polos).
-- [x] **19 [P2]** — Buat 2 varian tema dari token yang sama (light & dark) sejak awal — hemat dibanding retrofit nanti.
-- [x] **20 [P1]** — Perangkap kualitas: semua halaman harus tetap berfungsi penuh saat CSS gagal dimuat (progressive enhancement).
+- [x] **1 [P0]** — Adopt *Frosted Glassmorphism* visual direction: lively purple/soft gradient background (blobs), transparent blurred panels (`backdrop-filter: blur`), 1px translucent white borders, and gradient accents — establish clear visual identity, not a "default browser" theme.
+- [x] **2 [P0]** — Remove all CSS duplication (button blocks copied 7×) and replace with a single global token system via CSS Custom Properties (`:root`).
+- [x] **3 [P0]** — Build *design tokens* (colors, typography, spacing, radius, shadow, easing) first before writing components — all components must use tokens only.
+- [x] **4 [P0]** — Split UI into *layout* + *partials* (header, footer, todo-item, empty-state, flash) for consistency and easy management.
+- [x] **5 [P0]** — Use a *mobile-first* approach when rewriting all CSS.
+- [x] **6 [P0]** — Pick 1 (one) consistent language for all UI copy (title, buttons, messages, empty state) — choose Indonesian.
+- [x] **7 [P1]** — Create a mini design guide (palette, blur secrets, shadow rules) in `README.md` or CSS token comments so subsequent contributors follow it.
+- [x] **8 [P1]** — Implement *visual hierarchy*: one strong accent per screen, primary button prominent, secondary button subtle.
+- [x] **9 [P1]** — Set *layout baseline* content width to ~640px (todo app: fast-reading focus), not full-width.
+- [x] **10 [P1]** — Define modular *type scale* (e.g. 0.75 / 0.875 / 1 / 1.25 / 1.5 / 2rem) and enforce it across all headings & body.
+- [x] **11 [P1]** — Redesign *information architecture*: index = list + primary actions; add/edit = single task focus; 404 = help users find their way home.
+- [x] **12 [P1]** — Avoid excessive *decorative-only* blur on text areas — text contrast first, glass dressing second.
+- [x] **13 [P2]** — Prepare a lightweight *design system* (components: button, input, badge, toast, modal, checkbox) as a shared coding reference.
+- [x] **14 [P1]** — Run a *design audit* before coding: list all pages (index, add, edit, 404) + all states → create the design grid.
+- [x] **15 [P2]** — Animations should be smooth and brief (150–300ms), not replacing functional elements.
+- [x] **16 [P1]** — All interactive elements must have a minimum *hit area* of 44×44px (touch accessibility standard).
+- [x] **17 [P2]** — Provide guiding *micro-copy*: input placeholders = examples, helper labels = sources of confusion.
+- [x] **18 [P1]** — Include *affordances*: buttons look clickable (elevation/chip), links look like links (not plain text).
+- [x] **19 [P2]** — Create 2 theme variants from the same tokens (light & dark) from the start — cheaper than retrofitting later.
+- [x] **20 [P1]** — Quality guardrail: all pages must remain fully functional when CSS fails to load (progressive enhancement).
 
-### 1.2 Warna & Sistem Warna — 021–070
+### 1.2 Colors & Color System — 021–070
 
-- [x] **21 [P0]** — Bangun palet token: `--clr-bg`, `--clr-surface`, `--clr-surface-strong`, `--clr-text`, `--clr-text-muted`, `--clr-accent`, `--clr-danger`, `--clr-success` dalam `:root`.
-- [x] **22 [P0]** — Hapus warna keras inline (`#5900ff`, `violet`, `#7e447e` hover) dari CSS; ganti dengan token berbasis *hue family* ungu.
-- [x] **23 [P0]** — Pastikan rasio kontras teks-pada-latar ≥ 4.5:1 (WCAG AA) untuk teks normal; jangan taruh teks di atas blob gradient tanpa overlay.
-- [x] **24 [P0]** — Hapus warna kaca yang terlalu solid; gunakan putih 18–30% alpha + blur agar latar terlihat "kaca".
-- [x] **25 [P1]** — Tambah token *state color*: focus ring (`--clr-focus`), hover, active, disabled — semua kontrol pakai keluarga yang sama.
-- [x] **26 [P1]** — Level *hover* dinaikkan kontras bertahap (opacity/lightness +3–5%), bukan lompatan warna ke `#7e447e`.
-- [x] **27 [P1]** — Gunakan aksen ungu *gradient* hanya di area kecil (tombol utama, logo, ilutrasi), jangan untuk teks penting panjang.
-- [x] **28 [P1]** — Sediakan warna *semantic*: sukses (hijau lembut), peringatan (amber), error (merah lembut) — untuk status todo & pesan.
-- [x] **29 [P2]** — Jaga *achromatic background* (ungu-keabu lembut) agar gelas statement-nya keluar, bukan warna peta berpindah.
-- [x] **30 [P1]** — Hindari *pure black/white*: gunakan `#fafafa` tekan `#1a1a1a` agar modern & tidak keras di mata.
-- [x] **31 [P2]** — Bereksperimen *dua aksen* (ungu + mint/sky) untuk membedakan tipe info (deadline vs prioritas).
-- [x] **32 [P1]** — Tambahkan token `--shadow-*` untuk soft glass shadow (layered, diffuse) — bukan border hitam.
-- [x] **33 [P2]** — Di mode gelap, jaga dari *pure-black glass*; gunakan ungu-kelelat ultra-gelap dengan glow tipis.
-- [x] **34 [P1]** — Semua icon inline (Font Awesome) pikul `currentColor` agar ikut tema — jangan warna hardcode.
-- [x] **35 [P2]** — Pertimbangkan `color-scheme: light dark` di CSS agar kontrol form & scrollbar ikut mode.
-- [x] **36 [P1]** — Beri label warna *aria-safe*: jangan jadikan warna satu-satunya penanda status (sertakan teks/ikon).
-- [ ] **37 [P2]** — Sediakan *theme highlight* di `body` gradient yang tenang, bukan gradient menyentak ketika scroll.
-- [x] **38 [P1]** — Pilih palet 4–6 warna + wrapper neutrals; jangan >9 warna aktif dalam satu screen.
-- [ ] **39 [P2]** — Tambahkan *color contrast checker* di langkah QA (gambar kontras untuk mode terang/gelap).
-- [x] **40 [P1]** — Jaga *blur (backdrop)* efek makin besar di layar kecil — menambah biaya compositing.
-- [x] **41 [P1]** — (Glass) Pastikan setiap panel kaca berisi *surface alpha* tinggi di teks area — jangan blur di belakang teks utama.
-- [x] **42 [P2]** — Sediakan varian "reduce glass" (via `prefers-reduced-transparency`) untuk pengguna yang sensitif motion/glare.
-- [x] **43 [P1]** — Border konsisten: 1px `rgba(255,255,255,.35)` + inner highlight tipis untuk efek kaca realistis.
-- [ ] **44 [P2]** — Gunakan gradient *radial* 2–3 blob yang *fixed* (bukan parallax scroll) agar tetap murah GPU.
-- [x] **45 [P1]** — Semua teks abu-abu (muted) ≥ `#6b6b6b` di light & ≥ `#b5b5cf` di dark — aman AA.
-- [x] **46 [P2]** — Jangan pakai warna "ungu #5900ff menyala" untuk seluruh chip status; gunakan tone lembut.
-- [x] **47 [P1]** — Hover pada card list: angkat shadow + blur sedikit, bukan pindah warna solid.
-- [x] **48 [P2]** — Aksen sukses untuk todo selesai: hijau dengan *check* ikon, bukan coret abu-abu saja.
-- [x] **49 [P1]** — Warna tombol *danger* delete: merah lembut + ikon; jangan sama dengan tombol edit (ungu).
-- [x] **50 [P1]** — Pastikan *focus ring* terlihat di dua mode (ring 2px kontras + offset).
-- [x] **51 [P2]** — Simpan token dalam `.css` di `:root` + variabel `--glass-*` untuk blur/saturasi.
-- [x] **52 [P1]** — Konversi nilai hex hardcode ke token & beri nama semantik (bukan `color-1`).
-- [x] **53 [P2]** — Uji kontras tag *badge* kecil: pastikan badge kecil tidak butuh teks 8px (terlalu kecil).
-- [x] **54 [P1]** — Untuk teks di atas panel kaca, tambah `text-shadow` ringan bila blur background menurunkan kontras.
-- [x] **55 [P2]** — Sediakan palette *reduced-motion mode*: tanpa gradient animasi.
-- [x] **56 [P1]** — Button utama: gradient ungu → tapi teks tetap putih kontras (cek DTO).
-- [x] **57 [P2]** — Theme [light] default; toggle dark di header (simpan preferensi di browser).
-- [x] **58 [P1]** — Card list background `rgba(255,255,255,.65)` di light — lebih terbaca daripada pure transparan.
-- [ ] **59 [P2]** — Gradient blob CSS murni (`background: radial-gradient(...)`), tanpa library eksternal.
-- [x] **60 [P1]** — Jangan menaruh scrollbar di dalam card list; biarkan halaman scroll normal.
-- [ ] **61 [P2]** — Sediakan *system accent variance*: 2 tema aksen (ungu / mint) opsional.
-- [x] **62 [P1]** — Hati-hati dengan *opacity* tombol disabled: tetap terbaca (≥0.4) + `cursor: not-allowed`.
-- [x] **63 [P2]** — Ikon & teks tombol harus punya jarak `gap` konsisten (8px), bukan `&nbsp;`.
-- [x] **64 [P1]** — Nuansa kaca pada form (input) jangan telanjang: beri *border* + *inner shadow* redup.
-- [ ] **65 [P2]** — Pertimbangkan *tinted glass*: surface kaca berwarna ungu 5% lebih dari latar belakang.
-- [x] **66 [P1]** — Saat *hover* button, naikkan *performa* warna (bukan ubah *hue* total).
-- [x] **67 [P2]** — Warna *secondary* link "Cancel" = ghost button (transparan + border) bukan blok penuh.
-- [x] **68 [P1]** — Teks kosong (empty) gunakan *muted* 2x lipat kontras, biar terbaca tapi bukan fokus.
-- [x] **69 [P2]** — Ciptakan *visual identity*: pattern gradient halus di header — elemen memorable.
-- [x] **70 [P1]** — Konsisten: aturan warna tombol Cancel/primary/danger 1 metode (tokens) di seluruh halaman.
+- [x] **21 [P0]** — Build token palette: `--clr-bg`, `--clr-surface`, `--clr-surface-strong`, `--clr-text`, `--clr-text-muted`, `--clr-accent`, `--clr-danger`, `--clr-success` in `:root`.
+- [x] **22 [P0]** — Remove hard inline colors (`#5900ff`, `violet`, `#7e447e` hover) from CSS; replace with *hue family*-based purple tokens.
+- [x] **23 [P0]** — Ensure text-on-background contrast ratio ≥ 4.5:1 (WCAG AA) for normal text; never place text on gradient blobs without an overlay.
+- [x] **24 [P0]** — Remove overly solid glass colors; use white at 18–30% alpha + blur so the background looks like "glass".
+- [x] **25 [P1]** — Add *state color* tokens: focus ring (`--clr-focus`), hover, active, disabled — all controls use the same family.
+- [x] **26 [P1]** — Increase hover-level contrast gradually (opacity/lightness +3–5%), not jumping to `#7e447e`.
+- [x] **27 [P1]** — Use purple *gradient* accents only in small areas (primary buttons, logo, illustrations), not for long important text.
+- [x] **28 [P1]** — Provide *semantic* colors: success (soft green), warning (amber), error (soft red) — for todo status & messages.
+- [x] **29 [P2]** — Maintain an *achromatic background* (soft purple-to-gray) so the glass statement stands out, not a shifting color map.
+- [x] **30 [P1]** — Avoid *pure black/white*: use `#fafafa` instead of `#1a1a1a` for a modern, non-harsh look.
+- [x] **31 [P2]** — Experiment with *dual accents* (purple + mint/sky) to differentiate info types (deadline vs priority).
+- [x] **32 [P1]** — Add `--shadow-*` tokens for soft glass shadow (layered, diffuse) — not a hard black border.
+- [x] **33 [P2]** — In dark mode, avoid *pure-black glass*; use ultra-dark purple-to-black with a subtle glow.
+- [x] **34 [P1]** — All inline icons (Font Awesome) carry `currentColor` to follow the theme — no hardcoded colors.
+- [x] **35 [P2]** — Consider `color-scheme: light dark` in CSS so form controls & scrollbars follow the mode.
+- [x] **36 [P1]** — Use *aria-safe* color labels: don't make color the sole status indicator (include text/icons).
+- [ ] **37 [P2]** — Provide a calm *theme highlight* in the `body` gradient, not a jarring gradient on scroll.
+- [x] **38 [P1]** — Choose a 4–6 color palette + neutral wrappers; no more than 9 active colors on one screen.
+- [ ] **39 [P2]** — Add a *color contrast checker* to the QA step (contrast images for light/dark modes).
+- [x] **40 [P1]** — Keep the *blur (backdrop)* effect scaling down on small screens — it increases compositing cost.
+- [x] **41 [P1]** — (Glass) Ensure every glass panel has high *surface alpha* in the text area — don't blur behind main text.
+- [x] **42 [P2]** — Provide a "reduce glass" variant (via `prefers-reduced-transparency`) for users sensitive to motion/glare.
+- [x] **43 [P1]** — Consistent borders: 1px `rgba(255,255,255,.35)` + thin inner highlight for a realistic glass effect.
+- [ ] **44 [P2]** — Use 2–3 *fixed* radial gradient blobs (not parallax scrolling) to keep GPU cost low.
+- [x] **45 [P1]** — All muted gray text ≥ `#6b6b6b` in light & ≥ `#b5b5cf` in dark — AA safe.
+- [x] **46 [P2]** — Don't use a "glowing purple #5900ff" for the entire status chip; use a soft tone instead.
+- [x] **47 [P1]** — Card list hover: lift shadow + slight blur, not a solid color change.
+- [x] **48 [P2]** — Success accent for completed todos: green with a *checkmark* icon, not just a gray strikethrough.
+- [x] **49 [P1]** — Danger button (delete) color: soft red + icon; don't match the edit button (purple).
+- [x] **50 [P1]** — Ensure the *focus ring* is visible in both modes (2px contrasting ring + offset).
+- [x] **51 [P2]** — Store tokens in `.css` in `:root` + `--glass-*` variables for blur/saturation.
+- [x] **52 [P1]** — Convert hardcoded hex values to tokens with semantic names (not `color-1`).
+- [x] **53 [P2]** — Test small badge tag contrast: ensure small badges don't need 8px text (too small).
+- [x] **54 [P1]** — For text on glass panels, add a light `text-shadow` when background blur reduces contrast.
+- [x] **55 [P2]** — Provide a *reduced-motion mode* palette: no animated gradients.
+- [x] **56 [P1]** — Primary button: purple gradient → but text stays white with sufficient contrast (check DTO).
+- [x] **57 [P2]** — Default [light] theme; dark toggle in header (save preference in browser).
+- [x] **58 [P1]** — Card list background `rgba(255,255,255,.65)` in light — more readable than pure transparency.
+- [ ] **59 [P2]** — Pure CSS gradient blobs (`background: radial-gradient(...)`), no external libraries.
+- [x] **60 [P1]** — Don't put scrollbars inside card lists; let the page scroll normally.
+- [ ] **61 [P2]** — Provide *system accent variance*: 2 optional accent themes (purple / mint).
+- [x] **62 [P1]** — Careful with disabled button *opacity*: still readable (≥0.4) + `cursor: not-allowed`.
+- [x] **63 [P2]** — Button icon & text must have a consistent `gap` (8px), not `&nbsp;`.
+- [x] **64 [P1]** — Glass styling on form inputs shouldn't be bare: add *border* + dimmed *inner shadow*.
+- [ ] **65 [P2]** — Consider *tinted glass*: glass surface tinted 5% more purple than the background.
+- [x] **66 [P1]** — On button *hover*, increase color *lightness* (don't change *hue* entirely).
+- [x] **67 [P2]** — Secondary "Cancel" link color = ghost button (transparent + border), not a full block.
+- [x] **68 [P1]** — Empty text uses double muted contrast, so it's readable but not the focus.
+- [x] **69 [P2]** — Create *visual identity*: subtle gradient pattern in the header — a memorable element.
+- [x] **70 [P1]** — Consistency: Cancel/primary/danger button color rules follow 1 method (tokens) across all pages.
 
-### 1.3 Tipografi — 071–105
+### 1.3 Typography — 071–105
 
-- [x] **71 [P0]** — Ganti font Lexend Deca (via `@import` CSS) dengan **Plus Jakarta Sans** (atau Outfit) via Google Fonts + `display=swap` + `preconnect`.
-- [x] **72 [P0]** — Hapus `@import url(...)` di CSS (render-blocking) → pindah ke `<link>` di `<head>`.
-- [x] **73 [P0]** — Tetapkan *font stack fallback*: `'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif`.
-- [x] **74 [P1]** — Terapkan *type scale*: H1 ~2rem, H3 ~1.25rem, body 1rem, small 0.875rem.
+- [x] **71 [P0]** — Replace Lexend Deca font (via `@import` CSS) with **Plus Jakarta Sans** (or Outfit) via Google Fonts + `display=swap` + `preconnect`.
+- [x] **72 [P0]** — Remove `@import url(...)` in CSS (render-blocking) → move to `<link>` in `<head>`.
+- [x] **73 [P0]** — Set *font stack fallback*: `'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif`.
+- [x] **74 [P1]** — Implement *type scale*: H1 ~2rem, H3 ~1.25rem, body 1rem, small 0.875rem.
 - [x] **75 [P1]** — Line-height: heading ~1.2, body ~1.6.
-- [x] **76 [P1]** — *Letter-spacing* heading -0.01em untuk kesan modern.
-- [x] **77 [P1]** — Teks tombol pakai *font-weight 600* (bukan bold html default) — tipis elegan.
-- [x] **78 [P2]** — Sediakan *font-display: swap* (Google Fonts default jika `display=swap`)
-- [x] **79 [P1]** — Jangan pakai *italic style* biasa untuk pesan error — pakai warna + ikon.
-- [x] **80 [P2]** — Hindari <br> untuk layout; pakai flex/grid & margin.
-- [x] **81 [P1]** — Daftar todo: *line-height* longgar (1.5-1.7) agar teks panjang nyaman dibaca.
-- [x] **82 [P2]** — Pertimbangkan *tabular numerals* untuk angka di stats.
-- [x] **83 [P1]** — Teks truncated todo: `text-overflow: ellipsis` + `max-width` bila diperlukan.
-- [x] **84 [P2]** — Heading halaman konsisten & deskriptif ("Apa rencanamu hari ini?").
-- [x] **85 [P1]** — Ukuran ikon tombol aksi: 1em (jangan 2× ukuran teks) — seimbang.
-- [x] **86 [P2]** — Pertimbangkan *variable font* tunggal untuk kurangi request.
-- [x] **87 [P1]** — Italic error style hapus; gunakan *alert role*.
-- [x] **88 [P1]** — Judul 404 "404" boleh besar (5rem), sub-judul 1.25rem jelas.
-- [x] **89 [P2]** — Bila memakai Bahasa Indonesia, hindari istilah jargon Inggris di copy.
-- [x] **90 [P1]** — *Font weight* jangan <400 untuk ukuran kecil (berat ringan sulit dibaca di layar).
-- [x] **91 [P2]** — Ukuran tombol mobile min 44px height.
-- [x] **92 [P1]** — Kapitalisasi judul natural; jangan ALL CAPS panjang.
-- [x] **93 [P1]** — *Word-break* aman untuk teks panjang (jangan overflow card).
-- [x] **94 [P2]** — Pertimbangkan *opti font* untuk ikon tombol (ikon pakai font-family ikon).
-- [x] **95 [P1]** — Jarak antar paragraf di empty-state minimal 8px.
-- [x] **96 [P2]** — Tips placeholder: "Tambahkan rencana…" bukan "kegiatan".
-- [x] **97 [P1]** — Hapus `font-weight: normal` global (reset bawaan) — biar font-weight natural.
-- [x] **98 [P2]** — Gunakan *clamp()* untuk heading responsif (`font-size: clamp(1.5rem, 3vw, 2.2rem)`).
-- [x] **99 [P1]** — Text color muted jangan pakai opacity; pakai token `--clr-text-muted`.
-- [x] **100 [P1]** — Ikon insikatif (plus, pen, trash) konsisten dimuat di button + link.
-- [ ] **101 [P2]** — Perhatikan *hyphenation* untuk teks dengan bahasa non-English.
-- [x] **102 [P1]** — Pastikan *no-flash* font (font loading via `<link>` + swap).
-- [ ] **103 [P2]** — Untuk small caps / detail kecil: gunakan `text-transform: none` agar mudah dibaca.
-- [x] **104 [P1]** — Penyambung kata "What's plan today ?" → "Apa rencanamu hari ini?" (bahasa & spasi sebelum tanda baca).
-- [x] **105 [P2]** — Sediakan *text utilities* (`.text-muted`, `.text-danger`, `.text-sm`) supaya markup bersih.
+- [x] **76 [P1]** — Heading *letter-spacing* -0.01em for a modern feel.
+- [x] **77 [P1]** — Button text uses *font-weight 600* (not bold HTML default) — thin and elegant.
+- [x] **78 [P2]** — Provide *font-display: swap* (Google Fonts default with `display=swap`).
+- [x] **79 [P1]** — Don't use regular *italic style* for error messages — use color + icon instead.
+- [x] **80 [P2]** — Avoid `<br>` for layout; use flex/grid & margins.
+- [x] **81 [P1]** — Todo list: loose *line-height* (1.5–1.7) for comfortable long-text reading.
+- [x] **82 [P2]** — Consider *tabular numerals* for numbers in stats.
+- [x] **83 [P1]** — Truncated todo text: `text-overflow: ellipsis` + `max-width` when needed.
+- [x] **84 [P2]** — Consistent & descriptive page headings ("Apa rencanamu hari ini?").
+- [x] **85 [P1]** — Action button icon size: 1em (not 2× text size) — balanced.
+- [x] **86 [P2]** — Consider a single *variable font* to reduce requests.
+- [x] **87 [P1]** — Remove italic error style; use the *alert role*.
+- [x] **88 [P1]** — 404 heading "404" may be large (5rem), subtitle 1.25rem and clear.
+- [x] **89 [P2]** — When using Indonesian, avoid English jargon in copy.
+- [x] **90 [P1]** — Don't use *font weight* <400 at small sizes (light weight is hard to read on screen).
+- [x] **91 [P2]** — Mobile button minimum height 44px.
+- [x] **92 [P1]** — Natural heading capitalization; don't use long ALL CAPS.
+- [x] **93 [P1]** — Safe *word-break* for long text (don't overflow cards).
+- [x] **94 [P2]** — Consider an *icon font* for action buttons (icons use a dedicated font-family).
+- [x] **95 [P1]** — Empty-state paragraph spacing minimum 8px.
+- [x] **96 [P2]** — Placeholder tip: "Tambahkan rencana…" not "kegiatan".
+- [x] **97 [P1]** — Remove global `font-weight: normal` (default reset) — let font-weight be natural.
+- [x] **98 [P2]** — Use *clamp()* for responsive headings (`font-size: clamp(1.5rem, 3vw, 2.2rem)`).
+- [x] **99 [P1]** — Muted text color should not use opacity; use the `--clr-text-muted` token.
+- [x] **100 [P1]** — Action icons (plus, pen, trash) consistently loaded on buttons + links.
+- [ ] **101 [P2]** — Pay attention to *hyphenation* for non-English text.
+- [x] **102 [P1]** — Ensure no-font-flash (font loading via `<link>` + swap).
+- [ ] **103 [P2]** — For small caps / small details: use `text-transform: none` for readability.
+- [x] **104 [P1]** — Word connector "What's plan today?" → "Apa rencanamu hari ini?" (language & space before punctuation).
+- [x] **105 [P2]** — Provide *text utilities* (`.text-muted`, `.text-danger`, `.text-sm`) for clean markup.
 
 ### 1.4 Spacing, Layout, & Grid — 106–135
 
-- [x] **106 [P0]** — Bangun *spacing scale* token: `--space-1..8` (4,8,12,16,24,32,48,64px).
-- [x] **107 [P0]** — Empat *major surface*: app shell (container), card (panel utama), list-item, form — semua pakai scale yang sama.
-- [x] **108 [P0]** — Hapus `margin-left/right` inline & tombol-jumbo di `.add-todo-main`; gunakan flex/grid dengan gap.
-- [x] **109 [P1]** — Warnai *container* menjadi *centered column* max-width 640px, `padding 24px`.
-- [x] **110 [P1]** — Kartu utama (content) `border-radius: 16–24px` (glass) — bukan 4px.
-- [x] **111 [P1]** — Jarak antar list item 12px; gap grup aksi 8px.
-- [x] **112 [P1]** — Ruang antar heading-to-content ≥ 16px; antar paragraf ≥ 8px.
-- [x] **113 [P2]** — Gunakan `gap` CSS modern (flex/grid), hindari margin copy-paste.
-- [x] **114 [P1]** — Header app: identitas + tema toggle (bila ada) di bawah / samping kiri.
-- [x] **115 [P1]** — Statistik & filter di atas list (baris opsional) — jangan menyelipkan di footer.
-- [x] **116 [P1]** — Footer mini: "Dibuat dengan ♥ · Node + Express" — sentuhan manusiawi.
-- [x] **117 [P2]** — Atur *z-index* panel kaca vs blob: blob fixed with `z-index:-1`, panel di atas.
-- [x] **118 [P1]** — Semua elemen pakai *box-sizing: border-box* (sudah) — pertahankan.
-- [ ] **119 [P2]** — Untuk layar ultra-wide, tengahkan card (max-width) + gradient samping.
-- [x] **120 [P1]** — Form add/edit: max-width 480px di tengah, bukan renggang 40%.
-- [x] **121 [P1]** — Tombol utama "Add Todo" di index: persegi ⨁ pendek (bukan full-width bejubel) di bawah form.
-- [x] **122 [P1]** — List-item: `flex; justify-between; gap:12px` → teks fleksibel + aksi tetap di kanan.
-- [x] **123 [P1]** — Pada mobile, aksi tetap horizontal (bukan menumpuk vertikal) jika teks pendek.
-- [x] **124 [P2]** — Beri *min-height* konten agar footer tidak loncat saat list pendek.
-- [x] **125 [P1]** — Padding panel: 24–32px desktop, 16–20px mobile.
-- [x] **126 [P2]** — Judul + tombol dalam satu baris di judul area (header flex), bukan stacked rawan.
-- [x] **127 [P1]** — Jaga *alignment*: semua teks card rata kiri, kecuali empty-state tengah.
-- [x] **128 [P1]** — Elemen tombol Cancel: ghost text-link — hemat ruang, tidak berebut perhatian.
-- [x] **129 [P2]** — Sediakan *visual rhythm*: selang-seling margin antar blok (judul→form→list) konsisten.
-- [x] **130 [P1]** — Jangan "menempel" tombol ke tepi card; padding card ≥ 16px.
-- [x] **131 [P2]** — Pertimbangkan *checkbox + edit/delete* dikelompokkan — jangan tersebar.
-- [x] **132 [P1]** — Ruang untuk *empty state*: vertikal center dengan ilustrasi + CTA — bukan teks di sudut.
-- [x] **133 [P1]** — Line *focus* terlihat pada semua elemen interaktif (a, button, input).
-- [ ] **134 [P2]** — Gunakan *responsive container query* (`@container`) bila mengulang component grid.
-- [x] **135 [P1]** — Hindari *horizontal scroll*: card `overflow-wrap` + aksi shrink.
+- [x] **106 [P0]** — Build *spacing scale* tokens: `--space-1..8` (4, 8, 12, 16, 24, 32, 48, 64px).
+- [x] **107 [P0]** — Four *major surfaces*: app shell (container), card (main panel), list-item, form — all use the same scale.
+- [x] **108 [P0]** — Remove inline `margin-left/right` & jumbo buttons in `.add-todo-main`; use flex/grid with gap.
+- [x] **109 [P1]** — Style the *container* as a centered column with max-width 640px, `padding 24px`.
+- [x] **110 [P1]** — Main content card `border-radius: 16–24px` (glass) — not 4px.
+- [x] **111 [P1]** — List item spacing 12px; action group gap 8px.
+- [x] **112 [P1]** — Heading-to-content space ≥ 16px; inter-paragraph space ≥ 8px.
+- [x] **113 [P2]** — Use modern CSS `gap` (flex/grid), avoid copy-pasted margins.
+- [x] **114 [P1]** — App header: identity + theme toggle (if any) below / left side.
+- [x] **115 [P1]** — Stats & filters above the list (optional row) — don't tuck them in the footer.
+- [x] **116 [P1]** — Mini footer: "Dibuat dengan ♥ · Node + Express" — a human touch.
+- [x] **117 [P2]** — Set *z-index* for glass panels vs blobs: blobs fixed with `z-index:-1`, panels on top.
+- [x] **118 [P1]** — All elements use *box-sizing: border-box* (already done) — keep it.
+- [ ] **119 [P2]** — For ultra-wide screens, center the card (max-width) + side gradient.
+- [x] **120 [P1]** — Add/edit form: max-width 480px centered, not stretched to 40%.
+- [x] **121 [P1]** — Primary "Add Todo" button on index: short square ⨁ (not full-width clunky) below the form.
+- [x] **122 [P1]** — List-item: `flex; justify-between; gap:12px` → flexible text + actions stay on the right.
+- [x] **123 [P1]** — On mobile, actions stay horizontal (don't stack vertically) if the text is short.
+- [x] **124 [P2]** — Set *min-height* on content so the footer doesn't jump when the list is short.
+- [x] **125 [P1]** — Panel padding: 24–32px desktop, 16–20px mobile.
+- [x] **126 [P2]** — Title + button in one row in the heading area (header flex), not a fragile stack.
+- [x] **127 [P1]** — Maintain *alignment*: all card text left-aligned, except centered empty-state.
+- [x] **128 [P1]** — Cancel button element: ghost text-link — saves space, doesn't compete for attention.
+- [x] **129 [P2]** — Provide *visual rhythm*: alternating margins between blocks (heading→form→list) consistently.
+- [x] **130 [P1]** — Don't "stick" buttons to the card edge; card padding ≥ 16px.
+- [x] **131 [P2]** — Consider grouping *checkbox + edit/delete* — don't scatter them.
+- [x] **132 [P1]** — *Empty state* space: vertically centered with illustration + CTA — not text in a corner.
+- [x] **133 [P1]** — Focus line visible on all interactive elements (a, button, input).
+- [ ] **134 [P2]** — Use *responsive container query* (`@container`) when looping component grids.
+- [x] **135 [P1]** — Avoid *horizontal scroll*: card `overflow-wrap` + action shrink.
 
-### 1.5 Efek Kaca (Glass Surface) — 136–175
+### 1.5 Glass Effects (Glass Surface) — 136–175
 
-- [x] **136 [P0]** — Implementasikan token glass: `--glass-bg: rgba(255,255,255,.22)`, `--glass-border: rgba(255,255,255,.35)`, `--glass-blur: 12px`.
-- [x] **137 [P0]** — Aktifkan `backdrop-filter: blur` + `-webkit-backdrop-filter` dengan fallback solid semi-transparant (Safari dukung).
-- [x] **138 [P0]** — Beri *fallback*: jika `backdrop-filter` tidak didukung, panel tetap terbaca (`rgba(255,255,255,.75)`).
-- [x] **139 [P1]** — Tambah *inner highlight* di panel: `box-shadow: inset 0 1px 0 rgba(255,255,255,.4)`.
-- [x] **140 [P1]** — Layer lain: outer soft shadow `0 8px 32px rgba(30,20,80,.12)`.
-- [x] **141 [P2]** — *Grain/noise* halus opsional untuk menghindari banding gradient.
-- [x] **142 [P1]** — Jangan blur seluruh *body* (kinerja); blur hanya panel kecil.
-- [ ] **143 [P1]** — Gradient blob `radial-gradient` 3 titik warna: lavender, sky, rose — ukuran besar & lembut.
-- [x] **144 [P1]** — Beri `border-radius: 20px` pada panel kaca + button: 10–12px.
-- [x] **145 [P1]** — Header panel kaca sedikit lebih terang (`--glass-bg-strong`) untuk pemisah.
-- [x] **146 [P2]** — Pertimbangkan *hover lift* card: `translateY(-2px)` + shadow lebih dalam (300ms).
-- [x] **147 [P1]** — Kaca pada tombol kecil justru *menurunkan* keterbacaan — tombol solid, panel kaca.
-- [ ] **148 [P2]** — Bisa diberi *reflection* tipis: pseudo-element gradient atas bawah non-interaktif.
-- [x] **149 [P1]** — Pastikan *text* tidak menabrak border; padding cukup di panel.
-- [x] **150 [P1]** — Tajam edge di *text area*: card kaca + teks normal, jangan blur text.
-- [x] **151 [P2]** — Mode *dark*: glass gelap `rgba(20,20,45,.5)` + border ungu redup.
-- [x] **152 [P1]** — Jangan letakkan *svg gradient* melebihi panel (bisa mengapa). Test di semua browser.
-- [ ] **153 [P1]** — *Animation* blob (float) via keyframes — durasi 12–18s, subtle.
-- [x] **154 [P1]** — Blob wajib punya `z-index:-1` & body `overflow-x:hidden` agar tak memunculkan scrollbar.
-- [ ] **155 [P2]** — *Glass chip* untuk badge status: kecil, blur dalam hitungan, alpha medium.
-- [x] **156 [P1]** — Hindari blur pada *sticky* element mobile (bisa lag).
-- [x] **157 [P2]** — Sediakan `prefers-reduced-motion` untuk disable animasi blob.
-- [x] **158 [P1]** — Panel kaca di atas area input teks → pastikan teks tetap kontras (saturasi blur).
-- [ ] **159 [P1]** — Pertimbangkan *isolate* gradient layer untuk batasi paint area.
-- [x] **160 [P2]** — Saat banyak panel, *blur radius* 10–14px (bukan 30px) agar hemat.
-- [x] **161 [P1]** — Card list memakai `--glass-bg` lebih solid daripada panel utama (keterbacaan per item).
-- [x] **162 [P2]** — Aksen gradient di tombol utama: `linear-gradient(120deg, #7a5cff, #b16dff)`.
-- [x] **163 [P1]** — Test Safari iOS: `-webkit-backdrop-filter` + fallback.
-- [x] **164 [P1]** — Jaga body gradient tidak *flash* putih saat load (CSS inline critical).
-- [ ] **165 [P2]** — Boleh *furnish* blur belakang dari `backdrop-filter`, jangan dijajarkan parallax.
-- [x] **166 [P1]** — Button border `1px rgba(255,255,255,.45)` + shadow — "button kaca".
-- [x] **167 [P2]** — *Glass input*: blur + 1px border + fokus glow ungu (ring).
-- [x] **168 [P1]** — Empty-state illustration dibuat *vector inline* (simple sun/checkbox), glass-consistent.
-- [x] **169 [P2]** — Logo app: icon ungu gradient di header — identitas.
-- [x] **170 [P1]** — Selalu sertakan *prefers-transparency* fallback ke solid surface saat dikurangi.
-- [ ] **171 [P2]** — Tambah *ambient* glow di belakang tombol utama (fake light) — subtle.
-- [x] **172 [P1]** — Card colapse konten tinggi jangan blur item di dalamnya — selalu pastikan bocor? No: hindari blur *bawah* pada teks panjang.
-- [x] **173 [P1]** — Perbedaan *hover/active/focus* dari glass: ubah alpha + ring, bukan pindah semua warna.
-- [x] **174 [P2]** — Coba *reduction*: pilih 2 tingkat kaca (panel utama & chip) — jangan 7 tingkat.
-- [x] **175 [P1]** — Lakukan *pixel-diff* cepat: panel tak boleh berubah warna ketika blob bergerak di belakang — verifikasi kontras teks stabil.
+- [x] **136 [P0]** — Implement glass tokens: `--glass-bg: rgba(255,255,255,.22)`, `--glass-border: rgba(255,255,255,.35)`, `--glass-blur: 12px`.
+- [x] **137 [P0]** — Enable `backdrop-filter: blur` + `-webkit-backdrop-filter` with a solid semi-transparent fallback (Safari support).
+- [x] **138 [P0]** — Add a *fallback*: if `backdrop-filter` isn't supported, panels remain readable (`rgba(255,255,255,.75)`).
+- [x] **139 [P1]** — Add *inner highlight* to panels: `box-shadow: inset 0 1px 0 rgba(255,255,255,.4)`.
+- [x] **140 [P1]** — Additional layer: outer soft shadow `0 8px 32px rgba(30,20,80,.12)`.
+- [x] **141 [P2]** — Optional subtle *grain/noise* to prevent gradient banding.
+- [x] **142 [P1]** — Don't blur the entire *body* (performance); blur only small panels.
+- [ ] **143 [P1]** — Gradient blob `radial-gradient` with 3 color stops: lavender, sky, rose — large & soft.
+- [x] **144 [P1]** — Apply `border-radius: 20px` to glass panels + 10–12px for buttons.
+- [x] **145 [P1]** — Glass header panel slightly lighter (`--glass-bg-strong`) for separation.
+- [x] **146 [P2]** — Consider *hover lift* on cards: `translateY(-2px)` + deeper shadow (300ms).
+- [x] **147 [P1]** — Glass on small buttons actually *reduces* readability — solid buttons, glass panels.
+- [ ] **148 [P2]** — Add a thin *reflection*: top-to-bottom gradient pseudo-element on non-interactive elements.
+- [x] **149 [P1]** — Ensure *text* doesn't collide with borders; sufficient padding on panels.
+- [x] **150 [P1]** — Sharp edges in *text areas*: glass card + normal text, no blurred text.
+- [x] **151 [P2]** — Dark *mode*: dark glass `rgba(20,20,45,.5)` + dimmed purple border.
+- [x] **152 [P1]** — Don't let *SVG gradients* exceed panel bounds (can break). Test in all browsers.
+- [ ] **153 [P1]** — *Blob animation* (float) via keyframes — 12–18s duration, subtle.
+- [x] **154 [P1]** — Blobs must have `z-index:-1` & `overflow-x:hidden` on body to prevent scrollbars.
+- [ ] **155 [P2]** — *Glass chip* for status badges: small, blur measured, medium alpha.
+- [x] **156 [P1]** — Avoid blur on mobile *sticky* elements (can lag).
+- [x] **157 [P2]** — Provide `prefers-reduced-motion` to disable blob animations.
+- [x] **158 [P1]** — Glass panel above text input area → ensure text maintains contrast (blur saturation).
+- [ ] **159 [P1]** — Consider *isolating* gradient layers to limit the paint area.
+- [x] **160 [P2]** — When many panels are present, use blur radius 10–14px (not 30px) to save cost.
+- [x] **161 [P1]** — Card list uses a more solid `--glass-bg` than the main panel (per-item readability).
+- [x] **162 [P2]** — Primary button gradient accent: `linear-gradient(120deg, #7a5cff, #b16dff)`.
+- [x] **163 [P1]** — Test on Safari iOS: `-webkit-backdrop-filter` + fallback.
+- [x] **164 [P1]** — Keep body gradient from flashing white on load (inline critical CSS).
+- [ ] **165 [P2]** — You may *furnish* the `backdrop-filter` behind blur; don't align it with parallax.
+- [x] **166 [P1]** — Button border `1px rgba(255,255,255,.45)` + shadow — "glass button".
+- [x] **167 [P2]** — *Glass input*: blur + 1px border + purple focus glow (ring).
+- [x] **168 [P1]** — Empty-state illustration as *inline vector* (simple sun/checkbox), glass-consistent.
+- [x] **169 [P2]** — App logo: purple gradient icon in the header — identity.
+- [x] **170 [P1]** — Always include a *prefers-transparency* fallback to solid surface when reduced.
+- [ ] **171 [P2]** — Add an *ambient* glow behind the primary button (fake light) — subtle.
+- [x] **172 [P1]** — Collapsed content cards shouldn't blur items inside — always ensure no leaking? No: avoid *bottom* blur on long text.
+- [x] **173 [P1]** — Differentiate *hover/active/focus* on glass: change alpha + ring, not all colors at once.
+- [x] **174 [P2]** — Try *reduction*: pick 2 glass levels (main panel & chip) — not 7 levels.
+- [x] **175 [P1]** — Quick *pixel-diff* check: panels shouldn't change color when blobs move behind — verify stable text contrast.
 
-### 1.6 Komponen — 176–245
+### 1.6 Components — 176–245
 
-- [x] **176 [P0]** — Buat komponen **Button** 1 pattern: primary (gradient ungu), secondary (ghost kaca), danger (merah), disable — dengan states.
-- [x] **177 [P0]** — Buat komponen **Card/List-Item**: panel kaca, padding, gap aksi konsisten.
-- [x] **178 [P0]** — Buat **Input**: glass field + label + placeholder + error + focus ring.
-- [x] **179 [P1]** — **Checkbox** todo: persegi rounded glass, centang animasi, contrast tinggi.
-- [x] **180 [P1]** — **Badge** status: prioritas/deadline — chip translucent kecil.
-- [x] **181 [P1]** — **Toast/notif** sukses & error (sticky bawah tengah), fade+slide.
-- [x] **182 [P1]** — **Empty state**: ikon/ilustrasi + 1 kalimat + tombol aksi.
-- [x] **183 [P1]** — **Modal konfirmasi hapus** custom (bukan `confirm()` browser yang jelek).
-- [x] **184 [P1]** — **Search bar**: input filter + clear button.
-- [x] **185 [P1]** — **Filter chips**: Semua / Aktif / Selesai — toggle aktif.
-- [x] **186 [P2]** — **Skeleton loading** (opsional bila fetch async).
-- [x] **187 [P1]** — **Link cancel** = text-button ghost.
-- [x] **188 [P1]** — **Icon button** (edit/delete): ukuran 36px, hover tint, tooltip `title`.
-- [x] **189 [P1]** — **Stat mini** ("3 selesai · 2 aktif") — chip kaca.
-- [x] **190 [P2]** — **Progress bar** di card list (bila kolom "selesai%" nanti).
-- [x] **191 [P1]** — **Form wrapper**: satu kolom, label di atas, error di bawah input.
-- [x] **192 [P1]** — **Toast** auto-close 4s + close manual.
-- [x] **193 [P1]** — **Confirm modal**: judul + deskripsi + [Batal][Hapus] — fokus trap.
-- [x] **194 [P2]** — **Undo** toast setelah hapus (opsional P2 — butuh restore endpoint).
-- [x] **195 [P1]** — **Empty toolbar states**: kosong = sembunyikan filter, tampilkan CTA besar.
-- [x] **196 [P1]** — **Header**: judul app + tanggal hari ini (contoh: "Selasa, 6 Sep").
-- [x] **197 [P1]** — Button aksi utama **Add** di header & section heading — 2 jalur nyata.
-- [ ] **198 [P2]** — **Quick add** line: input + tombol ⨁ di header — hemat tap.
-- [x] **199 [P1]** — **List-group**: tanpa garis pemisah tegas; pakai spacing.
-- [x] **200 [P1]** — **Link** kembali ke beranda pada 404.
-- [x] **201 [P2]** — **Scroll top** button (saat list panjang).
-- [ ] **202 [P1]** — **Password strength** (bila auth hadir nanti).
-- [x] **203 [P1]** — Input **maxLength** yang jelas + counter bila perlu.
-- [x] **204 [P1]** — **Placeholder** contoh: "Mis. Beli susu sebelum jam 8".
-- [ ] **205 [P2]** — **Drag & drop** reorder (P2 — pakai HTML5 DnD vanilla).
-- [x] **206 [P1]** — **Edit inline** (klik teks → edit) opsional, tetap ANDA jaga form edit.
-- [x] **207 [P1]** — **Disabled button** saat submit (anti double).
-- [x] **208 [P1]** — **Empty bag** di langkah filter "Tidak ada hasil cocok".
-- [x] **209 [P1]** — **Announcement** untuk hasil count (aria-live).
-- [ ] **210 [P2]** — Icon **kategori** (opsional).
-- [x] **211 [P1]** — **Focus visible** di semua.
-- [x] **212 [P1]** — **Hover** delete → warna merah muncul di ikon.
-- [x] **213 [P1]** — Button **danger** konsisten "Hapus".
-- [x] **214 [P1]** — Link *edit* tooltip "Ubah".
-- [x] **215 [P1]** — **Error banner**: per halaman, ringan.
-- [x] **216 [P1]** — **Back** link ("← Kembali ke daftar") dari form add/edit.
-- [ ] **217 [P2]** — **Multiple delete** (select all + bulk delete) — P2.
-- [x] **218 [P1]** — **Counter** aktif di filter.
-- [x] **219 [P1]** — **Date display** lokal "id-ID".
-- [x] **220 [P1]** — **Clear** filter button ketika aktif.
-- [x] **221 [P2]** — **KBD shortcut**: '/' fokus search, 'n' add baru — advance.
-- [x] **222 [P1]** — **Link bersama** card ("Bagikan " tidak perlu).
-- [x] **223 [P1]** — **Focus reset** setelah aksi.
-- [x] **224 [P1]** — **prevent SC** — submit form via Enter.
-- [x] **225 [P1]** — **Input type=text list=datalist** — tidak.
-- [x] **226 [P1]** — **Delete confirm** — selalu minta konfirmasi.
-- [x] **227 [P1]** — **Show toast** setelah add/edit/delete.
-- [x] **228 [P1]** — **Header margin** bawah 20px.
-- [x] **229 [P1]** — **Card shadow** berlapis.
+- [x] **176 [P0]** — Create **Button** component with 1 pattern: primary (purple gradient), secondary (ghost glass), danger (red), disabled — with states.
+- [x] **177 [P0]** — Create **Card/List-Item** component: glass panel, padding, consistent action gap.
+- [x] **178 [P0]** — Create **Input** component: glass field + label + placeholder + error + focus ring.
+- [x] **179 [P1]** — **Checkbox** todo: rounded glass square, animated checkmark, high contrast.
+- [x] **180 [P1]** — **Badge** status: priority/deadline — small translucent chip.
+- [x] **181 [P1]** — **Toast/notif** for success & error (sticky bottom center), fade+slide.
+- [x] **182 [P1]** — **Empty state**: icon/illustration + 1 sentence + action button.
+- [x] **183 [P1]** — Custom **delete confirmation modal** (not the ugly browser `confirm()`).
+- [x] **184 [P1]** — **Search bar**: filter input + clear button.
+- [x] **185 [P1]** — **Filter chips**: All / Active / Completed — active toggle.
+- [x] **186 [P2]** — **Skeleton loading** (optional for async fetches).
+- [x] **187 [P1]** — **Cancel link** = ghost text-button.
+- [x] **188 [P1]** — **Icon button** (edit/delete): 36px size, hover tint, `title` tooltip.
+- [x] **189 [P1]** — **Mini stat** ("3 completed · 2 active") — glass chip.
+- [x] **190 [P2]** — **Progress bar** on card list (when "completed%" column is added later).
+- [x] **191 [P1]** — **Form wrapper**: single column, label on top, error below input.
+- [x] **192 [P1]** — **Toast** auto-close 4s + manual close.
+- [x] **193 [P1]** — **Confirm modal**: heading + description + [Cancel][Delete] — focus trap.
+- [x] **194 [P2]** — **Undo** toast after deletion (optional P2 — requires a restore endpoint).
+- [x] **195 [P1]** — **Empty toolbar states**: empty = hide filters, show large CTA.
+- [x] **196 [P1]** — **Header**: app title + today's date (e.g. "Selasa, 6 Sep").
+- [x] **197 [P1]** — Primary **Add** action button in header & section heading — 2 real paths.
+- [ ] **198 [P2]** — **Quick add** line: input + ⨁ button in header — saves taps.
+- [x] **199 [P1]** — **List-group**: no hard divider lines; use spacing.
+- [x] **200 [P1]** — **Link** back to homepage on 404.
+- [x] **201 [P2]** — **Scroll to top** button (for long lists).
+- [ ] **202 [P1]** — **Password strength** (if auth is added later).
+- [x] **203 [P1]** — Clear **maxLength** input + counter when needed.
+- [x] **204 [P1]** — Example **placeholder**: "Mis. Beli susu sebelum jam 8".
+- [ ] **205 [P2]** — **Drag & drop** reorder (P2 — use vanilla HTML5 DnD).
+- [x] **206 [P1]** — **Inline edit** (click text → edit) optional, but still keep the edit form.
+- [x] **207 [P1]** — **Disabled button** on submit (anti-double-click).
+- [x] **208 [P1]** — **Empty bag** in filter step "Tidak ada hasil cocok".
+- [x] **209 [P1]** — **Announcement** for result count (aria-live).
+- [ ] **210 [P2]** — **Category** icons (optional).
+- [x] **211 [P1]** — **Focus visible** on all elements.
+- [x] **212 [P1]** — **Hover** delete → red color appears on icon.
+- [x] **213 [P1]** — **Danger** button consistently says "Hapus".
+- [x] **214 [P1]** — Edit link *tooltip* "Ubah".
+- [x] **215 [P1]** — **Error banner**: per page, lightweight.
+- [x] **216 [P1]** — **Back** link ("← Kembali ke daftar") from add/edit form.
+- [ ] **217 [P2]** — **Bulk delete** (select all + bulk delete) — P2.
+- [x] **218 [P1]** — **Counter** active in filters.
+- [x] **219 [P1]** — **Date display** localized "id-ID".
+- [x] **220 [P1]** — **Clear** filter button when active.
+- [x] **221 [P2]** — **KBD shortcuts**: '/' focus search, 'n' add new — advanced.
+- [x] **222 [P1]** — **Shared** card link ("Bagikan " not needed).
+- [x] **223 [P1]** — **Focus reset** after action.
+- [x] **224 [P1]** — **Prevent SC** — form submit via Enter.
+- [x] **225 [P1]** — **Input type=text list=datalist** — no.
+- [x] **226 [P1]** — **Delete confirm** — always ask for confirmation.
+- [x] **227 [P1]** — **Show toast** after add/edit/delete.
+- [x] **228 [P1]** — **Header margin** bottom 20px.
+- [x] **229 [P1]** — **Card shadow** layered.
 - [x] **230 [P1]** — **Global transition** 200ms.
 - [x] **231 [P1]** — **Element spacing** 8/16.
 - [x] **232 [P1]** — **Padding button** 10px 16px.
-- [x] **233 [P1]** — **Radius button** 10px.
+- [x] **233 [P1]** — **Button radius** 10px.
 - [x] **234 [P1]** — **Icon size** 1.1em.
-- [x] **235 [P1]** — **Loading submit** spinner mini.
-- [x] **236 [P1]** — **Auto clear field** saat add.
-- [x] **237 [P1]** — **Focus input** saat page add.
-- [x] **238 [P1]** — **Escape** menutup modal.
-- [x] **239 [P1]** — **Backdrop modal** klik luar close.
-- [x] **240 [P1]** — **Modal** tidak menghalangi scroll trap.
-- [x] **241 [P1]** — **Alert role** untuk error form.
-- [x] **242 [P1]** — **status text** di tombol submit (Jangan "Add Todo", pakai "Simpan").
-- [x] **243 [P1]** — **Selalu tampil** empty state saat list 0.
-- [x] **244 [P1]** — **Nested list** tidak.
-- [x] **245 [P1]** — **Shadow scale** token (`--shadow-sm/md/lg`).
+- [x] **235 [P1]** — **Loading submit** mini spinner.
+- [x] **236 [P1]** — **Auto clear field** on add.
+- [x] **237 [P1]** — **Focus input** on add page.
+- [x] **238 [P1]** — **Escape** closes modal.
+- [x] **239 [P1]** — **Modal backdrop** click outside to close.
+- [x] **240 [P1]** — **Modal** doesn't block scroll trap.
+- [x] **241 [P1]** — **Alert role** for form errors.
+- [x] **242 [P1]** — **Status text** on submit button (not "Add Todo", use "Simpan").
+- [x] **243 [P1]** — **Always show** empty state when list is 0.
+- [x] **244 [P1]** — **Nested list** no.
+- [x] **245 [P1]** — **Shadow scale** tokens (`--shadow-sm/md/lg`).
 
-### 1.7 State: Empty, Loading, Error, Success — 246–285
+### 1.7 States: Empty, Loading, Error, Success — 246–285
 
-- [x] **246 [P0]** — Definisikan **empty state** (0 todo): ilustrasi + "Belum ada rencana. Tambahkan yang pertama!" + tombol plus.
-- [x] **247 [P0]** — Definisikan **empty search**: hasil kosong saat filter aktif → info "Tidak ditemukan 'xyz'".
-- [x] **248 [P1]** — **Error submit**: input error + pesan spesifik di bawah field + status.
-- [x] **249 [P1]** — **Success**: toast hijau + list diperbarui (server re-render).
-- [x] **250 [P1]** — **Loading submit**: tombol spinner + disable (anti double).
+- [x] **246 [P0]** — Define **empty state** (0 todos): illustration + "Belum ada rencana. Tambahkan yang pertama!" + plus button.
+- [x] **247 [P0]** — Define **empty search**: empty results when filter is active → info "Tidak ditemukan 'xyz'".
+- [x] **248 [P1]** — **Submit error**: input error + specific message below field + status.
+- [x] **249 [P1]** — **Success**: green toast + list updated (server re-render).
+- [x] **250 [P1]** — **Submit loading**: spinner button + disabled (anti-double-click).
 
-- [x] **251 [P1]** — **404 error**: ilustrasi + pesan ramah + tombol pulang.
-- [x] **252 [P1]** — **Form error summary** (opsional) di atas form bila >1 error.
-- [x] **253 [P1]** — **Penulisan error**: bahasa manusia ("Rencana tidak boleh kosong") bukan "Error: field required".
-- [x] **254 [P1]** — **Input error** border merah lembut + ikon ⚠ kiri.
-- [x] **255 [P1]** — **Hapus error** saat user mengetik ulang.
-- [x] **256 [P1]** — **Empty state** card dipusatkan vertikal & tengah.
-- [x] **257 [P1]** — **0 hasil filter**: tampilkan "Coba kata kunci lain".
-- [x] **258 [P1]** — **Delete success**: toast + item hilang mulus.
-- [ ] **259 [P1]** — **Add success**: fokus kembali input + toast.
-- [x] **260 [P1]** — **Edit success**: kembali ke list + toast "Diperbarui".
+- [x] **251 [P1]** — **404 error**: illustration + friendly message + home button.
+- [x] **252 [P1]** — **Form error summary** (optional) above the form when >1 error.
+- [x] **253 [P1]** — **Error wording**: human language ("Rencana tidak boleh kosong") not "Error: field required".
+- [x] **254 [P1]** — **Input error** soft red border + ⚠ icon on the left.
+- [x] **255 [P1]** — **Clear error** when user retypes.
+- [x] **256 [P1]** — **Empty state** card vertically & horizontally centered.
+- [x] **257 [P1]** — **0 filter results**: show "Coba kata kunci lain".
+- [x] **258 [P1]** — **Delete success**: toast + item disappears smoothly.
+- [ ] **259 [P1]** — **Add success**: refocus input + toast.
+- [x] **260 [P1]** — **Edit success**: back to list + "Diperbarui" toast.
 - [x] **261 [P1]** — **Invalid id** (edit): redirect home + flash error.
-- [ ] **262 [P1]** — **Session error** (masa depan bila auth): pesan khusus.
-- [x] **263 [P1]** — **Network error** (bila fetch async): retry button.
-- [ ] **264 [P1]** — **Disabled UX**: jangan sembunyikan, tampilkan alasan.
-- [x] **265 [P1]** — **Tooltip** aksi icon (title + aria-label).
-- [x] **266 [P1]** — **Async delete** tanpa full reload (fetch + DOM remove) — P1 progressive.
-- [x] **267 [P1]** — **Transient flash**: pakai query `?flash=` + cookies — simple.
-- [ ] **268 [P1]** — **Error global**: blok kecil (alert) di atas konten.
-- [x] **269 [P2]** — **Undo delete** 5 detik — P2.
-- [x] **270 [P1]** — **Count jalur** kembali ke stat konsisten (stat dihitung ulang).
-- [x] **271 [P1]** — **Scroll restore** saat kembali dari edit.
-- [x] **272 [P1]** — **Headline update** (document.title) saat state berubah — opsional.
-- [x] **273 [P1]** — **Persistence indicator**: "Tersimpan di perangkat ini" (karena local).
-- [x] **274 [P1]** — **Empty state tombol** = aksi utama (Add).
-- [x] **275 [P1]** — **Loading skeleton** bila render async lambat — opsional.
-- [x] **276 [P1]** — **Clear cache** — tidak relevan lokal.
-- [x] **277 [P1]** — **Status bar** chip: "× aktif · × selesai".
-- [x] **278 [P1]** — **Belum** item yang selesai beri *strikethrough* + opacity — visual ringan.
-- [x] **279 [P1]** — **Checkbox toggle** yang menggembirakan (cek besar, transisi).
-- [x] **280 [P1]** — **Empty list baru** state langsung kosong → ilustrasi panggil aksi.
-- [x] **281 [P1]** — **Toast stack** (max 3) tidak menumpuk.
-- [x] **282 [P1]** — **Error di log** paralel (server console).
-- [x] **283 [P1]** — **Form cancel** tidak memunculkan error.
-- [x] **284 [P1]** — **Focus outline** terlihat pada setiap aksi keyboard.
-- [x] **285 [P1]** — **Berikan umpan balik instan** setiap input (validasi live optional).
+- [ ] **262 [P1]** — **Session error** (future if auth): specific message.
+- [x] **263 [P1]** — **Network error** (for async fetch): retry button.
+- [ ] **264 [P1]** — **Disabled UX**: don't hide it; show the reason.
+- [x] **265 [P1]** — Action icon **tooltip** (title + aria-label).
+- [x] **266 [P1]** — **Async delete** without full reload (fetch + DOM remove) — P1 progressive.
+- [x] **267 [P1]** — **Transient flash**: use `?flash=` query + cookies — simple.
+- [ ] **268 [P1]** — **Global error**: small block (alert) above content.
+- [x] **269 [P2]** — **Undo delete** 5 seconds — P2.
+- [x] **270 [P1]** — **Back-to-stats count** returns to a consistent state (stats recalculated).
+- [x] **271 [P1]** — **Scroll restore** when returning from edit.
+- [x] **272 [P1]** — **Headline update** (document.title) when state changes — optional.
+- [x] **273 [P1]** — **Persistence indicator**: "Tersimpan di perangkat ini" (since local).
+- [x] **274 [P1]** — **Empty state button** = primary action (Add).
+- [x] **275 [P1]** — **Loading skeleton** when async render is slow — optional.
+- [x] **276 [P1]** — **Clear cache** — not relevant for local.
+- [x] **277 [P1]** — **Status bar** chip: "× active · × completed".
+- [x] **278 [P1]** — **Unfinished** items get *strikethrough* + opacity — subtle visual.
+- [x] **279 [P1]** — Satisfying **checkbox toggle** (big checkmark, transition).
+- [x] **280 [P1]** — **Empty list new** state immediately empty → illustration calls to action.
+- [x] **281 [P1]** — **Toast stack** (max 3) doesn't overlap.
+- [x] **282 [P1]** — **Error in parallel** log (server console).
+- [x] **283 [P1]** — **Form cancel** doesn't trigger errors.
+- [x] **284 [P1]** — **Focus outline** visible on every keyboard action.
+- [x] **285 [P1]** — Provide **instant feedback** for every input (optional live validation).
 
 ### 1.8 Micro-interaction & Motion — 286–325
 
-- [x] **286 [P1]** — Uniform easing: `cubic-bezier(.2,.8,.3,1)`; durasi 150–300ms.
-- [x] **287 [P1]** — Hover card: `translateY(-2px)` + shadow +0.08 (linear).
-- [x] **288 [P1]** — Button press: scale 0.98 + shadow pudar.
-- [x] **289 [P2]** — Item add: slide-fade-in ringan (via CSS `@starting-style` atau animasi autoplay).
-- [x] **290 [P1]** — Hapus item: scale+y fade (via JS remove class sebelum remove).
-- [x] **291 [P1]** — Checkbox centang: draw check path 200ms (memanjakan).
-- [ ] **292 [P1]** — Blob background: keyframes float 14s + multi blob.
-- [x] **293 [P1]** — Theme toggle: cross-fade `body` (bila dark mode).
+- [x] **286 [P1]** — Uniform easing: `cubic-bezier(.2,.8,.3,1)`; duration 150–300ms.
+- [x] **287 [P1]** — Card hover: `translateY(-2px)` + shadow +0.08 (linear).
+- [x] **288 [P1]** — Button press: scale 0.98 + shadow fades.
+- [x] **289 [P2]** — Add item: light slide-fade-in (via CSS `@starting-style` or autoplay animation).
+- [x] **290 [P1]** — Delete item: scale+fade out (via JS remove class before DOM remove).
+- [x] **291 [P1]** — Checkbox checkmark: draw check path in 200ms (satisfying).
+- [ ] **292 [P1]** — Background blob: keyframes float 14s + multi-blob.
+- [x] **293 [P1]** — Theme toggle: cross-fade `body` (for dark mode).
 - [x] **294 [P1]** — Toast: slide-up + fade-in 250ms, out 200ms + auto 4s.
 - [x] **295 [P1]** — Modal: backdrop fade + card scale 1.02→1.
-- [x] **296 [P1]** — Focus ring: ring muncul 0ms, hilang halus — jangan jeda.
-- [x] **297 [P2]** — Skeleton shimmer 1.2s loop (bila dipakai).
-- [ ] **298 [P1]** — Sparkle on complete (optional, subtle blur titik).
-- [x] **299 [P2]** — Progress fill animasi di stats.
-- [x] **300 [P1]** — Ikuti `prefers-reduced-motion`: disable transform/animasi >200ms.
-- [x] **301 [P1]** — Jangan animasi *layout-affecting* (width/height/margin) — biar murah.
-- [x] **302 [P1]** — Animasi hanya via `transform` & `opacity`.
-- [x] **303 [P1]** — `will-change: transform` hanya pada elemen yang benar-benar dianimasikan.
-- [x] **304 [P1]** — Hover mobile: tidak perlu efek hover (sentuh) — jaga touch feedback (active).
-- [x] **305 [P1]** — Transisi tombol ikut tema (background-* color saja).
-- [x] **306 [P2]** — Scroll smooth (mild) — optional, hindari layout jitter.
-- [x] **307 [P1]** — Fade-in halaman antar route (server → CSS) — simple.
-- [x] **308 [P1]** — Input focus glow: ring ungu 3px translucent — sinyal jelas.
-- [x] **309 [P2]** — Cursor custom (pointer) pada item interactable.
-- [x] **310 [P1]** — Tombol ikon edit hover rotate 8deg ringan (fun, subtle).
-- [x] **311 [P1]** — Tombol delete hover: warna merah menyala bertahap.
-- [x] **312 [P1]** — Empty state ilutrasi float subtle (1-2s) — character.
-- [ ] **313 [P2]** — Confetti pada "semua selesai" (opsional, aria-hide).
-- [x] **314 [P1]** — Header app shadow saat scroll (sticky) — depth cue.
-- [ ] **315 [P1]** — Blob jangan lebih cepat 10px/s — biar tenang.
-- [x] **316 [P1]** — Saat submit, spinner berputar 0.8s — efek aktivitas.
-- [x] **317 [P1]** — Fokus input di add page otomatis.
-- [x] **318 [P2]** — Aksi Delete → item mengecil → menghilang (JS) sebelum reload — smooth.
-- [x] **319 [P1]** — Semua responsive breakpoint tanpa jitter (transform bukan layout).
-- [x] **320 [P1]** — Toolbar filter aktif → slide underline/warna — jelas.
-- [x] **321 [P2]** — Entrance staggered untuk list (30ms/item, max 300ms) — dev taste.
-- [x] **322 [P1]** — Toast menampilkan aksi (mis. "Ditambahkan · Batal") bila undo.
-- [x] **323 [P1]** — Jangan memutar blob saat `prefers-reduced-motion`.
-- [ ] **324 [P1]** — Uji FPS di mobile murah: tetap 60fps dengan backdrop-filter terbatas.
-- [x] **325 [P1]** — Aksesibili: animasi dimatikan di mode reduced — semua interaksi masih jelas.
+- [x] **296 [P1]** — Focus ring: ring appears at 0ms, fades smoothly — no delay.
+- [x] **297 [P2]** — Skeleton shimmer 1.2s loop (if used).
+- [ ] **298 [P1]** — Sparkle on complete (optional, subtle blur dot).
+- [x] **299 [P2]** — Progress fill animation in stats.
+- [x] **300 [P1]** — Respect `prefers-reduced-motion`: disable transform/animations >200ms.
+- [x] **301 [P1]** — Don't animate *layout-affecting* properties (width/height/margin) — keep it cheap.
+- [x] **302 [P1]** — Animate only via `transform` & `opacity`.
+- [x] **303 [P1]** — `will-change: transform` only on elements that are actually animated.
+- [x] **304 [P1]** — Mobile hover: no hover effects needed (touch) — keep touch feedback (active).
+- [x]**305 [P1]** — Button transitions follow the theme (background-* color only).
+- [x] **306 [P2]** — Smooth scroll (mild) — optional, avoid layout jitter.
+- [x] **307 [P1]** — Fade-in between route pages (server → CSS) — simple.
+- [x] **308 [P1]** — Input focus glow: purple 3px translucent ring — clear signal.
+- [x] **309 [P2]** — Custom cursor (pointer) on interactable items.
+- [x] **310 [P1]** — Edit icon button hover rotates 8° slightly (fun, subtle).
+- [x] **311 [P1]** — Delete button hover: red color intensifies gradually.
+- [x] **312 [P1]** — Empty state illustration floats subtly (1–2s) — character.
+- [ ] **313 [P2]** — Confetti on "all completed" (optional, aria-hidden).
+- [x] **314 [P1]** — App header shadow on scroll (sticky) — depth cue.
+- [ ] **315 [P1]** — Blobs shouldn't move faster than 10px/s — keep it calm.
+- [x] **316 [P1]** — On submit, spinner rotates 0.8s — activity effect.
+- [x] **317 [P1]** — Auto-focus input on add page.
+- [x] **318 [P2]** — Delete action → item shrinks → disappears (JS) before reload — smooth.
+- [x] **319 [P1]** — All responsive breakpoints without jitter (transform not layout).
+- [x] **320 [P1]** — Active filter toolbar → slide underline/color — clear.
+- [x] **321 [P2]** — Staggered list entrance (30ms/item, max 300ms) — dev taste.
+- [x] **322 [P1]** — Toast shows action (e.g. "Ditambahkan · Batal") when undo is available.
+- [x] **323 [P1]** — Don't rotate blobs when `prefers-reduced-motion` is active.
+- [ ] **324 [P1]** — Test FPS on cheap mobile: stay at 60fps with limited backdrop-filter.
+- [x] **325 [P1]** — Accessibility: animations disabled in reduced mode — all interactions still clear.
 
 ### 1.9 Form & Input UX — 326–365
 
-- [x] **326 [P0]** — Label terlihat (jangan placeholder-only) + `for` tersambung.
-- [x] **327 [P0]** — Validasi di server (required, panjang) + pesan error spesifik.
-- [x] **328 [P1]** — Auto-focus field pertama di add.
-- [x] **329 [P1]** — `autocomplete="off"` tapi boleh `maxlength`.
-- [x] **330 [P1]** — Trim whitespace sebelum simpan.
-- [x] **331 [P1]** — Losses protection: kosong input → error "Rencana belum terisi".
-- [x] **332 [P1]** — Enter submit di form.
-- [x] **333 [P1]** — Tab order natural (tombol setelah input).
-- [x] **334 [P1]** — Focus trap di modal custom.
-- [x] **335 [P1]** — Error form: tampil inline + sumarize.
-- [x] **336 [P1]** — Disable submit saat proses.
-- [x] **337 [P1]** — Arahkan kembali ke list setelah simpan.
-- [x] **338 [P1]** — Input lebar penuh card (max 480).
-- [ ] **339 [P1]** — Icon di dalam input (opsional) — tidak wajib.
-- [x] **340 [P1]** — Clear button di input search.
-- [x] **341 [P1]** — Character limit soft (seen via counter kecil opsional).
-- [x] **342 [P1]** — Opt dalam form: single kolom (bukan grid 2 kolom).
-- [x] **343 [P1]** — Tombol submit di posisi panel bawah (left/right).
-- [x] **344 [P1]** — Form action `POST` ke `/`, fallback jika JS mati.
-- [x] **345 [P1]** — Placeholder code contoh, bukan teks kosong "kegiatan".
-- [x] **346 [P1]** — Konsisten nama field `name="name"` (fix kegiatan→name).
-- [x] **347 [P1]** — Tidak ada peluang "double submit" di lokal.
-- [x] **348 [P1]** — Accessible submit text (bukan icon only).
-- [x] **349 [P1]** — Error color semantic + text.
-- [x] **350 [P1]** — Input glass: tidak "telanjang" — border & background.
+- [x] **326 [P0]** — Visible labels (not placeholder-only) + `for` connected.
+- [x] **327 [P0]** — Server-side validation (required, length) + specific error messages.
+- [x] **328 [P1]** — Auto-focus first field on add.
+- [x] **329 [P1]** — `autocomplete="off"` but allow `maxlength`.
+- [x] **330 [P1]** — Trim whitespace before saving.
+- [x] **331 [P1]** — Loss prevention: empty input → error "Rencana belum terisi".
+- [x] **332 [P1]** — Enter submits the form.
+- [x] **333 [P1]** — Natural tab order (button after input).
+- [x] **334 [P1]** — Focus trap in custom modal.
+- [x] **335 [P1]** — Form errors: display inline + summarized.
+- [x] **336 [P1]** — Disable submit during processing.
+- [x] **337 [P1]** — Redirect back to list after saving.
+- [x] **338 [P1]** — Input full card width (max 480).
+- [ ] **339 [P1]** — Icon inside input (optional) — not required.
+- [x] **340 [P1]** — Clear button on search input.
+- [x] **341 [P1]** — Soft character limit (shown via small optional counter).
+- [x] **342 [P1]** — Optimal form: single column (not 2-column grid).
+- [x] **343 [P1]** — Submit button at bottom of panel (left/right).
+- [x] **344 [P1]** — Form action `POST` to `/`, fallback when JS is off.
+- [x] **345 [P1]** — Example placeholder text, not empty "kegiatan".
+- [x] **346 [P1]** — Consistent field name `name="name"` (fix kegiatan→name).
+- [x] **347 [P1]** — No "double submit" risk with local data.
+- [x] **348 [P1]** — Accessible submit text (not icon-only).
+- [x] **349 [P1]** — Semantic error color + text.
+- [x] **350 [P1]** — Glass input: not "bare" — border & background.
 - [x] **351 [P1]** — Form helper "Tekan Enter untuk menambah" (subtle hint).
-- [x] **352 [P1]** — Setelah add, input dikosongkan.
-- [x] **353 [P1]** — Saat empty submit, fokus ke input + shake subtle (opsional).
-- [x] **354 [P1]** — Max todo limit (mis. 1000) — info kapasitas.
-- [x] **355 [P1]** — Tidak ada modal input pada edit — halaman sendiri.
-- [x] **356 [P1]** — Label "Nama rencana" (bukan "Kegiatan").
-- [x] **357 [P1]** — Buttons *primary/secondary* dibedakan jelas di form.
-- [ ] **358 [P2]** — Autocomplete suggestion (dari riwayat) — P2.
-- [x] **359 [P1]** — Bahasa konsisten di tombol ("Simpan Perubahan").
-- [x] **360 [P1]** — List item action icons punya `aria-label`.
-- [x] **361 [P1]** — Hindari form setback di mobile (viewport meta + font 16px).
-- [x] **362 [P1]** — Dianjurkan `inputmode` default text.
-- [x] **363 [P1]** — Submit on Enter dari input search? — Ya, filter.
-- [x] **364 [P1]** — Validasi panjang max 200 char dengan pesan jelas.
-- [x] **365 [P1]** — Deleting confirm tidak menggunakan `confirm()` — modal custom (P0 polish).
+- [x] **352 [P1]** — After add, input is cleared.
+- [x] **353 [P1]** — On empty submit, focus the input + subtle shake (optional).
+- [x] **354 [P1]** — Max todo limit (e.g. 1000) — capacity info.
+- [x] **355 [P1]** — No input modal on edit — dedicated page.
+- [x] **356 [P1]** — Label "Nama rencana" (not "Kegiatan").
+- [x] **357 [P1]** — Clearly differentiated *primary/secondary* buttons in forms.
+- [ ] **358 [P2]** — Autocomplete suggestions (from history) — P2.
+- [x] **359 [P1]** — Consistent language on buttons ("Simpan Perubahan").
+- [x] **360 [P1]** — List item action icons have `aria-label`.
+- [x] **361 [P1]** — Avoid form setback on mobile (viewport meta + 16px font).
+- [x] **362 [P1]** — Default text `inputmode` recommended.
+- [x] **363 [P1]** — Submit on Enter from search input? Yes, filter.
+- [x] **364 [P1]** — Max 200-char length validation with clear message.
+- [x] **365 [P1]** — Delete confirmation doesn't use `confirm()` — custom modal (P0 polish).
 
-### 1.10 Fitur Todo Spesifik — 366–415
+### 1.10 Todo-Specific Features — 366–415
 
-- [x] **366 [P0]** — Toggle **selesai/tidak** (checkbox) tersimpan — wajib 1 poin interaksi utama.
-- [x] **367 [P1]** — **Filter** status: Semua / Aktif / Selesai (chip).
-- [x] **368 [P1]** — **Search** teks live (case-insensitive, contains).
-- [x] **369 [P1]** — **Sort**: Terbaru / A-Z (opsional dropdown).
+- [x] **366 [P0]** — Toggle **completed/unfinished** (checkbox) persists — one primary interaction point.
+- [x] **367 [P1]** — Status **filter**: All / Active / Completed (chip).
+- [x] **368 [P1]** — Live text **search** (case-insensitive, contains).
+- [x] **369 [P1]** — **Sort**: Newest / A-Z (optional dropdown).
 - [x] **370 [P1]** — **Count badge** per filter.
-- [x] **371 [P1]** — **Strikethrough** saat selesai — feedback visual.
-- [x] **372 [P1]** — Item selesai turun ke-bawah (default sort) — selesai tidak mengacau aktif.
-- [x] **373 [P1]** — **Edit** dari list → ke halaman edit (atau inline P2).
-- [x] **374 [P1]** — Aksi **edit** juga toggle — jangan menandai sebagai selesai.
-- [x] **375 [P1]** — **Created date** tampil (format id-ID) — opsional kecil.
-- [x] **376 [P1]** — **Progress** "2/5 selesai" dengan bar tipis.
-- [x] **377 [P2]** — **Deadline** field + overdue badge merah (P2 perlu input date).
-- [x] **378 [P2]** — **Prioritas** (rendah/sedang/tinggi) chip berwarna.
-- [ ] **379 [P2]** — **Kategori/label** (Belanja, Kerja) — separate field.
-- [ ] **380 [P2]** — **Urutan manual** (drag) / pintasan naik-turun.
+- [x] **371 [P1]** — **Strikethrough** on completion — visual feedback.
+- [x] **372 [P1]** — Completed items move down (default sort) — completed doesn't clutter active.
+- [x] **373 [P1]** — **Edit** from list → edit page (or inline P2).
+- [x] **374 [P1]** — The **edit** action doesn't toggle — don't mark as completed.
+- [x] **375 [P1]** — **Created date** displayed (id-ID format) — optional, small.
+- [x] **376 [P1]** — **Progress** "2/5 completed" with a thin bar.
+- [x] **377 [P2]** — **Deadline** field + overdue red badge (P2 requires date input).
+- [x] **378 [P2]** — **Priority** (low/medium/high) colored chip.
+- [ ] **379 [P2]** — **Category/label** (Shopping, Work) — separate field.
+- [ ] **380 [P2]** — **Manual ordering** (drag) / up-down shortcuts.
 - [ ] **381 [P2]** — **Bulk delete** (checkbox select) — P2.
-- [ ] **382 [P2]** — **Arsip** atau hapus permanen — pertegas alur.
-- [x] **383 [P1]** — Jumlah item "3 rencana" label bahasa.
-- [x] **384 [P1]** — Empty search berbeda dari empty list.
-- [x] **385 [P1]** — Due date display lokal + relative ("Hari ini"/"Besok") P2.
-- [x] **386 [P1]** — Item aktif vs selesai **tidak dicampur** visual (urutkan/latih).
-- [x] **387 [P1]** — Toggle selesai → stat badge update.
-- [x] **388 [P1]** — Hapus: konfirmasi + toast + list update.
-- [ ] **389 [P1]** — Tambah cepat di header (input+tombol) bila pattern.
-- [x] **390 [P1]** — Saat semua selesai → banner kecil "Semua selesai! 🎉" (pilih emoji ringan/gambar).
-- [x] **391 [P1]** — Urutan default: terbaru dulu (atau manual).
-- [x] **392 [P1]** — URL bersih: `/`, `/add-todo`, `/edit-todo/:id` (konsisten CRUD).
-- [x] **393 [P1]** — Redirect setelah mutasi → avoid re-POST (PRG pattern).
-- [x] **394 [P1]** — Toggle selesai lewat POST (bukan GET) — semantic & aman.
-- [x] **395 [P1]** — Edit id tidak valid → redirect home + flash.
+- [ ] **382 [P2]** — **Archive** or permanent delete — clarify the flow.
+- [x] **383 [P1]** — Item count "3 rencana" label in language.
+- [x] **384 [P1]** — Empty search is distinct from empty list.
+- [x] **385 [P1]** — Due date localized display + relative ("Hari ini"/"Besok") P2.
+- [x] **386 [P1]** — Active vs completed items are **not mixed** visually (sort/filter).
+- [x] **387 [P1]** — Toggle completion → stat badge updates.
+- [x] **388 [P1]** — Delete: confirmation + toast + list update.
+- [ ] **389 [P1]** — Quick add in header (input+button) when pattern allows.
+- [x] **390 [P1]** — When all completed → small banner "Semua selesai! 🎉" (choose light emoji/image).
+- [x] **391 [P1]** — Default order: newest first (or manual).
+- [x] **392 [P1]** — Clean URLs: `/`, `/add-todo`, `/edit-todo/:id` (consistent CRUD).
+- [x] **393 [P1]** — Redirect after mutation → avoid re-POST (PRG pattern).
+- [x] **394 [P1]** — Toggle completion via POST (not GET) — semantic & safe.
+- [x] **395 [P1]** — Invalid edit id → redirect home + flash.
 - [x] **396 [P1]** — Todo count + limit sanity check.
-- [x] **397 [P1]** — Cegah XSS: escape output via EJS `<%= %>` (default) — jangan `<%- %>` tanpa sanitasi.
-- [x] **398 [P1]** — Name field trim + collapse multiple space.
-- [x] **399 [P1]** — Search diimplementasikan client-side (list kecil) — tanpa request ulang.
-- [ ] **400 [P1]** — Perf list besar (1000): render server + limit 50-100 + pagination "Muat lagi".
-- [x] **401 [P1]** — Item editing di halaman sendiri → fokus jelas.
-- [x] **402 [P1]** — Selesai item tetap bisa diedit/dihapus.
-- [x] **403 [P1]** — Empty after filter tetap menunjukkan chip filter (bisa setel ulang).
-- [x] **404 [P1]** — Toggle selesai mengubah urutan default — tidak mengganti posisi mouse (stabilitas).
-- [x] **405 [P1]** — Identifier list item `data-id` untuk JS.
-- [x] **406 [P1]** — Dengan local data, refresh = persistence otomatis (JSON file).
-- [x] **407 [P1]** — Format waktu "baru saja / 2m lalu" opsional.
-- [x] **408 [P1]** — Semua action icon ber-icon konsisten (pen, trash, check).
-- [x] **409 [P2]** — Undo hapus (restore terakhir) — P2 (simpan item terhapus 5s di memori).
-- [x] **410 [P1]** — Duplikat nama tidak dilarang, tapi info "sudah ada?" optional.
-- [x] **411 [P1]** — List scroll tetap di posisi setelah toggle.
-- [x] **412 [P1]** — Sort/filter state survive reload via query param — optional.
-- [x] **413 [P1]** — Header info: jumlah tersisa "2 tersisa" jelas.
-- [x] **414 [P1]** — Kata "rencana" konsisten di seluruh copy.
-- [x] **415 [P1]** — Fitur P2 (deadline/prioritas) tersembunyi bila belum dipakai — jangan penuh card.
+- [x] **397 [P1]** — Prevent XSS: escape output via EJS `<%= %>` (default) — don't use `<%- %>` without sanitization.
+- [x] **398 [P1]** — Name field trim + collapse multiple spaces.
+- [x] **399 [P1]** — Client-side search (small list) — no server round-trip.
+- [ ] **400 [P1]** — Large list performance (1000): server-render + 50–100 limit + "Load more" pagination.
+- [x] **401 [P1]** — Item editing on a dedicated page → clear focus.
+- [x] **402 [P1]** — Completed items can still be edited/deleted.
+- [x] **403 [P1]** — Empty after filter still shows filter chip (can reset).
+- [x] **404 [P1]** — Toggle completion changes default order — doesn't move the mouse position (stability).
+- [x] **405 [P1]** — List item identifier `data-id` for JS.
+- [x] **406 [P1]** — With local data, refresh = automatic persistence (JSON file).
+- [x] **407 [P1]** — Optional time format "just now / 2m ago".
+- [x] **408 [P1]** — All action icons use consistent icons (pen, trash, check).
+- [x] **409 [P2]** — Undo delete (restore last) — P2 (keep deleted item in memory for 5s).
+- [x] **410 [P1]** — Duplicate names aren't forbidden, but "already exists?" info is optional.
+- [x] **411 [P1]** — List scroll position maintained after toggle.
+- [x] **412 [P1]** — Sort/filter state persists across reloads via query param — optional.
+- [x] **413 [P1]** — Header info: remaining count "2 tersisa" clearly shown.
+- [x] **414 [P1]** — The word "rencana" is consistent across all copy.
+- [x] **415 [P1]** — P2 features (deadline/priority) hidden when not yet used — don't fill the card.
 
 ### 1.11 Responsive & Mobile — 416–435
 
-- [x] **416 [P0]** — Test breakpoint: ≥900 tablet, ≥600 phone, ≥340 kecil — semua elemen tak pecah.
-- [x] **417 [P0]** — `viewport` meta sudah ada — pastikan `width=device-width` + tidak zoom-lock.
-- [x] **418 [P1]** — Tombol aksi di layar kecil: tidak menumpuk vertikal tanpa perlu — shrink icon saja.
-- [x] **419 [P1]** — Font ≥16px di input (mencegah iOS zoom).
+- [x] **416 [P0]** — Test breakpoints: ≥900 tablet, ≥600 phone, ≥340 small — no elements break.
+- [x] **417 [P0]** — `viewport` meta exists — ensure `width=device-width` + no zoom-lock.
+- [x] **418 [P1]** — Small-screen action buttons: don't stack vertically unnecessarily — shrink icons only.
+- [x] **419 [P1]** — Font ≥16px on inputs (prevents iOS zoom).
 - [x] **420 [P1]** — Touch target ≥44px.
-- [x] **421 [P1]** — Container padding mengecil (16px) di <600px.
-- [x] **422 [P1]** — Modal full-width di mobile (bukan centered mini).
-- [x] **423 [P1]** — Toast melebar sampai 320px di atas bawah.
-- [x] **424 [P1]** — Blob nggak bikin horizontal scroll (`overflow-x: clip` di body).
-- [x] **425 [P1]** — Header tetap (sticky) di mobile? opsional — hindari makan layar.
-- [ ] **426 [P1]** — Test 200% zoom tidak pecah (a11y zoom 200%).
-- [x] **427 [P2]** — Landscape phone: max width tetap.
-- [x] **428 [P1]** — Stat chip responsif (wrap).
+- [x] **421 [P1]** — Container padding shrinks (16px) below 600px.
+- [x] **422 [P1]** — Modal full-width on mobile (not centered mini).
+- [x] **423 [P1]** — Toast widens up to 320px on top/bottom.
+- [x] **424 [P1]** — Blobs don't cause horizontal scroll (`overflow-x: clip` on body).
+- [x] **425 [P1]** — Sticky header on mobile? Optional — avoid eating screen space.
+- [ ] **426 [P1]** — Test 200% zoom doesn't break (a11y 200% zoom).
+- [x] **427 [P2]** — Landscape phone: max-width maintained.
+- [x] **428 [P1]** — Responsive stat chip (wraps).
 - [x] **429 [P1]** — Safe-area padding (iPhone notch) — `padding-left: env(safe-area-inset-left)`.
-- [x] **430 [P1]** — Hover hapus di touch — pastikan tetap click.
-- [x] **431 [P1]** — Input lebar mengikuti layar.
-- [ ] **432 [P1]** — Test semua halaman di 320px — tidak ada body scroll horizontal.
-- [x] **433 [P1]** — `clamp()` heading natural.
-- [ ] **434 [P2]** — PWA (manifest + offline) — P2 setelah pondasi.
-- [x] **435 [P1]** — Perf mobile: blur radius kecil & blob animasi ringan.
+- [x] **430 [P1]** — Hover removed on touch — ensure click still works.
+- [x] **431 [P1]** — Input width follows screen.
+- [ ] **432 [P1]** — Test all pages at 320px — no body horizontal scroll.
+- [x] **433 [P1]** — Natural `clamp()` headings.
+- [ ] **434 [P2]** — PWA (manifest + offline) — P2 after foundation.
+- [x] **435 [P1]** — Mobile perf: small blur radius & lightweight blob animation.
 
 ### 1.12 Dark Mode — 436–450
 
-- [x] **436 [P1]** — Token dark: `--clr-bg:#141223`, `--clr-surface`,`--clr-text:#f0eff`, `--clr-text-muted:#b9b6ca`.
-- [x] **437 [P1]** — Toggle tersimpan di `localStorage` + respect `prefers-color-scheme`.
-- [x] **438 [P1]** — Glass dark: `rgba(25,22,45,.55)` + border `rgba(255,255,255,.12)`.
-- [x] **439 [P1]** — Blob di dark lebih redup (kekontrasan teks tetap).
-- [x] **440 [P1]** — Icon/kontrol ikut tema (text vs light).
-- [x] **441 [P1]** — Focus ring di dark lebih terang.
-- [x] **442 [P1]** — Shadow dark lebih pekat (intensitas naik).
-- [x] **443 [P1]** — Tombol primary sama (gradient ungu) — aman dua mode.
-- [x] **444 [P1]** — Toast dark juga.
-- [x] **445 [P1]** — Modal dark.
-- [x] **446 [P1]** — Emptystate dark.
-- [x] **447 [P1]** — Scrollbar ikut (dark).
-- [x] **448 [P1]** — Transisi antar mode (opacity) singkat.
-- [x] **449 [P1]** — Tes kontras dual mode (AA).
-- [x] **450 [P1]** — Attribute `data-theme` di `<html>` + CSS vars switch — tanpa library.
+- [x] **436 [P1]** — Dark tokens: `--clr-bg:#141223`, `--clr-surface`, `--clr-text:#f0eff`, `--clr-text-muted:#b9b6ca`.
+- [x] **437 [P1]** — Toggle saved in `localStorage` + respects `prefers-color-scheme`.
+- [x] **438 [P1]** — Dark glass: `rgba(25,22,45,.55)` + border `rgba(255,255,255,.12)`.
+- [x] **439 [P1]** — Blobs in dark mode are dimmer (text contrast maintained).
+- [x] **440 [P1]** — Icons/controls follow the theme (text vs light).
+- [x] **441 [P1]** — Focus ring brighter in dark mode.
+- [x] **442 [P1]** — Dark shadows more intense (increased intensity).
+- [x] **443 [P1]** — Primary button stays the same (purple gradient) — safe in both modes.
+- [x] **444 [P1]** — Toast in dark mode too.
+- [x] **445 [P1]** — Modal in dark mode.
+- [x] **446 [P1]** — Empty state in dark mode.
+- [x] **447 [P1]** — Scrollbar follows (dark).
+- [x] **448 [P1]** — Short transition between modes (opacity).
+- [x] **449 [P1]** — Contrast test for dual modes (AA).
+- [x] **450 [P1]** — `data-theme` attribute on `<html>` + CSS vars switch — no library.
 
 ### 1.13 Copy & Writing — 451–460
 
-- [x] **451 [P0]** — Terjemahkan seluruh copy UI ke Bahasa Indonesia yang hangat: "Apa rencanamu hari ini?".
-- [x] **452 [P1]** — Perbaiki tata bahasa: tanpa spasi sebelum tanda baca ("plan?" → "rencana?").
-- [x] **453 [P1]** — Tombol: "Tambah Rencana", "Simpan", "Batal", "Hapus", "Ubah" — konsisten di semua halaman.
+- [x] **451 [P0]** — Translate all UI copy to warm Indonesian: "Apa rencanamu hari ini?".
+- [x] **452 [P1]** — Fix grammar: no space before punctuation ("plan?" → "rencana?").
+- [x] **453 [P1]** — Buttons: "Tambah Rencana", "Simpan", "Batal", "Hapus", "Ubah" — consistent across all pages.
 - [x] **454 [P1]** — Empty state: "Belum ada rencana. Mulai dengan yang pertama!".
-- [x] **455 [P1]** — Error: "Rencana tidak boleh kosong" (spesifik, bukan generik).
+- [x] **455 [P1]** — Error: "Rencana tidak boleh kosong" (specific, not generic).
 - [x] **456 [P1]** — Placeholder: "Mis. Beli susu sebelum jam 8".
 - [x] **457 [P1]** — 404: "Halaman tidak ditemukan" + subtitle "Halaman yang kamu cari tidak ada atau sudah dipindahkan.".
-- [x] **458 [P1]** — Judul halaman: dokumentasi `title` per halaman ("Daftar Rencana", "Tambah Rencana", "Ubah Rencana").
-- [x] **459 [P1]** — Toast sukses: "Rencana ditambahkan", "Perubahan disimpan", "Rencana dihapus".
-- [x] **460 [P1]** — Semua micro-copy ramah dan bebas jargon teknis di sisi pengguna.
+- [x] **458 [P1]** — Page headings: document `title` per page ("Daftar Rencana", "Tambah Rencana", "Ubah Rencana").
+- [x] **459 [P1]** — Success toast: "Rencana ditambahkan", "Perubahan disimpan", "Rencana dihapus".
+- [x] **460 [P1]** — All micro-copy is friendly and free of technical jargon from the user's perspective.
 
-> **Catatan adaptasi (Bento netral).** Seksi ini awalnya ditulis untuk arah *Frosted Glassmorphism*.
-> Arah visual final = **Bento neutral zinc/slate** (Lihat commit `40c05c1`); butir-butir yang
-> berakar pada estetika kaca ditandai `[x]` bila **padanan Bento-nya terpasang** (token
-> `--surface/--border/--gloss`, blur hanya di header & modal dengan `@supports` + fallback solid,
-> `prefers-reduced-transparency`, grain halus, dsb.). Butir yang tetap `[ ]` adalah yang intinya
-> memang estetika kaca (blob gradient, refleksi, glass chip/button) atau meminta fitur/QA yang
-> sengaja tidak dipilih — bukan kelalaian.
+> **Adaptation note (Bento neutral).** This section was originally written for the *Frosted Glassmorphism* direction.
+> Final visual direction = **Bento neutral zinc/slate** (see commit `40c05c1`); items rooted in the
+> glass aesthetic are marked `[x]` if the **Bento equivalent is installed** (tokens
+> `--surface/--border/--gloss`, blur only in header & modal with `@supports` + solid fallback,
+> `prefers-reduced-transparency`, subtle grain, etc.). Items still `[ ]` are those whose core identity
+> is genuinely glass aesthetic (blob gradients, reflections, glass chip/button) or request a feature/QA that
+> was intentionally not pursued — not an omission.
 
 ---
 
-## 2. SEO — butir 461–555
+## 2. SEO — items 461–555
 
-### 2.1 Struktur & Meta — 461–500
+### 2.1 Structure & Meta — 461–500
 
-- [x] **461 [P0]** — Tambah `lang="id"` pada `<html>` (kini `lang="en"` walau konten Indonesia).
-- [x] **462 [P0]** — Tambah meta `description` unik per halaman.
-- [x] **463 [P0]** — Tambah `<title>` fallback default bila variabel kosong (layout guard).
-- [x] **464 [P1]** — Meta `robots` (index,follow) untuk halaman publik.
-- [x] **465 [P1]** — `canonical` URL ke domain utama.
-- [x] **466 [P1]** — Meta `author`, `keywords` opsional.
+- [x] **461 [P0]** — Add `lang="id"` to `<html>` (currently `lang="en"` despite Indonesian content).
+- [x] **462 [P0]** — Add unique meta `description` per page.
+- [x] **463 [P0]** — Add a default `<title>` fallback when variable is empty (layout guard).
+- [x] **464 [P1]** — Meta `robots` (index,follow) for public pages.
+- [x] **465 [P1]** — `canonical` URL to the primary domain.
+- [x] **466 [P1]** — Optional meta `author`, `keywords`.
 - [x] **467 [P1]** — `og:type=website`, `og:site_name`, `og:title`, `og:description`, `og:image`.
 - [x] **468 [P1]** — `twitter:card=summary`, `twitter:title`, `twitter:description`.
-- [x] **469 [P1]** — Meta `theme-color` (ungu) — tampilan browser mobile.
-- [x] **470 [P1]** — Semantik HTML5: `header`, `main`, `footer`, `nav`, `section` — bukan div-generik semua.
-- [x] **471 [P1]** — 1 `<h1>` per halaman; hierarki h2/h3 logis.
-- [x] **472 [P1]** — URL deskriptif & bermakna: `/add-todo`, `/edit-todo/:id`.
-- [x] **473 [P1]** — Sitemap.xml di `/sitemap.xml` (list index + add).
-- [x] **474 [P1]** — robots.txt di `/robots.txt` (allow /, sitemap ref).
-- [x] **475 [P1]** — Href di dalam konten: `href="/"` normal, bukan `javascript:`.
-- [x] **476 [P1]** — JSON-LD `WebSite` (+ `SearchAction` bila search server).
-- [x] **477 [P1]** — JSON-LD `ItemList` / `TodoList` di index (bila bermanfaat).
-- [x] **478 [P1]** — Pastikan halaman tidak `noindex` tanpa sengaja (meta robots utuh).
-- [x] **479 [P1]** — Title pattern: "Nama App · Deskripsi singkat" lahir di layout helper.
-- [x] **480 [P1]** — Heading mencakup kata kunci natural ("Daftar Rencana Hari Ini").
-- [x] **481 [P1]** — Alt text gambar (logo/favicon inline tidak perlu alt kosong).
-- [x] **482 [P1]** — `aria-label` pada nav (SEO minor + a11y).
-- [x] **483 [P1]** — Bukan autentikasi untuk konten publik (todo app publik) — tidak di-block crawler.
-- [x] **484 [P1]** — Status 404 benar (HTTP `404` kini controller tidak set status).
-- [x] **485 [P1]** — Redirect pasca mutasi (PRG) menghindari duplikat index.
-- [x] **486 [P1]** — Konsistensi trailing slash — avoid duplicated content.
-- [ ] **487 [P1]** — `yandex`/`fb` meta opsional bila perlu.
-- [x] **488 [P1]** — Favicon valid (SVG/PNG) + `apple-touch-icon` untuk mobile bookmark.
+- [x] **469 [P1]** — Meta `theme-color` (purple) — mobile browser appearance.
+- [x] **470 [P1]** — HTML5 semantics: `header`, `main`, `footer`, `nav`, `section` — not generic divs everywhere.
+- [x] **471 [P1]** — 1 `<h1>` per page; logical h2/h3 hierarchy.
+- [x] **472 [P1]** — Descriptive & meaningful URLs: `/add-todo`, `/edit-todo/:id`.
+- [x] **473 [P1]** — Sitemap.xml at `/sitemap.xml` (list index + add).
+- [x] **474 [P1]** — robots.txt at `/robots.txt` (allow /, sitemap reference).
+- [x] **475 [P1]** — Hrefs in content: `href="/"` normal, not `javascript:`.
+- [x] **476 [P1]** — JSON-LD `WebSite` (+ `SearchAction` if server-side search).
+- [x] **477 [P1]** — JSON-LD `ItemList` / `TodoList` on index (if beneficial).
+- [x] **478 [P1]** — Ensure pages aren't accidentally `noindex` (meta robots intact).
+- [x] **479 [P1]** — Title pattern: "App Name · Short description" generated via a layout helper.
+- [x] **480 [P1]** — Headings include natural keywords ("Daftar Rencana Hari Ini").
+- [x] **481 [P1]** — Image alt text (inline logo/favicon doesn't need empty alt).
+- [x] **482 [P1]** — `aria-label` on nav (minor SEO + a11y).
+- [x] **483 [P1]** — No authentication for public content (public todo app) — not blocked by crawlers.
+- [x] **484 [P1]** — Correct 404 status (HTTP `404`; controller now sets status).
+- [x] **485 [P1]** — Post-mutation redirect (PRG) prevents duplicate indexing.
+- [x] **486 [P1]** — Trailing slash consistency — avoid duplicated content.
+- [ ] **487 [P1]** — Optional `yandex`/`fb` meta if needed.
+- [x] **488 [P1]** — Valid favicon (SVG/PNG) + `apple-touch-icon` for mobile bookmarks.
 - [ ] **489 [P1]** — `<link rel="manifest">` (P2).
-- [x] **490 [P1]** — Preview screenshot `og:image` ukuran 1200×630.
+- [x] **490 [P1]** — `og:image` preview screenshot sized 1200×630.
 - [x] **491 [P1]** — `og:locale: id_ID`.
-- [x] **492 [P1]** — Href canonical menggunakan URL absolut.
-- [x] **493 [P1]** — Meta `referrer` safe (unsafe-url hanya di API).
-- [x] **494 [P1]** — Gzip/compress respons HTML (Performance) — SEO+LCP.
-- [x] **495 [P1]** — Sitemap dinamis via route (kecil, list static).
-- [ ] **496 [P1]** — Google Site Verification meta — opsional.
-- [x] **497 [P1]** — Konten teks ≥ minimal per halaman (index sudah).
-- [x] **498 [P1]** — Internal link "Tambah" dari index → add page — natural crawl.
-- [x] **499 [P1]** — 404 halaman tetap beri link ke homepage (crawl recovery).
-- [x] **500 [P1]** — `Cache-Control` `no-store` hanya untuk mutasi; GET boleh cache.
+- [x] **492 [P1]** — Canonical href uses absolute URL.
+- [x] **493 [P1]** — Safe meta `referrer` (unsafe-url only for API).
+- [x] **494 [P1]** — Gzip/compress HTML responses (Performance) — SEO + LCP.
+- [x] **495 [P1]** — Dynamic sitemap via route (small, static list).
+- [ ] **496 [P1]** — Google Site Verification meta — optional.
+- [x] **497 [P1]** — Minimum text content per page (index already has it).
+- [x] **498 [P1]** — Internal "Add" link from index → add page — natural crawl.
+- [x] **499 [P1]** — 404 page still provides a link to homepage (crawl recovery).
+- [x] **500 [P1]** — `Cache-Control` `no-store` only for mutations; GET may be cached.
 
 ### 2.2 Social Sharing & Rich Results — 501–530
 
-- [x] **501 [P1]** — `og:image` konsisten brand (ungu glass card mockup).
+- [x] **501 [P1]** — Consistent brand `og:image` (purple glass card mockup).
 - [x] **502 [P1]** — `twitter:image`.
-- [x] **503 [P1]** — `og:description` 1-2 kalimat administratif.
-- [x] **504 [P1]** — Title < 60 karakter (SEO snippet).
-- [x] **505 [P1]** — Description < 155 karakter.
-- [ ] **506 [P1]** — JSON-LD organization (opsional).
+- [x] **503 [P1]** — `og:description` 1–2 administrative sentences.
+- [x] **504 [P1]** — Title < 60 characters (SEO snippet).
+- [x] **505 [P1]** — Description < 155 characters.
+- [ ] **506 [P1]** — JSON-LD organization (optional).
 - [x] **507 [P1]** — OpenGraph `url` = canonical.
-- [ ] **508 [P1]** — `article:published_time` di blog nanti (tidak).
-- [ ] **509 [P1]** — Test dengan validator (opengraph.xyz / Meta inspector).
-- [x] **510 [P1]** — Social preview saat share di WhatsApp/Telegram — meta lengkap.
-- [x] **511 [P1]** — `og:title` tanpa nama domain berulang.
-- [ ] **512 [P1]** — `fb:app_id` — hanya bila FB integrasi (skip).
-- [x] **513 [P1]** — Image absolute URL di og:image.
-- [x] **514 [P1]** — `og:image:width/height` diset.
-- [x] **515 [P1]** — `og:image:alt` diset.
-- [ ] **516 [P1]** — `twitter:creator` (opsional).
-- [ ] **517 [P1]** — `twitter:label1/value1` dll (tidak perlu).
-- [ ] **518 [P1]** — JSON-LD `BreadcrumbList` di inner pages (P2).
-- [x] **519 [P1]** — Schema `WebApplication` (opsional niche).
-- [ ] **520 [P1]** — RSV recheck preview di Chrome DevTools.
+- [ ] **508 [P1]** — `article:published_time` for blog later (not needed).
+- [ ] **509 [P1]** — Test with validator (opengraph.xyz / Meta inspector).
+- [x] **510 [P1]** — Social preview when sharing on WhatsApp/Telegram — complete meta.
+- [x] **511 [P1]** — `og:title` without repeated domain name.
+- [ ] **512 [P1]** — `fb:app_id` — only if FB integration (skip).
+- [x] **513 [P1]** — Absolute image URL in og:image.
+- [x] **514 [P1]** — `og:image:width/height` set.
+- [x] **515 [P1]** — `og:image:alt` set.
+- [ ] **516 [P1]** — `twitter:creator` (optional).
+- [ ] **517 [P1]** — `twitter:label1/value1` etc. (not needed).
+- [ ] **518 [P1]** — JSON-LD `BreadcrumbList` on inner pages (P2).
+- [x] **519 [P1]** — Schema `WebApplication` (optional niche).
+- [ ] **520 [P1]** — Recheck preview in Chrome DevTools.
 
-### 2.3 Teknis Crawling/Indexing — 531–565
+### 2.3 Technical Crawling/Indexing — 531–565
 
-- [x] **521 [P1]** — Server bind benar; sitemap URL pakai domain yang dikonfigurasi.
-- [x] **522 [P1]** — Semua internal link ber-`href` (crawlable).
-- [x] **523 [P1]** — Tidak ada konten disembunyikan di interaksi JS-only (progress enhancement).
-- [ ] **524 [P1]** — `INDEX` di `.gitignore` untuk env — biar build bersih.
-- [ ] **525 [P1]** — 301 redirect lama → baru (jika rute diubah).
-- [x] **526 [P1]** — Pastikan halaman tak menanh header `X-Robots-Tag: noindex`.
-- [x] **527 [P1]** — Server error (500) → tampilan ramah + status benar.
-- [ ] **528 [P1]** — HTTP/2 or later (dev proxy) — header efisien.
-- [x] **529 [P1]** — `preconnect` untuk font/asset eksternal.
-- [x] **530 [P1]** — Avoid render-blocking (CSS inline critical small).
-- [x] **531 [P1]** — LCP cepat (server-rendered HTML langsung — sudah bagus).
-- [ ] **532 [P1]** — FCP < 1.5s target; CLS < 0.1.
-- [x] **533 [P1]** — Kecepatan index pakai caching statis.
-- [x] **534 [P1]** — Beri `ETag` — caching kecil.
-- [x] **535 [P1]** — Compression gzip/brotli.
-- [x] **536 [P1]** — `Cache-Control` 1h untuk CSS/JS statis (immutable hash bila ada build).
-- [x] **537 [P1]** — `Cache-Control` `no-cache` untuk HTML (revalidate).
-- [x] **538 [P1]** — Sitemap update saat struktur berubah.
-- [x] **539 [P1]** — Robots.txt `Allow: /`, `Disallow: /api/` (jika ada).
-- [x] **540 [P1]** — Pastikan 404 halaman tidak di-index (meta robots noindex on error).
-- [x] **541 [P1]** — Apabila future SSR/CSR — semua konten tetap SSR (sudah EJS).
-- [x] **542 [P1]** — Pastikan tidak ada konten diduplikasi di 2 URL (add & edit).
-- [x] **543 [P1]** — Href pada tombol (bukan onclick hanya) saat perlu link.
-- [x] **544 [P1]** — per-page `og:url` + canonical.
-- [ ] **545 [P1]** — Test render di Google Rich Results / generic crawler.
-- [x] **546 [P1]** — Performance budget dioksigen (budget 200KB CSS/JS total) — kita 1 CSS ~10KB.
-- [x] **547 [P1]** — Konten tidak tersembunyi `display:none` untuk SEO text (jangan spam).
-- [x] **548 [P1]** — Favicon suatu halaman (href) unik — valid.
-- [x] **549 [P1]** — Meta viewport tidak menghambat zoom — aman.
-- [x] **550 [P1]** — URL scheme `https` di canonical di produksi.
-- [x] **551 [P1]** — Semua href escape proper.
-- [x] **552 [P1]** — Infra: sertakan `X-Content-Type-Options: nosniff` (helmet) — SEO+security.
-- [x] **553 [P1]** — Densi halaman: page weight rendah (HTML kecil) — cepat index.
-- [x] **554 [P1]** — Meta `format-detection: telephone=no` opsional.
-- [ ] **555 [P1]** — Jalankan audit Lighthouse di setiap PR stage — target SEO ≥ 90.
+- [x] **521 [P1]** — Server binds correctly; sitemap URLs use the configured domain.
+- [x] **522 [P1]** — All internal links have `href` (crawlable).
+- [x] **523 [P1]** — No content hidden behind JS-only interactions (progressive enhancement).
+- [ ] **524 [P1]** — Add `INDEX` to `.gitignore` for env — keep builds clean.
+- [ ] **525 [P1]** — 301 redirect old → new (if routes are changed).
+- [x] **526 [P1]** — Ensure pages don't send an `X-Robots-Tag: noindex` header.
+- [x] **527 [P1]** — Server error (500) → friendly view + correct status.
+- [ ] **528 [P1]** — HTTP/2 or later (dev proxy) — efficient headers.
+- [x] **529 [P1]** — `preconnect` for external fonts/assets.
+- [x] **530 [P1]** — Avoid render-blocking (small inline critical CSS).
+- [x] **531 [P1]** — Fast LCP (server-rendered HTML directly — already good).
+- [ ] **532 [P1]** — Target FCP < 1.5s; CLS < 0.1.
+- [x] **533 [P1]** — Fast indexing speed via static caching.
+- [x] **534 [P1]** — Add `ETag` — lightweight caching.
+- [x] **535 [P1]** — Gzip/brotli compression.
+- [x] **536 [P1]** — `Cache-Control` 1h for static CSS/JS (immutable hash if build exists).
+- [x] **537 [P1]** — `Cache-Control` `no-cache` for HTML (revalidate).
+- [x] **538 [P1]** — Sitemap updates when structure changes.
+- [x] **539 [P1]** — Robots.txt `Allow: /`, `Disallow: /api/` (if applicable).
+- [x] **540 [P1]** — Ensure 404 pages aren't indexed (meta robots noindex on error).
+- [x] **541 [P1]** — Future SSR/CSR — all content stays SSR (already EJS).
+- [x] **542 [P1]** — Ensure no content is duplicated across 2 URLs (add & edit).
+- [x] **543 [P1]** — Href on buttons (not just onclick) when a link is needed.
+- [x] **544 [P1]** — Per-page `og:url` + canonical.
+- [ ] **545 [P1]** — Test rendering in Google Rich Results / generic crawler.
+- [x] **546 [P1]** — Performance budget set (200KB CSS/JS total) — we have 1 CSS ~10KB.
+- [x] **547 [P1]** — Content not hidden via `display:none` for SEO text (no spam).
+- [x] **548 [P1]** — Unique per-page favicon (href) — valid.
+- [x] **549 [P1]** — Meta viewport doesn't block zoom — safe.
+- [x] **550 [P1]** — HTTPS URL scheme in production canonicals.
+- [x] **551 [P1]** — All hrefs properly escaped.
+- [x] **552 [P1]** — Infrastructure: include `X-Content-Type-Options: nosniff` (helmet) — SEO + security.
+- [x] **553 [P1]** — Low page weight: small HTML — fast indexing.
+- [x] **554 [P1]** — Optional meta `format-detection: telephone=no`.
+- [ ] **555 [P1]** — Run Lighthouse audit on every PR stage — target SEO ≥ 90.
 
 ---
 
-## 3. PERFORMANCE — butir 556–660
+## 3. PERFORMANCE — items 556–660
 
-### 3.1 Aset & Font — 566–600
+### 3.1 Assets & Fonts — 566–600
 
-- [x] **556 [P0]** — Hapus `@import` font dari CSS; gunakan `<link rel=preconnect>` + `<link>` di `<head>` dengan `display=swap`.
-- [x] **557 [P0]** — Ganti Font Awesome CDN `<script>` (render-blocking ~90KB) dengan **set ikon inline SVG minimal** (plus, pen, trash, check, search) — hemat request & kompatibel offline.
-- [x] **558 [P1]** — Subset font (Latin) — kurangi ukuran woff2.
-- [x] **559 [P1]** — Self-host font (konversi woff2) — tanpa CDN eksternal, cache terjaga.
-- [x] **560 [P1]** — Preload font critical (`<link rel=preload as=fetch type=font/woff2 crossorigin>`).
-- [x] **561 [P1]** — Favicon pakai SVG inline / data URI kecil — hemat request.
-- [x] **562 [P1]** — Hapus `style.css.map` (tidak dipakai, merujuk scss yang hilang).
-- [ ] **563 [P1]** — Minify CSS produksi; bila mau, perkenalkan build kecil (esbuild/tsup) — opsional.
-- [x] **564 [P1]** — Ukuran ikon inline SVG < 5KB total — jauh lebih kecil dari FontAwesome.
-- [x] **565 [P1]** — Compression: gzip atau brotli untuk HTML/CSS/JS (via `compression`).
-- [ ] **566 [P1]** — Cache static assets: `Cache-Control: immutable` untuk css/js hash.
-- [x] **567 [P1]** — `ETag` + in-memory cache ringan untuk render — P2.
-- [ ] **568 [P1]** — Avoid render-blocking: CSS critical inline (≤4KB) opsional.
-- [x] **569 [P1]** — Load script `defer` di akhir body — tidak memblok parsing.
-- [ ] **570 [P1]** — Tidak ada library JS eksternal untuk interaksi vanilla.
-- [x] **571 [P1]** — `loading="lazy"` untuk gambar (favorit_app) bila ada.
-- [x] **572 [P1]** — Preload LCP asset (hero background CSS) — opsional.
-- [x] **573 [P1]** — Hapus kerugian koneksi eksternal bila font di-selfhost.
-- [ ] **574 [P1]** — Pastikan website weight < 100KB HTML+CSS+JS (target).
-- [x] **575 [P1]** — SVG sprite untuk semua ikon (single file) — minimal request.
-- [x] **576 [P1]** — Gunakan `aspect-ratio` untuk elemen medium — CLS zero.
-- [x] **577 [P1]** — Sertakan `width`/`height` pada img/logo bila ada.
-- [x] **578 [P1]** — Avoid `@import` di CSS (sudah) — transfer ke link.
-- [ ] **579 [P1]** — Blog/konten: gambar responsive `srcset` — tidak relevan sekarang (P2).
-- [x] **580 [P1]** — Inline rangka SVG logo di HTML — intuisi brand tanpa request.
-- [x] **581 [P1]** — `font-display: swap` di CSS @font-face self-host.
-- [ ] **582 [P1]** — Trim semua whitespace di HTML output — ukuran kecil.
-- [ ] **583 [P1]** — CSS rewrite: token + komponen = CSS ~8–12KB (havoc gzip 3KB).
-- [ ] **584 [P1]** — Hapus komentar besar di CSS produksi.
-- [x] **585 [P1]** — Blob gradient CSS: murni CSS (tanpa gambar) — zero request.
+- [x] **556 [P0]** — Remove font `@import` from CSS; use `<link rel=preconnect>` + `<link>` in `<head>` with `display=swap`.
+- [x] **557 [P0]** — Replace Font Awesome CDN `<script>` (render-blocking ~90KB) with **minimal inline SVG icon set** (plus, pen, trash, check, search) — saves requests & works offline.
+- [x] **558 [P1]** — Subset fonts (Latin) — reduce woff2 size.
+- [x] **559 [P1]** — Self-host fonts (convert to woff2) — no external CDN, cache maintained.
+- [x] **560 [P1]** — Preload critical fonts (`<link rel=preload as=fetch type=font/woff2 crossorigin>`).
+- [x] **561 [P1]** — Favicon using inline SVG / small data URI — saves a request.
+- [x] **562 [P1]** — Remove `style.css.map` (unused, references missing scss).
+- [ ] **563 [P1]** — Minify production CSS; optionally introduce a small build step (esbuild/tsup) — optional.
+- [x] **564 [P1]** — Inline SVG icons < 5KB total — far smaller than FontAwesome.
+- [x] **565 [P1]** — Compression: gzip or brotli for HTML/CSS/JS (via `compression`).
+- [ ] **566 [P1]** — Cache static assets: `Cache-Control: immutable` for hashed css/js.
+- [x] **567 [P1]** — `ETag` + lightweight in-memory cache for renders — P2.
+- [ ] **568 [P1]** — Avoid render-blocking: inline critical CSS (≤4KB) optional.
+- [x] **569 [P1]** — Load script with `defer` at end of body — doesn't block parsing.
+- [ ] **570 [P1]** — No external JS libraries for vanilla interactions.
+- [x] **571 [P1]** — `loading="lazy"` for images (favorit_app) if present.
+- [x] **572 [P1]** — Preload LCP asset (hero background CSS) — optional.
+- [x] **573 [P1]** — Eliminate external connection penalty when fonts are self-hosted.
+- [ ] **574 [P1]** — Ensure website weight < 100KB HTML+CSS+JS (target).
+- [x] **575 [P1]** — SVG sprite for all icons (single file) — minimal requests.
+- [x] **576 [P1]** — Use `aspect-ratio` for medium elements — zero CLS.
+- [x] **577 [P1]** — Include `width`/`height` on img/logo if present.
+- [x] **578 [P1]** — Avoid `@import` in CSS (already done) — migrate to link.
+- [ ] **579 [P1]** — Blog/content: responsive `srcset` images — not relevant now (P2).
+- [x] **580 [P1]** — Inline SVG logo in HTML — brand intuition without a request.
+- [x] **581 [P1]** — `font-display: swap` in CSS @font-face for self-hosted fonts.
+- [ ] **582 [P1]** — Trim all whitespace in HTML output — small size savings.
+- [ ] **583 [P1]** — CSS rewrite: tokens + components = CSS ~8–12KB (gzipped ~3KB).
+- [ ] **584 [P1]** — Remove large comments in production CSS.
+- [x] **585 [P1]** — CSS gradient blobs: pure CSS (no images) — zero requests.
 - [x] **586 [P1]** — Verify no mixed content (http vs https).
-- [ ] **587 [P2]** — HTTP/3 / QUIC bila infrastruktur mendukung.
-- [ ] **588 [P1]** — Test pada 3G (250ms RTT) — tetap cepat karena SSR.
-- [ ] **589 [P1]** — Perf budget rainy day: gambar 0, font 2 (self-host), CSS 1, JS 1.
-- [x] **590 [P1]** — Pertimbangkan icon font local (tidak; SVG sudah).
+- [ ] **587 [P2]** — HTTP/3 / QUIC if infrastructure supports it.
+- [ ] **588 [P1]** — Test on 3G (250ms RTT) — still fast due to SSR.
+- [ ] **589 [P1]** — Rainy-day perf budget: 0 images, 2 fonts (self-hosted), 1 CSS, 1 JS.
+- [x] **590 [P1]** — Consider local icon font (no; SVGs already cover it).
 
 ### 3.2 Server & Middleware — 601–635
 
-- [x] **591 [P0]** — Hapus middleware tak terpakai (cors, cookieParser, rateLimiter, socket) — penghemat inovasi kecil tapi bersih.
-- [x] **592 [P1]** — Urutan middleware: helmet → compression → static → urlencoded/json → routes.
-- [x] **593 [P1]** — Python? ADALAH: `express.static` cache `maxAge: '7d'` untuk aset.
-- [x] **594 [P1]** — `morgan` di prod: kombinasikan `:status` short dengan sampling — atau ganti kustom tipis log.
-- [x] **595 [P1]** — Graceful shutdown: SIGTERM → close server & simpan data JSON (flush).
-- [x] **596 [P1]** — Handle concurrent request terhadap file JSON: single-file atomic write (tmp + rename) — hindari corrupt.
-- [ ] **597 [P1]** — Debounced save (opsional 100ms) bila banyak mutasi cepat.
-- [x] **598 [P1]** — JSON storage memakai `writeFileSync` atomic untuk file kecil — cukup (simpel).
-- [ ] **599 [P1]** — Rate limit hanya pada mutasi bila perlu (local app tidak wajib).
-- [x] **600 [P1]** — Koneksi DB — tidak ada lagi (local).
-- [x] **601 [P1]** — Rendering EJS cache on di prod (`app.set('view cache', true)`).
-- [x] **602 [P1]** — Trust proxy bila di balik reverse proxy (untuk IP log akurat).
-- [x] **603 [P1]** — CORS tak diperlukan (sama origin) — hapus asetnya.
-- [x] **604 [P1]** — `helmet` menyediakan security headers — tetap pas.
-- [x] **605 [P1]** — Body parser limit `express.json({ limit: '10kb' })` — kecil.
-- [x] **606 [P1]** — Directory ini tidak mengekspos `package.json`/`data/` melalui static.
-- [x] **607 [P1]** — Produksi: `NODE_ENV=production` → view cache + logger timing.
-- [x] **608 [P1]** — Static css versi `?v=hash` untuk cache buka.
-- [x] **609 [P1]** — Paksa `X-Content-Type-Options` (nosniff) via helmet.
-- [x] **610 [P1]** — Avoid `sync` di hot path (kecuali writer JSON kecil aman).
-- [x] **611 [P1]** — Data file tidak diblokir untuk 2 simulasi tulis — lock sederhana bila perlu.
-- [ ] **612 [P1]** — DateTime: jangan format di server tiap request; cache string (opsional).
-- [ ] **613 [P1]** — Index page: query list cost kecil; pagination bila >200 item (P1).
-- [x] **614 [P1]** — Search filter client-side — tanpa round-trip.
-- [x] **615 [P2]** — Mount compression hanya di route; jangan di static (sudah cache).
-- [x] **616 [P1]** — Log morgan format concat; hapus di prod bila tak perlu.
-- [x] **617 [P1]** — Hindari `console.log` besar di request — logger ringan.
-- [x] **618 [P1]** — Db disk: `data/todos.json` tidak ikut git (.gitignore).
-- [x] **619 [P1]** — Startup: load JSON → JS object di memori; simpan ulang per mutasi.
-- [ ] **620 [P1]** — Memoisasi render partial? — mikro, skip.
-- [x] **621 [P1]** — Server timeouts: `server.requestTimeout` reasonable.
-- [x] **622 [P1]** — `keepAliveTimeout` default Node (5s) — fine.
-- [ ] **623 [P1]** — Metrics: tanpa service (P2 bisa /metrics).
-- [x] **624 [P1]** — Health check tanpa DB — ringan.
-- [x] **625 [P1]** — Build: `tsc` already; beri `sourceMap=false` di prod bila perlu.
+- [x] **591 [P0]** — Remove unused middleware (cors, cookieParser, rateLimiter, socket) — minor savings but cleaner.
+- [x] **592 [P1]** — Middleware order: helmet → compression → static → urlencoded/json → routes.
+- [x] **593 [P1]** — Static assets: `express.static` with `maxAge: '7d'` cache.
+- [x] **594 [P1]** — `morgan` in prod: combine `:status` short format with sampling — or replace with a thin custom log.
+- [x] **595 [P1]** — Graceful shutdown: SIGTERM → close server & flush JSON data.
+- [x] **596 [P1]** — Handle concurrent requests to the JSON file: single-file atomic write (tmp + rename) — prevent corruption.
+- [ ] **597 [P1]** — Debounced save (optional 100ms) if many rapid mutations.
+- [x] **598 [P1]** — JSON storage uses atomic `writeFileSync` for small files — sufficient (simple).
+- [ ] **599 [P1]** — Rate limit on mutations only if needed (not required for a local app).
+- [x] **600 [P1]** — Database connection — none anymore (local).
+- [x] **601 [P1]** — EJS render cache enabled in prod (`app.set('view cache', true)`).
+- [x] **602 [P1]** — Trust proxy if behind a reverse proxy (for accurate IP logging).
+- [x] **603 [P1]** — CORS not needed (same origin) — remove the middleware.
+- [x] **604 [P1]** — `helmet` provides security headers — keep it.
+- [x] **605 [P1]** — Body parser limit `express.json({ limit: '10kb' })` — small.
+- [x] **606 [P1]** — This directory doesn't expose `package.json`/`data/` via static.
+- [x] **607 [P1]** — Production: `NODE_ENV=production` → view cache + logger timing.
+- [x] **608 [P1]** — Static CSS versioned with `?v=hash` for cache busting.
+- [x] **609 [P1]** — Enforce `X-Content-Type-Options` (nosniff) via helmet.
+- [x] **610 [P1]** — Avoid `sync` on hot paths (except safe small JSON writes).
+- [x] **611 [P1]** — Data file not blocked for 2 simulated writes — simple lock if needed.
+- [ ] **612 [P1]** — DateTime: don't format on the server per request; cache the string (optional).
+- [ ] **613 [P1]** — Index page: low-cost list query; pagination if >200 items (P1).
+- [x] **614 [P1]** — Client-side search filter — no round-trip.
+- [x] **615 [P2]** — Mount compression only on routes; not on static (already cached).
+- [x] **616 [P1]** — Morgan log format concat; remove in prod if not needed.
+- [x] **617 [P1]** — Avoid large `console.log` on requests — lightweight logger.
+- [x] **618 [P1]** — Disk data: `data/todos.json` excluded from git (.gitignore).
+- [x] **619 [P1]** — Startup: load JSON → JS object in memory; re-save per mutation.
+- [ ] **620 [P1]** — Partial render memoization? — micro; skip.
+- [x] **621 [P1]** — Server timeouts: reasonable `server.requestTimeout`.
+- [x] **622 [P1]** — Default Node `keepAliveTimeout` (5s) — fine.
+- [ ] **623 [P1]** — Metrics: no service needed (P2 could add /metrics).
+- [x] **624 [P1]** — Health check without DB dependency — lightweight.
+- [x] **625 [P1]** — Build: `tsc` already; set `sourceMap=false` in prod if needed.
 
 ### 3.3 Web Vitals & Rendering — 636–670
 
-- [x] **626 [P1]** — LCP target: elemen pertama (title/list) cepat — SSR.
-- [x] **627 [P1]** — FID/INP: tidak ada JS blocking besar — kecil.
-- [x] **628 [P1]** — CLS: ukuran elemen reservasi → layout stabil.
+- [x] **626 [P1]** — LCP target: first element (title/list) fast — SSR.
+- [x] **627 [P1]** — FID/INP: no large blocking JS — lightweight.
+- [x] **628 [P1]** — CLS: reserve element sizes → stable layout.
 - [x] **629 [P1]** — TTFB < 200ms local.
-- [x] **630 [P1]** — Avoid `layout shift` saat font swap (font-size-adjust / preload).
-- [ ] **631 [P1]** — CSS min 1 request, JS 1 request (defer) — budget.
-- [x] **632 [P1]** — Interaktivitas pertama cepat — tanpa JS framework.
-- [x] **633 [P1]** — Progressive enhancement: tanpa JS form tetap jalan (server render).
-- [x] **634 [P1]** — PNG logo: ganti SVG inline (opsional, kecil).
-- [x] **635 [P1]** — `will-change` hati-hati — hanya animasi intens.
-- [x] **636 [P1]** — Animasi 60fps — backdrop-filter compose GPU.
-- [ ] **637 [P1]** — Test di Slow 4G — halaman 1 detik.
-- [x] **638 [P1]** — Blocking script Font Awesome — ganti SVG (P0).
-- [x] **639 [P1]** — No `document.write` — tidak ada.
-- [x] **640 [P1]** — Mempertahankan HTML static (SSR) untuk semua konten.
-- [ ] **641 [P1]** — Kecil kode JS: 1 file ~3KB vanilla.
-- [x] **642 [P1]** — Gzip HTML bawaan via compression.
-- [x] **643 [P1]** — Preconnect ke fonts.gstatic.com bila pakai Google Fonts.
-- [ ] **644 [P1]** — Paksa cache-friendly headers di Nginx/PM2 bila ada.
-- [x] **645 [P1]** — Pastikan CORS tidak diblok throw di prod (tidak dipakai).
-- [ ] **646 [P1]** — PWA offline (P2) — service worker 20 baris.
+- [x] **630 [P1]** — Avoid *layout shift* on font swap (font-size-adjust / preload).
+- [ ] **631 [P1]** — CSS 1 request, JS 1 request (defer) — budget.
+- [x] **632 [P1]** — Fast first interactivity — no JS framework.
+- [x] **633 [P1]** — Progressive enhancement: forms work without JS (server render).
+- [x] **634 [P1]** — PNG logo: replace with inline SVG (optional, small).
+- [x] **635 [P1]** — Use `will-change` carefully — only on heavily animated elements.
+- [x] **636 [P1]** — 60fps animations — backdrop-filter composited on GPU.
+- [ ] **637 [P1]** — Test on Slow 4G — page loads in 1 second.
+- [x] **638 [P1]** — Font Awesome blocking script — replace with SVG (P0).
+- [x] **639 [P1]** — No `document.write` — none.
+- [x] **640 [P1]** — Maintain static HTML (SSR) for all content.
+- [ ] **641 [P1]** — Small JS codebase: 1 file ~3KB vanilla.
+- [x] **642 [P1]** — Gzip HTML by default via compression.
+- [x] **643 [P1]** — Preconnect to fonts.gstatic.com if using Google Fonts.
+- [ ] **644 [P1]** — Enforce cache-friendly headers in Nginx/PM2 if available.
+- [x] **645 [P1]** — Ensure CORS doesn't throw in prod (not used).
+- [ ] **646 [P1]** — Offline PWA (P2) — 20-line service worker.
 - [ ] **647 [P1]** — Lighthouse Performance target ≥ 95.
 - [ ] **648 [P1]** — Bundle analysis? Tiny — skip.
-- [x] **649 [P1]** — Startup cepat — tidak ada init DB.
-- [x] **650 [P1]** — Memory: JSON kecil — stabil.
-- [x] **651 [P1]** — CPU: blur animasi ringan di desktop; mobile blur kecil.
-- [ ] **652 [P1]** — Avoid excessive DOM (list < 500 item) — pagination.
-- [x] **653 [P1]** — Event handlers minimal (delegasi vanila).
-- [x] **654 [P1]** — Toast & modal — bukti tidak reflow besar.
-- [x] **655 [P1]** — Contrast disable blur saat reduced.
-- [x] **656 [P1]** — Data persistensi sync per mutasi — kecil antar.
-- [x] **657 [P1]** — Semua animasi `transform/opacity` — murah.
-- [ ] **658 [P1]** — Tidak memakai library animasi eksternal.
-- [x] **659 [P1]** — Aset cache lama 7d + HTML no-cache — pola sehat.
-- [ ] **660 [P1]** — Jalankan audit bulanan (Lighthouse CI optional).
+- [x] **649 [P1]** — Fast startup — no DB init.
+- [x] **650 [P1]** — Memory: small JSON — stable.
+- [x] **651 [P1]** — CPU: lightweight blur animation on desktop; small blur on mobile.
+- [ ] **652 [P1]** — Avoid excessive DOM (list < 500 items) — pagination.
+- [x] **653 [P1]** — Minimal event handlers (vanilla delegation).
+- [x] **654 [P1]** — Toast & modal — no major reflow.
+- [x] **655 [P1]** — Disable blur contrast when reduced.
+- [x] **656 [P1]** — Data persistence syncs per mutation — lightweight between requests.
+- [x] **657 [P1]** — All animations via `transform/opacity` — cheap.
+- [ ] **658 [P1]** — No external animation library used.
+- [x] **659 [P1]** — Long-lived asset cache 7d + HTML no-cache — healthy pattern.
+- [ ] **660 [P1]** — Run monthly audit (Lighthouse CI optional).
 
 ---
 
-## 4. BEST PRACTICE (Architecture & Code) — butir 661–750
+## 4. BEST PRACTICE (Architecture & Code) — items 661–750
 
-### 4.1 Arsitektur — 671–700
+### 4.1 Architecture — 671–700
 
-- [x] **661 [P0]** — Hapus MongoDB/Typegoose & auth (100% local data) — ganti storage JSON sederhana.
-- [x] **662 [P0]** — `src/app/services/todo.service.ts` di-export & dipakai konsisten (barrel).
-- [x] **663 [P1]** — Pisahkan `store` lokal (read/write JSON) dari controller — 1 layer data.
-- [x] **664 [P1]** — Router terpisah per domain (todo, health, not-found) — bersih.
-- [x] **665 [P1]** — Nama file konsisten: kebab/single → `*.controller.ts`, `*.service.ts`.
-- [x] **666 [P1]** — Controller tipis (parse request → call service → render).
-- [x] **667 [P1]** — Service tangani logika (validasi ringan, persistance).
-- [x] **668 [P1]** — Error handling terpusat: error middleware + render error view.
-- [x] **669 [P1]** — `process.exit` tidak ada di runtime app (hapus dari database.ts).
-- [x] **670 [P1]** — Konfigurasi env: hanya PORT & DATA_PATH; default aman.
-- [x] **671 [P1]** — Hapus dotenv/config dari start scripts (tidak perlu multi env).
-- [x] **672 [P1]** — `index.ts` ringkas: app.listen + graceful shutdown.
-- [x] **673 [P1]** — Health check tanpa depend DB — selalu UP.
-- [x] **674 [P1]** — Hapus socket.io (tidak dipakai) + middleware cors.
-- [x] **675 [P1]** — Spesifikasi request/response 1 bahasa (JSON/HTML jelas route).
-- [x] **676 [P1]** — Jangan menyimpan data di `public/` — gunakan `data/` root w/ .gitignore.
-- [x] **677 [P1]** — Data default: seed file `data/todos.json` dibuat otomatis saat run.
-- [x] **678 [P1]** — mencoba struktur: views/layouts + views/partials dipisah.
-- [x] **679 [P1]** — Tidak ada kode duplikat antar halaman (share partial).
-- [x] **680 [P1]** — Interfaces: `Todo` type di `src/interfaces/todo.ts` (local type, bukan model mongoose).
-- [x] **681 [P1]** — Barrel export `helpers/index.ts` termasuk `render`.
-- [x] **682 [P1]** — Export service dari `services/index.ts` — semua di barrel.
-- [x] **683 [P1]** — Hapus file tidak dipakai: `hash.helper.ts`, `jwt/**`, model user/session.
-- [x] **684 [P1]** — EJS partial reuse minim — gunakan include.
-- [x] **685 [P1]** — API routes (`/api`, `/api/health-check`) tetap ringkas.
-- [x] **686 [P1]** — Tidak ada logika bisnis di route.
-- [x] **687 [P1]** — Tidak ada `any` di internal (strict TS).
-- [x] **688 [P1]** — Semua file TS diberi eslint/biome — nol warning.
-- [x] **689 [P1]** — Kontrol versioning data schema (migrasi trivial local).
-- [x] **690 [P1]** — Output build `dist/` clean.
+- [x] **661 [P0]** — Remove MongoDB/Typegoose & auth (100% local data) — replace with simple JSON storage.
+- [x] **662 [P0]** — `src/app/services/todo.service.ts` is exported & used consistently (barrel).
+- [x] **663 [P1]** — Separate local `store` (read/write JSON) from controller — 1 data layer.
+- [x] **664 [P1]** — Separate router per domain (todo, health, not-found) — clean.
+- [x] **665 [P1]** — Consistent file naming: kebab/single → `*.controller.ts`, `*.service.ts`.
+- [x] **666 [P1]** — Thin controllers (parse request → call service → render).
+- [x] **667 [P1]** — Services handle logic (light validation, persistence).
+- [x] **668 [P1]** — Centralized error handling: error middleware + render error view.
+- [x] **669 [P1]** — No `process.exit` at runtime (removed from database.ts).
+- [x] **670 [P1]** — Env configuration: PORT & DATA_PATH only; safe defaults.
+- [x] **671 [P1]** — Remove dotenv/config from start scripts (no multi-env needed).
+- [x] **672 [P1]** — Concise `index.ts`: app.listen + graceful shutdown.
+- [x] **673 [P1]** — Health check without DB dependency — always UP.
+- [x] **674 [P1]** — Remove socket.io (unused) + cors middleware.
+- [x] **675 [P1]** — Request/response specification in 1 language (clear JSON/HTML routes).
+- [x] **676 [P1]** — Don't store data in `public/` — use `data/` root with .gitignore.
+- [x] **677 [P1]** — Default data: seed file `data/todos.json` auto-created on run.
+- [x] **678 [P1]** — View structure: views/layouts + views/partials separated.
+- [x] **679 [P1]** — No duplicated code across pages (share partials).
+- [x] **680 [P1]** — Interfaces: `Todo` type in `src/interfaces/todo.ts` (local type, not a mongoose model).
+- [x] **681 [P1]** — Barrel export in `helpers/index.ts` including `render`.
+- [x] **682 [P1]** — Export services from `services/index.ts` — everything in the barrel.
+- [x] **683 [P1]** — Remove unused files: `hash.helper.ts`, `jwt/**`, user/session models.
+- [x] **684 [P1]** — Minimal EJS partial reuse — use includes.
+- [x] **685 [P1]** — API routes (`/api`, `/api/health-check`) remain concise.
+- [x] **686 [P1]** — No business logic in routes.
+- [x] **687 [P1]** — No `any` in internal code (strict TS).
+- [x] **688 [P1]** — All TS files linted by eslint/biome — zero warnings.
+- [x] **689 [P1]** — Data schema version control (trivial local migration).
+- [x] **690 [P1]** — Clean `dist/` build output.
 
-### 4.2 Kode TypeScript — 701–730
+### 4.2 TypeScript Code — 701–730
 
-- [x] **691 [P1]** — Strict mode tetap aktif (tsconfig `strict: true`).
-- [x] **692 [P1]** — `noImplicitAny` — cek ulang (strict sudah).
-- [x] **693 [P1]** — Decorator `experimentalDecorators` tidak perlu lagi (hapus typegoose) — bisa dihapus dari tsconfig.
-- [x] **694 [P1]** — `moduleResolution` modern `NodeNext` (opsional).
-- [x] **695 [P1]** — Utk Node 24 `target ES2022+` — fine.
-- [x] **696 [P1]** — Hapus `@types/cli-color`, `@types/npmlog` dll (tidak dipakai).
-- [x] **697 [P1]** — Rest operasi: gunakan explicit return types di fungsi publik.
-- [x] **698 [P1]** — `async/await` konsisten; tidak campur .then.
-- [x] **699 [P1]** — Jangan re-query user setelah create (register) — kembalikan data tanpa password dari satu query.
-- [x] **700 [P1]** — Validasi input menggunakan helper ringan (funsi `required`) — bukan lib besar.
-- [x] **701 [P1]** — Tipe untuk payload render (`ViewData` interface).
-- [x] **702 [P1]** — `unknown` di catch + type guard (bukan `error: any`).
-- [x] **703 [P1]** — Hapus `"main": "index.js"` salah dari package.json.
-- [x] **704 [P1]** — Menambahkan `engines` di package.json (node >=20).
-- [x] **705 [P1]** — `pnpm` sebagai paket manager (lockfile dipakai).
-- [x] **706 [P1]** — README ditulis (modul path, run, struktur).
-- [x] **707 [P1]** — Script `build` memakai `tsc` — bisa `tsup` bila butuh bundle (P2).
-- [x] **708 [P1]** — Tidak pakai `dotenv` bila tidak ada .env? Simpan PORT default.
-- [x] **709 [P1]** — `win-node-env` dihapus (tidak perlu, NODE_ENV via cross script mana pun).
-- [x] **710 [P1]** — Hapus `socket.io` type imports.
-- [x] **711 [P1]** — `IRequest` interface dihapus (tidak dipakai auth).
-- [x] **712 [P1]** — Helper `render` walau kecil — keep (nice).
-- [x] **713 [P1]** — Rute defense: validasi `req.params.id` format.
-- [x] **714 [P1]** — Helper `response.helper` untuk API (biarkan).
-- [x] **715 [P1]** — Penyederhanaan middleware: hapus auth/isAdmin.
-- [x] **716 [P1]** — Pastikan `dist` tidak di-commit (.gitignore).
-- [x] **717 [P1]** — `create-env.ts` dihapus (env tidak perlu).
-- [x] **718 [P1]** — Tunggu: hapus `--maxWorkers`... (tiada).
-- [x] **719 [P1]** — Sediakan `typecheck` script terpisah.
+- [x] **691 [P1]** — Strict mode stays enabled (tsconfig `strict: true`).
+- [x] **692 [P1]** — `noImplicitAny` — double-check (strict already covers it).
+- [x] **693 [P1]** — `experimentalDecorators` no longer needed (typegoose removed) — can delete from tsconfig.
+- [x] **694 [P1]** — Modern `NodeNext` `moduleResolution` (optional).
+- [x] **695 [P1]** — For Node 24, `target ES2022+` — fine.
+- [x] **696 [P1]** — Remove `@types/cli-color`, `@types/npmlog` etc. (unused).
+- [x] **697 [P1]** — Use explicit return types for public functions.
+- [x] **698 [P1]** — Consistent `async/await`; no mixing with `.then`.
+- [x] **699 [P1]** — Don't re-query user after create (register) — return password-free data from a single query.
+- [x] **700 [P1]** — Input validation using a lightweight helper (the `required` function) — not a large library.
+- [x] **701 [P1]** — Type for render payload (`ViewData` interface).
+- [x] **702 [P1]** — `unknown` in catch + type guard (not `error: any`).
+- [x] **703 [P1]** — Remove incorrect `"main": "index.js"` from package.json.
+- [x] **704 [P1]** — Add `engines` to package.json (node >=20).
+- [x] **705 [P1]** — `pnpm` as the package manager (lockfile in use).
+- [x] **706 [P1]** — README written (module paths, run instructions, structure).
+- [x] **707 [P1]** — `build` script uses `tsc` — could switch to `tsup` if bundling is needed (P2).
+- [x] **708 [P1]** — No `dotenv` if no .env? Store default PORT.
+- [x] **709 [P1]** — `win-node-env` removed (not needed; NODE_ENV via cross-env script).
+- [x] **710 [P1]** — Remove `socket.io` type imports.
+- [x] **711 [P1]** — `IRequest` interface removed (no auth).
+- [x] **712 [P1]** — `render` helper, though small — keep it (nice).
+- [x] **713 [P1]** — Route defense: validate `req.params.id` format.
+- [x] **714 [P1]** — `response.helper` for API (keep it).
+- [x] **715 [P1]** — Simplify middleware: remove auth/isAdmin.
+- [x] **716 [P1]** — Ensure `dist` isn't committed (.gitignore).
+- [x] **717 [P1]** — `create-env.ts` removed (env not needed).
+- [x] **718 [P1]** — Removed: `--maxWorkers`... (none).
+- [x] **719 [P1]** — Provide separate `typecheck` script.
 - [x] **720 [P1]** — Consistent import order via Biome organizeImports (CI).
 
 ### 4.3 Logging & Observability — 731–755
 
-- [x] **721 [P1]** — Ganti `npmlog` (deprecated) dengan logger mini sendiri (console + timestamp) atau `pino` (P2).
-- [x] **722 [P1]** — Log level dir jenjang: debug/dev, info/prod.
-- [x] **723 [P1]** — Log mutasi (add/edit/delete) — auditable.
-- [x] **724 [P1]** — Jangan log data sensitif (tidak ada lagi).
-- [x] **725 [P1]** — Health endpoint log? Sepi.
-- [x] **726 [P1]** — Error log: stack di dev, pesan di prod.
-- [ ] **727 [P1]** — Structured log (JSON) bila di produksi — P2.
-- [x] **728 [P1]** — Timezone lokal / ISO dengan zona.
-- [x] **729 [P1]** — `morgan` cukup untuk request log.
-- [x] **730 [P1]** — Jangan log body request penuh (privasi).
-- [ ] **731 [P1]** — ID request (correlation) — P2 bila perlu.
-- [x] **732 [P1]** — Cegah log flood dari health-check interval (skip di prod).
-- [ ] **733 [P1]** — Kategorikan log (app, request, store).
-- [ ] **734 [P1]** — File drain rotate (opsional P2).
-- [x] **735 [P1]** — Sediakan `console.error` di handler error global.
+- [x] **721 [P1]** — Replace `npmlog` (deprecated) with a mini self-built logger (console + timestamp) or `pino` (P2).
+- [x] **722 [P1]** — Hierarchical log levels: debug/dev, info/prod.
+- [x] **723 [P1]** — Log mutations (add/edit/delete) — auditable.
+- [x] **724 [P1]** — Don't log sensitive data (none anymore).
+- [x] **725 [P1]** — Health endpoint logging? Quiet.
+- [x] **726 [P1]** — Error log: stack in dev, message in prod.
+- [ ] **727 [P1]** — Structured log (JSON) in production — P2.
+- [x] **728 [P1]** — Local timezone / ISO with zone.
+- [x] **729 [P1]** — `morgan` is sufficient for request logging.
+- [x] **730 [P1]** — Don't log full request bodies (privacy).
+- [ ] **731 [P1]** — Request ID (correlation) — P2 if needed.
+- [x] **732 [P1]** — Prevent log flood from health-check intervals (skip in prod).
+- [ ] **733 [P1]** — Categorize logs (app, request, store).
+- [ ] **734 [P1]** — File drain rotation (optional P2).
+- [x] **735 [P1]** — Provide `console.error` in the global error handler.
 
-### 4.4 Proses & Git — 756–770
+### 4.4 Process & Git — 756–770
 
-- [x] **736 [P1]** — Pre-commit: biome check (bukan eslint) + lint-staged.
-- [x] **737 [P1]** — Commit message conventional (`feat:`, `fix:`).
-- [ ] **738 [P1]** — Branch per fitur + PR.
-- [x] **739 [P1]** — `.editorconfig` konsisten (sudah ada).
-- [x] **740 [P1]** — `.prettierrc` digantikan Biome (hapus prettier) — satu tool.
-- [x] **741 [P1]** — Hapus `.eslintrc` — biome config.
-- [x] **742 [P1]** — Lockfile di-rejeki (pnpm-lock.yaml) — version reproducible.
-- [x] **743 [P1]** — No secrets in repo (sudah tak ada).
-- [ ] **744 [P1]** — Rebase sebelum merge (linear history) — opsional.
-- [ ] **745 [P1]** — Code review checklist kecil (README).
-- [ ] **746 [P1]** — Tag release (v0.2.0...) — disiplin versi.
+- [x] **736 [P1]** — Pre-commit: biome check (not eslint) + lint-staged.
+- [x] **737 [P1]** — Conventional commit messages (`feat:`, `fix:`).
+- [ ] **738 [P1]** — Feature branches + PR.
+- [x] **739 [P1]** — Consistent `.editorconfig` (already present).
+- [x] **740 [P1]** — `.prettierrc` replaced by Biome (remove prettier) — single tool.
+- [x] **741 [P1]** — Remove `.eslintrc` — biome config.
+- [x] **742 [P1]** — Lockfile committed (pnpm-lock.yaml) — reproducible versions.
+- [x] **743 [P1]** — No secrets in repo (none anymore).
+- [ ] **744 [P1]** — Rebase before merge (linear history) — optional.
+- [ ] **745 [P1]** — Small code review checklist (README).
+- [ ] **746 [P1]** — Release tags (v0.2.0...) — version discipline.
 - [ ] **747 [P1]** — CI: pnpm install --frozen-lockfile + biome + build + test.
-- [x] **748 [P1]** — Jangan ganggu commit saat rush — tetap lint.
-- [ ] **749 [P1]** — Changelog (bagian README / GitHub Releases).
-- [x] **750 [P1]** — LICENSE tetap (Apache 2.0).
+- [x] **748 [P1]** — Don't commit during rush — still lint.
+- [ ] **749 [P1]** — Changelog (README section / GitHub Releases).
+- [x] **750 [P1]** — LICENSE maintained (Apache 2.0).
 
 ---
 
-## 5. EFFICIENCY & REFACTOR — butir 751–840
+## 5. EFFICIENCY & REFACTOR — items 751–840
 
-### 5.1 Hapus Dead Code & Dependencies — 771–800
+### 5.1 Remove Dead Code & Dependencies — 771–800
 
-- [x] **751 [P0]** — Hapus dependency: mongoose, @typegoose/typegoose, bcrypt, jsonwebtoken, cookie-parser, cors, express-rate-limit, socket.io, npmlog, dotenv, win-node-env.
-- [x] **752 [P0]** — Hapus devDependency: @types/bcrypt, @types/cookie-parser, @types/cors, @types/jsonwebtoken, @types/npmlog, @types/cli-color, cli-color, eslint, @typescript-eslint/*, prettier.
-- [x] **753 [P1]** — Hapus direktori/ file: `src/jwt`, `src/app/models/{user,session}.model.ts`, `src/app/services/{user,session}.service.ts`, `src/app/middlewares`, `src/app/controllers/admin`, `src/routes/admin`, `src/app/controllers/auth.controller.ts`, `src/config/{env,database}.ts` (kecuali PORT), `src/logger` jika diganti.
-- [x] **754 [P1]** — Hapus `src/app/models/index.ts` (tidak ada model mongoose).
-- [x] **755 [P1]** — Hapus `pnpm-workspace.yaml` allowBuilds bcrypt (dependensi hilang) — atau sesuaikan.
-- [x] **756 [P1]** — Hapus docker DB: `docker/mongodb`, `docker/mongo-express`, `docker/docker-compose.yml`, `docker-compose.yml` (Mongo service).
-- [x] **757 [P1]** — Hapus `create-env.ts`, `env/`, `.env.example` (tidak ada env secret).
-- [x] **758 [P1]** — Ganti `npmlog` → log konsol ringan (kurangi deps deprecated).
-- [x] **759 [P1]** — Hapus `style.css.map`.
-- [x] **760 [P1]** — Hapus setup `win-node-env` — cross-env? Samai NODE_ENV via JSON script biasa.
-- [x] **761 [P1]** — Hapus script docker yang sudah obsolete di package.json.
-- [x] **762 [P1]** — Hapus `setup-app*` bila tak dipakai.
-- [x] **763 [P1]** — Pastikan `update-deps` pnpm tetap ada.
-- [x] **764 [P1]** — Audit `pnpm outdated` — nol dependensi usang.
-- [ ] **765 [P1]** — Jangan instal ulang modal — pnpm clean.
-- [x] **766 [P1]** — Total deps runtime menyusut drastis (express, ejs, layouts, method-override, morgan, compression, helmet).
-- [x] **767 [P1]** — DevDeps menyusut (typescript, ts-node, nodemon, @types/*, biome, husky, lint-staged).
-- [x] **768 [P1]** — `package.json` name/version diperbarui relevan.
-- [x] **769 [P1]** — Keywords update (hapus mongodb/mongoose/socket.io).
-- [x] **770 [P1]** — Remove `main: index.js` stale.
-- [x] **771 [P1]** — Hapus `.npmrc` bila tak perlu.
-- [x] **772 [P1]** — Pertimbangkan hapus `.ejsbrc.json` bila tak dipakai (opsional).
-- [x] **773 [P1]** — Verify `node_modules` bersih via `pnpm install` dari nol.
-- [x] **774 [P1]** — Golang? Tidak — pilih jalan terminology.
-- [x] **775 [P1]** — Bundler? Tidak perlu (EJS server + CSS direct).
-- [x] **776 [P1]** — Hapus `socket.controller.ts`.
-- [x] **777 [P1]** — Hapus interface `decoded-user.ts`, `i-request.ts`.
-- [x] **778 [P1]** — Hapus `config/database.ts` connect/exit.
-- [x] **779 [P1]** — Hapus `hash.helper.ts` & `str.helper.ts` bila tak dipakai.
-- [x] **780 [P1]** — Hapus `response.helper` bila HTML-only? Pertahankan untuk health/main JSON.
+- [x] **751 [P0]** — Remove dependencies: mongoose, @typegoose/typegoose, bcrypt, jsonwebtoken, cookie-parser, cors, express-rate-limit, socket.io, npmlog, dotenv, win-node-env.
+- [x] **752 [P0]** — Remove devDependencies: @types/bcrypt, @types/cookie-parser, @types/cors, @types/jsonwebtoken, @types/npmlog, @types/cli-color, cli-color, eslint, @typescript-eslint/*, prettier.
+- [x] **753 [P1]** — Remove directories/files: `src/jwt`, `src/app/models/{user,session}.model.ts`, `src/app/services/{user,session}.service.ts`, `src/app/middlewares`, `src/app/controllers/admin`, `src/routes/admin`, `src/app/controllers/auth.controller.ts`, `src/config/{env,database}.ts` (except PORT), `src/logger` if replaced.
+- [x] **754 [P1]** — Remove `src/app/models/index.ts` (no mongoose models).
+- [x] **755 [P1]** — Remove `pnpm-workspace.yaml` allowBuilds for bcrypt (missing dependency) — or adjust.
+- [x] **756 [P1]** — Remove Docker DB: `docker/mongodb`, `docker/mongo-express`, `docker/docker-compose.yml`, `docker-compose.yml` (Mongo service).
+- [x] **757 [P1]** — Remove `create-env.ts`, `env/`, `.env.example` (no env secrets).
+- [x] **758 [P1]** — Replace `npmlog` → lightweight console log (reduce deprecated deps).
+- [x] **759 [P1]** — Remove `style.css.map`.
+- [x] **760 [P1]** — Remove `win-node-env` setup — cross-env? Set NODE_ENV via normal JSON scripts.
+- [x] **761 [P1]** — Remove obsolete Docker scripts in package.json.
+- [x] **762 [P1]** — Remove `setup-app*` if unused.
+- [x] **763 [P1]** — Ensure `update-deps` pnpm script remains.
+- [x] **764 [P1]** — Audit `pnpm outdated` — zero outdated dependencies.
+- [ ] **765 [P1]** — Don't reinstall modals — pnpm clean.
+- [x] **766 [P1]** — Runtime deps drastically reduced (express, ejs, layouts, method-override, morgan, compression, helmet).
+- [x] **767 [P1]** — DevDeps reduced (typescript, ts-node, nodemon, @types/*, biome, husky, lint-staged).
+- [x] **768 [P1]** — Updated `package.json` name/version to be relevant.
+- [x] **769 [P1]** — Keywords updated (removed mongodb/mongoose/socket.io).
+- [x] **770 [P1]** — Removed stale `main: index.js`.
+- [x] **771 [P1]** — Remove `.npmrc` if not needed.
+- [x] **772 [P1]** — Consider removing `.ejsbrc.json` if unused (optional).
+- [x] **773 [P1]** — Verify `node_modules` is clean via `pnpm install` from scratch.
+- [x] **774 [P1]** — Golang? No — pick the right terminology path.
+- [x] **775 [P1]** — Bundler? Not needed (EJS server + direct CSS).
+- [x] **776 [P1]** — Remove `socket.controller.ts`.
+- [x] **777 [P1]** — Remove interfaces `decoded-user.ts`, `i-request.ts`.
+- [x] **778 [P1]** — Remove `config/database.ts` connect/exit.
+- [x] **779 [P1]** — Remove `hash.helper.ts` & `str.helper.ts` if unused.
+- [x] **780 [P1]** — Remove `response.helper` if HTML-only? Keep for health/main JSON.
 
-### 5.2 Konsolidasi & Penyederhanaan — 801–830
+### 5.2 Consolidation & Simplification — 801–830
 
-- [x] **781 [P1]** — Satu storage service (`todo.service.ts`) membaca/menulis `data/todos.json`.
-- [x] **782 [P1]** — Controller `todo` punya 6 handler (index, store, update, destroy, add-form, edit-form) — ringkas.
-- [x] **783 [P1]** — Rute todo: `GET /`, `POST /`, `GET /add-todo`, `GET /edit/:id`, `PUT /:id`, `DELETE /:id` — RESTful.
-- [x] **784 [P1]** — Nama field konsisten `name` (hapus `kegiatan`) — perbaiki semua view.
-- [x] **785 [P1]** — `<%- body %>` layout tetap; partial di `views/partials`.
-- [x] **786 [P1]** — Tidak ada duplikasi CSS antar add/edit — komponen bersama.
-- [x] **787 [P1]** — Helper render di barrel (`helpers/index.ts`).
-- [x] **788 [P1]** — Judul teks satu sumber helper `pageTitle`.
-- [x] **789 [P1]** — Prompt error render: satu pattern view-helper (query flash).
-- [x] **790 [P1]** — Tidak ada file 2 fungsi tak terpakai.
-- [ ] **791 [P1]** — `app.ts` 20 baris tidy.
-- [x] **792 [P1]** — Tidak ada `any` tersisa di TS.
-- [x] **793 [P1]** — Type `Todo` interface lokal sederhana.
-- [x] **794 [P1]** — Data layer atomic: tmpfile + rename.
-- [x] **795 [P1]** — In-memory cache array + persist per mutasi — konsisten.
-- [x] **796 [P1]** — Mapping id baru via `crypto.randomUUID()`.
-- [x] **797 [P1]** — Timestamp disimpan di record (`createdAt`, `updatedAt`).
-- [x] **798 [P1]** — Sort diserahkan ke service (default createdAt desc / manual).
-- [x] **799 [P1]** — Filter (aktif/selesai) ke service optional.
+- [x] **781 [P1]** — Single storage service (`todo.service.ts`) reads/writes `data/todos.json`.
+- [x] **782 [P1]** — `todo` controller has 6 handlers (index, store, update, destroy, add-form, edit-form) — concise.
+- [x] **783 [P1]** — Todo routes: `GET /`, `POST /`, `GET /add-todo`, `GET /edit/:id`, `PUT /:id`, `DELETE /:id` — RESTful.
+- [x] **784 [P1]** — Consistent field name `name` (removed `kegiatan`) — fixed across all views.
+- [x] **785 [P1]** — `<%- body %>` layout maintained; partials in `views/partials`.
+- [x] **786 [P1]** — No CSS duplication between add/edit — shared components.
+- [x] **787 [P1]** — Render helper in barrel (`helpers/index.ts`).
+- [x] **788 [P1]** — Single source for page title text via `pageTitle` helper.
+- [x] **789 [P1]** — Error render prompt: single view-helper pattern (query flash).
+- [x] **790 [P1]** — No unused 2-function files.
+- [ ] **791 [P1]** — Tidy `app.ts` to 20 lines.
+- [x] **792 [P1]** — No remaining `any` in TS.
+- [x] **793 [P1]** — Simple local `Todo` interface type.
+- [x] **794 [P1]** — Atomic data layer: tmpfile + rename.
+- [x] **795 [P1]** — In-memory array cache + persist per mutation — consistent.
+- [x] **796 [P1]** — New id mapping via `crypto.randomUUID()`.
+- [x] **797 [P1]** — Timestamps stored on record (`createdAt`, `updatedAt`).
+- [x] **798 [P1]** — Sorting delegated to service (default createdAt desc / manual).
+- [x] **799 [P1]** — Filtering (active/completed) delegated to service, optional.
 - [x] **800 [P1]** — EJS escaping `<%= %>` — safe default.
-- [x] **801 [P1]** — Konfigurasi single: `config/app.ts` (PORT, DATA_PATH, view settings).
+- [x] **801 [P1]** — Single configuration: `config/app.ts` (PORT, DATA_PATH, view settings).
 - [x] **802 [P1]** — `index.ts` — listen + SIGINT/SIGTERM handler.
-- [x] **803 [P1]** — Health check murni tanpa store (ringan).
-- [x] **804 [P1]** — Logger: `logger.ts` 10 baris (info/warn/error + timestamp).
-- [x] **805 [P1]** — Tipe render data `ViewData { title, layout, todos, filters? }`.
-- [x] **806 [P1]** — Non-guard: tidak ada paket validasi JSON-schema — cukup manual.
-- [ ] **807 [P1]** — Fokus: variasikan PR kecil — sesuaikan riuh.
-- [x] **808 [P1]** — Script konsisten: `dev`, `build`, `start`, `lint`, `format`, `test`.
-- [x] **809 [P1]** — Dist ignore.
-- [x] **810 [P1]** — Verifikasi `pnpm start` jalan dari dist.
+- [x] **803 [P1]** — Pure health check without store dependency (lightweight).
+- [x] **804 [P1]** — Logger: `logger.ts` 10 lines (info/warn/error + timestamp).
+- [x] **805 [P1]** — Render data type `ViewData { title, layout, todos, filters? }`.
+- [x] **806 [P1]** — Non-guard: no JSON-schema validation package — manual is enough.
+- [ ] **807 [P1]** — Focus: vary PR sizes — adjust accordingly.
+- [x] **808 [P1]** — Consistent scripts: `dev`, `build`, `start`, `lint`, `format`, `test`.
+- [x] **809 [P1]** — Dist ignored.
+- [x] **810 [P1]** — Verify `pnpm start` runs from dist.
 
-### 5.3 Optimasi Alur Data — 831–860
+### 5.3 Data Flow Optimization — 831–860
 
-- [x] **811 [P1]** — Baca file sekali saat startup, mutasi tulis sinkron kecil.
-- [x] **812 [P1]** — Handle ENOENT: buat file default `[]`.
-- [x] **813 [P1]** — Handle JSON corrupt: backup `.bak` + reseed.
-- [x] **814 [P1]** — Max todos limit configurable (default 1000).
-- [x] **815 [P1]** — ID tidak bocor ke URL panjang — UUID ok.
-- [x] **816 [P1]** — Slug tidak perlu di struktur — id UUID.
-- [ ] **817 [P1]** — O(1) find by id via Map — untuk cepat hapus.
-- [ ] **818 [P1]** — Map untuk filter — item tetap array of object.
-- [x] **819 [P1]** — Deep clone sebelum mutasi — avoid alias bug.
-- [x] **820 [P1]** — Jangan tulis full array kalau tidak berubah — guard.
-- [x] **821 [P1]** — Penulisan memakai os.tmpdir + rename — atomic.
-- [x] **822 [P1]** — Flush di interval 5s (opsional) — keep simple per-mutasi.
-- [ ] **823 [P1]** — Prevent race: mutasi serialized via microtask queue — P2.
-- [ ] **824 [P1]** — Cache render list saat filter tidak berubah (memory) — P2.
-- [x] **825 [P1]** — Dapatkan stat count dari array (reduce) — murah.
-- [x] **826 [P1]** — String compare ignore case di search — normalized.
-- [x] **827 [P1]** — Trim di input → simpan clean.
-- [x] **828 [P1]** — Batasi 1 kata 200 char — ringan.
-- [x] **829 [P1]** — multiply by logic sederhana — no bloat.
-- [ ] **830 [P1]** — Saat dah large file 1MB? — pagination.
-- [x] **831 [P1]** — Jangan gunakan fs sync di event loop? Untuk file kecil 100KB — aman.
-- [x] **832 [P1]** — Build TS → CommonJS — jalan di Node langsung.
-- [x] **833 [P1]** — No build step untuk CSS (manual token) — hemat.
-- [x] **834 [P1]** — Jalankan `NODE_ENV=production` tanpa env var tambahan.
-- [x] **835 [P1]** — Hanya 1 port bind.
-- [x] **836 [P1]** — Retry, backoff? Tidak perlu (local).
-- [x] **837 [P1]** — Health zurich tetap.
-- [ ] **838 [P1]** — Upgrade test — pnpm update --latest lalu lock.
-- [x] **839 [P1]** — Verifikasi tidak ada pnpm warn peer.
-- [x] **840 [P1]** — Ringkasan: runtime brick kecil, kode bersih (target ~1.2k LOC).
+- [x] **811 [P1]** — Read file once at startup, small synchronous write mutations.
+- [x] **812 [P1]** — Handle ENOENT: create default file `[]`.
+- [x] **813 [P1]** — Handle corrupted JSON: `.bak` backup + reseed.
+- [x] **814 [P1]** — Configurable max todos limit (default 1000).
+- [x] **815 [P1]** — IDs don't leak to long URLs — UUID is fine.
+- [x] **816 [P1]** — Slugs not needed in the structure — UUID id.
+- [ ] **817 [P1]** — O(1) find by id via Map — for fast deletions.
+- [ ] **818 [P1]** — Map for filtering — items remain an array of objects.
+- [x] **819 [P1]** — Deep clone before mutation — avoid alias bugs.
+- [x] **820 [P1]** — Don't write the full array if nothing changed — guard.
+- [x] **821 [P1]** — Writes use os.tmpdir + rename — atomic.
+- [x] **822 [P1]** — Flush on 5s interval (optional) — keep simple per-mutation.
+- [ ] **823 [P1]** — Prevent race: serialize mutations via microtask queue — P2.
+- [ ] **824 [P1]** — Cache list render when filter hasn't changed (memory) — P2.
+- [x] **825 [P1]** — Derive stat counts from array (reduce) — cheap.
+- [x] **826 [P1]** — Case-insensitive string comparison in search — normalized.
+- [x] **827 [P1]** — Trim input → save clean.
+- [x] **828 [P1]** — Limit to 1 word at 200 chars — lightweight.
+- [x] **829 [P1]** — Simple multiply-by logic — no bloat.
+- [ ] **830 [P1]** — When the file exceeds 1MB? — pagination.
+- [x] **831 [P1]** — Don't use fs sync on the event loop? For small 100KB files — safe.
+- [x] **832 [P1]** — Build TS → CommonJS — runs directly in Node.
+- [x] **833 [P1]** — No build step for CSS (manual tokens) — saves cost.
+- [x] **834 [P1]** — Run with `NODE_ENV=production` without extra env vars.
+- [x] **835 [P1]** — Only 1 port binding.
+- [x] **836 [P1]** — Retry, backoff? Not needed (local).
+- [x] **837 [P1]** — Health check stays.
+- [ ] **838 [P1]** — Upgrade test — pnpm update --latest then lock.
+- [x] **839 [P1]** — Verify no pnpm peer warnings.
+- [x] **840 [P1]** — Summary: small runtime footprint, clean code (target ~1.2k LOC).
 
 ---
 
-## 6. KEAMANAN (SECURITY) — butir 841–905
+## 6. SECURITY — items 841–905
 
-- [x] **841 [P0]** — Tambah `helmet` — atur security headers (X-Content-Type-Options, CSP dasar, dll).
-- [x] **842 [P1]** — Escape semua output EJS (`<%= %>`) — cegah XSS.
-- [x] **843 [P1]** — Jangan pakai `<%- %>` untuk data user tanpa sanitasi.
-- [x] **844 [P1]** — Validasi input: `req.body.name` wajib string, trim, max 200 char.
-- [x] **845 [P1]** — Validasi `req.params.id` UUID format — cegah path traversal/DoS string.
+- [x] **841 [P0]** — Add `helmet` — configure security headers (X-Content-Type-Options, basic CSP, etc.).
+- [x] **842 [P1]** — Escape all EJS output (`<%= %>`) — prevent XSS.
+- [x] **843 [P1]** — Don't use `<%- %>` for user data without sanitization.
+- [x] **844 [P1]** — Input validation: `req.body.name` must be a string, trimmed, max 200 chars.
+- [x] **845 [P1]** — Validate `req.params.id` UUID format — prevent path traversal/DoS strings.
 - [x] **846 [P1]** — Body parser limit `express.json/urlencoded({ limit: '10kb' })`.
-- [x] **847 [P1]** — `helmet.hidePoweredBy` — jangan bocorkan framework.
-- [x] **848 [P1]** — CSP dasar: `default-src 'self'` + fonts inline-style — konten eksternal dikontrol.
-- [x] **849 [P1]** — Tidak ada secret/key di repo (jwt secret dihapus).
+- [x] **847 [P1]** — `helmet.hidePoweredBy` — don't leak the framework.
+- [x] **848 [P1]** — Basic CSP: `default-src 'self'` + fonts inline-style — external content controlled.
+- [x] **849 [P1]** — No secrets/keys in repo (jwt secret removed).
 - [x] **850 [P1]** — `Referrer-Policy: strict-origin-when-cross-origin`.
-- [x] **851 [P1]** — `Permissions-Policy` (geolocation=() dll) — opsional.
-- [x] **852 [P1]** — Jangan tampilkan stack trace di prod (error view ramah).
-- [x] **853 [P1]** — Jangan log body sensitive.
-- [x] **854 [P1]** — `--inspect` no di prod.
-- [ ] **855 [P1]** — Rate limit (optional) pada mutasi bila publik — express-rate-limit ringan.
-- [x] **856 [P1]** — No eval / Function constructor di JS.
-- [x] **857 [P1]** — API health tanpa data pribadi.
-- [x] **858 [P1]** — CORS dibatasi (same-origin) — tak perlu `*`.
-- [x] **859 [P1]** — Fitur server yang tidak dipakai: remove frameguard? Helmet bawaan.
-- [x] **860 [P1]** — Cache JSON store tidak diserve publik (data dir ignore).
-- [x] **861 [P1]** — `trust proxy` hati-hati bila dipakai (IP spoof) — set `1` saja bila di proxy.
-- [x] **862 [P1]** — Tangani `unhandledRejection` — log & exit? warn.
-- [x] **863 [P1]** — Tangani mutasi duplikat (idempotensi POST) — simple.
-- [x] **864 [P1]** — Form hijack — SameSite? Cookie tak ada lagi.
-- [x] **865 [P1]** — No CSRF dibutuhkan (no cookie/session) — jika tambah auth nanti, pertimbangkan.
-- [x] **866 [P1]** — Validation regex untuk UUID — jangan buka injection via id.
-- [x] **867 [P1]** — Jangan mirror input ke class/style.
-- [x] **868 [P1]** — Update dependency rutin (security patches).
-- [ ] **869 [P1]** — Umumkan `npm audit` / `pnpm audit` dalam CI — untuk produksi.
-- [x] **870 [P1]** — Jangan pakai old express 4 versi paham? Update ke 4.x patch atau 5 bila stabil.
-- [x] **871 [P1]** — Container? Untuk lokal tidak perlu — hindari attack surface.
-- [x] **872 [P1]** — Secret di env — tidak ada lagi; PORT default.
-- [x] **873 [P1]** — File path terlindungi — DATA_PATH eksternal bisa.
-- [ ] **874 [P1]** — Siapkan forward proxy — di luar scope.
-- [x] **875 [P1]** — Health endpoint sabar (no flooding info).
-- [x] **876 [P1]** — Header response remove `X-Powered-By`.
-- [x] **877 [P1]** — Trust NO user input ke dalam template/include path.
-- [x] **878 [P1]** — Tolak request body besar di limit.
-- [x] **879 [P1]** — NORMALIZE unicode input? — trim cukup.
-- [x] **880 [P1]** — SSRF — tidak ada URL fetch.
-- [x] **881 [P1]** — Provider dependency minimal — attack surface kecil.
-- [x] **882 [P1]** — Update EJS patch (XSS fix masa lalu) — latest.
-- [x] **883 [P1]** — Sediakan `crypto.randomUUID` standar.
-- [x] **884 [P1]** — No `eval` di template (default EJS aman).
-- [x] **885 [P1]** — CSP style-src inline untuk token — ok.
-- [x] **886 [P1]** — `helmet` version terbaru di deps.
-- [ ] **887 [P1]** — Rate limit pada path `/` mutasi bila publik.
-- [x] **888 [P1]** — Cache-Control `no-store` pada response mutasi.
-- [x] **889 [P1]** — Jangan simpan password (tidak ada auth).
-- [x] **890 [P1]** — Login? — dihapus — jangan sebagian auth.
-- [x] **891 [P1]** — Sirkuit kecil = audit mudah.
-- [x] **892 [P1]** — Document security (README) — ukuran mitigasi.
-- [x] **893 [P1]** — Don't put function in URLs.
-- [x] **894 [P1]** — Pastikan data unik (todos.json) tidak trackable.
-- [x] **895 [P1]** — Express 4 → 5 migration opsional (async handler tidak perlu).
-- [x] **896 [P1]** — Gunakan `res.redirect` pada PRG — bukan render langsung.
-- [x] **897 [P1]** — Anti-autocomplete di form? Tidak perlu (bukan data sensitif).
+- [x] **851 [P1]** — `Permissions-Policy` (geolocation=() etc.) — optional.
+- [x] **852 [P1]** — Don't show stack traces in prod (friendly error view).
+- [x] **853 [P1]** — Don't log sensitive bodies.
+- [x] **854 [P1]** — No `--inspect` in prod.
+- [ ] **855 [P1]** — Rate limit (optional) on mutations if public — lightweight express-rate-limit.
+- [x] **856 [P1]** — No eval / Function constructor in JS.
+- [x] **857 [P1]** — Health API without personal data.
+- [x] **858 [P1]** — CORS restricted (same-origin) — no `*` needed.
+- [x] **859 [P1]** — Unused server features: remove frameguard? Helmet includes it.
+- [x] **860 [P1]** — JSON store cache not served publicly (data dir ignored).
+- [x] **861 [P1]** — `trust proxy` used carefully (IP spoof) — set to `1` only if behind a proxy.
+- [x] **862 [P1]** — Handle `unhandledRejection` — log & exit? warn.
+- [x] **863 [P1]** — Handle duplicate mutations (POST idempotency) — simple.
+- [x] **864 [P1]** — Form hijacking — SameSite? No cookies anymore.
+- [x] **865 [P1]** — No CSRF needed (no cookie/session) — if auth is added later, consider it.
+- [x] **866 [P1]** — UUID validation regex — don't open injection via id.
+- [x] **867 [P1]** — Don't mirror input into class/style attributes.
+- [x] **868 [P1]** — Update dependencies routinely (security patches).
+- [ ] **869 [P1]** — Run `npm audit` / `pnpm audit` in CI — for production.
+- [x] **870 [P1]** — Don't use an old Express 4 minor version? Update to 4.x patch or 5 if stable.
+- [x] **871 [P1]** — Container? Not needed for local — reduce attack surface.
+- [x] **872 [P1]** — Secrets in env — none anymore; PORT has default.
+- [x] **873 [P1]** — File paths protected — external DATA_PATH possible.
+- [ ] **874 [P1]** — Prepare a forward proxy — out of scope.
+- [x] **875 [P1]** — Health endpoint stays calm (no info flooding).
+- [x] **876 [P1]** — Response header removes `X-Powered-By`.
+- [x] **877 [P1]** — Trust NO user input in template/include paths.
+- [x] **878 [P1]** — Reject large request bodies at the limit.
+- [x] **879 [P1]** — Normalize unicode input? — trim is enough.
+- [x] **880 [P1]** — SSRF — no URL fetching.
+- [x] **881 [P1]** — Minimal provider dependencies — small attack surface.
+- [x] **882 [P1]** — Updated EJS patch (past XSS fix) — latest.
+- [x] **883 [P1]** — Standard `crypto.randomUUID` provided.
+- [x] **884 [P1]** — No `eval` in templates (EJS default is safe).
+- [x] **885 [P1]** — CSP style-src inline for tokens — fine.
+- [x] **886 [P1]** — Latest `helmet` version in deps.
+- [ ] **887 [P1]** — Rate limit on `/` mutation path if public.
+- [x] **888 [P1]** — `Cache-Control: no-store` on mutation responses.
+- [x] **889 [P1]** — No password storage (no auth).
+- [x] **890 [P1]** — Login? — removed — don't use partial auth.
+- [x] **891 [P1]** — Small circuit = easy audit.
+- [x] **892 [P1]** — Documented security (README) — at a glance.
+- [x] **893 [P1]** — Don't put functions in URLs.
+- [x] **894 [P1]** — Ensure unique data (todos.json) isn't trackable.
+- [x] **895 [P1]** — Express 4 → 5 migration optional (async handlers not needed).
+- [x] **896 [P1]** — Use `res.redirect` for PRG — not direct rendering.
+- [x] **897 [P1]** — Anti-autocomplete on forms? Not needed (no sensitive data).
 - [x] **898 [P1]** — Container wait — non-relevant.
-- [x] **899 [P1]** — Akses jalan data via symlink? Tidak.
-- [x] **900 [P1]** — Log request tidak menampilkan cookies.
-- [x] **901 [P1]** — Avoid leak ID dalam daftar — UUID ok.
-- [x] **902 [P1]** — Integer overflow — tidak.
-- [x] **903 [P1]** — Menu protected — semua publik (todo).
-- [x] **904 [P1]** — Secure by default: tidak ada aktivitas berbahaya.
-- [x] **905 [P1]** — Sediakan sekuriti config di docs (helmet, limiter).
+- [x] **899 [P1]** — Data path access via symlink? No.
+- [x] **900 [P1]** — Request logs don't display cookies.
+- [x] **901 [P1]** — Avoid leaking IDs in lists — UUID is fine.
+- [x] **902 [P1]** — Integer overflow — none.
+- [x] **903 [P1]** — Protected menus — everything is public (todo).
+- [x] **904 [P1]** — Secure by default: no dangerous activities.
+- [x] **905 [P1]** — Documented security config (helmet, limiter).
 
 ---
 
-## 7. AKSESIBILITAS (A11Y) — butir 906–960
+## 7. ACCESSIBILITY (A11Y) — items 906–960
 
-- [x] **906 [P0]** — Semua kontrol punya `<label>` tersambung (`for`/`id`) — bukan placeholder saja.
-- [x] **907 [P0]** — `lang="id"` (sudah jadi di SEO).
-- [x] **908 [P1]** — Karakter simbol ikon diberi `aria-hidden="true"` + `aria-label` di elemen interaktif.
-- [x] **909 [P1]** — Tombol icon edit/delete: `aria-label="Ubah rencana"` / "Hapus rencana".
-- [x] **910 [P1]** — Checkbox todo: role checkbox + label (nama todo) — focusable.
-- [x] **911 [P1]** — Navigasi keyboard penuh: Tab order natural; Enter/Space pada tombol.
-- [x] **912 [P1]** — Focus ring terlihat jelas (2px kontras + offset).
-- [x] **913 [P1]** — Modal konfirmasi: focus trap + `role="dialog"` + `aria-modal` + Esc close.
-- [x] **914 [P1]** — Toast/error: `role="alert"` / `role="status"` — announce SR.
-- [x] **915 [P1]** — Empty state: teks dengan `aria-label` — tetap terbaca.
-- [x] **916 [P1]** — Filter/search status diumumkan (`aria-live="polite"` count result).
-- [x] **917 [P1]** — Kontras WCAG AA (4.5:1) di semua teks & kontrol.
-- [x] **918 [P1]** — Jangan warna sebagai satu-satunya sinyal status (sertakan teks/ikon).
-- [x] **919 [P1]** — `prefers-reduced-motion` — matikan animasi; tanpa layering motion.
-- [x] **920 [P1]** — `prefers-reduced-transparency` — demote blur → surface solid.
-- [x] **921 [P1]** — Target sentuh ≥44×44 (mobile/touch).
-- [x] **922 [P1]** — Form error: teks terhubung via `aria-describedby`.
-- [x] **923 [P1]** — Form input required: `required` + pesan.
-- [x] **924 [P1]** — Semua gambar dekoratif `alt=""`.
-- [x] **925 [P1]** — Semantik heading skema (h1→h2→p).
-- [x] **926 [P1]** — Skip link "Lewati ke konten" di awal body.
-- [x] **927 [P1]** — Header `<nav>` dengan label bila ada menu.
-- [x] **928 [P1]** — Footer tidak menahan (a11y landmark).
-- [x] **929 [P1]** — Tombol aksi: gunakan `<button>` (bukan `<a>` tanpa href) — submit concern.
-- [x] **930 [P1]** — Link ke add menggunakan `<a href="/add-todo">` (crawlable + keyboard).
-- [x] **931 [P1]** — Ulangi konten tersembunyi: gunakan `.visually-hidden` bila perlu.
-- [x] **932 [P1]** — Toast score jelas: role + life.
-- [x] **933 [P1]** — `<html>` font accessible; zoom 200% tetap layak.
-- [x] **934 [P1]** — Kontras pada focus/active/hover.
-- [x] **935 [P1]** — Input placeholder bukan ganti label.
-- [x] **936 [P1]** — Autocomplete (search) — tidak perlu.
-- [x] **937 [P1]** — Ulangi fokus ke form saat error di submit.
-- [x] **938 [P1]** — Tidak merahjadi merah pada op-error (teks+ikon).
-- [x] **939 [P1]** — `aria-current` pada chip filter aktif.
-- [x] **940 [P1]** — Live region untuk "2 tersisa" update.
-- [x] **941 [P1]** — Modal scroll lock body.
-- [x] **942 [P1]** — Delete confirm: fokus pindah ke tombol Batal.
-- [x] **943 [P1]** — Desktop & mobile keyboard/screens sizes.
-- [x] **944 [P1]** — Form add/edit — submit via Enter (native).
-- [ ] **945 [P1]** — High contrast mode (Windows HC) — pakai token + surface pattern.
-- [x] **946 [P1]** — Dark mode contrast juga AA.
-- [x] **947 [P1]** — Nama aria tombol tidak abbreviated only.
-- [x] **948 [P1]** — Announce perubahan saat edit di halaman kedua — natural.
-- [x] **949 [P1]** — Jangan fokus hijau jika tidak fokus — selalu ring.
-- [x] **950 [P1]** — Pastikan semua elemen interaktif dapat dijangkau keyboard (no display:none on focus target).
-- [x] **951 [P1]** — Toast tidak mengganggu pembacaan SR.
-- [ ] **952 [P1]** — Pilih perangkat: screenreader test basic (NVDA/ORCA).
-- [x] **953 [P1]** — Jangan auto-advance animasi tanpa kontrol.
-- [x] **954 [P1]** — `aria-label` konsisten pada nav & aksi berulang.
-- [x] **955 [P1]** — Status chip punya teks label (bukan dot warna saja).
-- [x] **956 [P1]** — Empty state tidak kosong secara a11y (bukan gambar only).
-- [x] **957 [P1]** — Langkah focus movement clean.
-- [ ] **958 [P1]** — Font size min 14px di UI.
-- [x] **959 [P1]** — Tidak ada emphasis UPPERCASE untuk teks panjang (kecuali label tombol).
-- [ ] **960 [P1]** — Audit aksesibilitas (axe) di CI — target 0 critical (P2).
+- [x] **906 [P0]** — All controls have a connected `<label>` (`for`/`id`) — not placeholder-only.
+- [x] **907 [P0]** — `lang="id"` (already done in SEO).
+- [x] **908 [P1]** — Icon symbol characters get `aria-hidden="true"` + `aria-label` on interactive elements.
+- [x] **909 [P1]** — Edit/delete icon buttons: `aria-label="Ubah rencana"` / "Hapus rencana".
+- [x] **910 [P1]** — Todo checkbox: checkbox role + label (todo name) — focusable.
+- [x] **911 [P1]** — Full keyboard navigation: natural Tab order; Enter/Space on buttons.
+- [x] **912 [P1]** — Clearly visible focus ring (2px contrasting ring + offset).
+- [x] **913 [P1]** — Confirmation modal: focus trap + `role="dialog"` + `aria-modal` + Esc close.
+- [x] **914 [P1]** — Toast/error: `role="alert"` / `role="status"` — screen reader announcement.
+- [x] **915 [P1]** — Empty state: text with `aria-label` — still readable.
+- [x] **916 [P1]** — Filter/search status announced (`aria-live="polite"` result count).
+- [x] **917 [P1]** — WCAG AA contrast (4.5:1) on all text & controls.
+- [x] **918 [P1]** — Color not the sole status signal (include text/icons).
+- [x] **919 [P1]** — `prefers-reduced-motion` — disable animations; no motion layering.
+- [x] **920 [P1]** — `prefers-reduced-transparency` — demote blur → solid surface.
+- [x] **921 [P1]** — Touch targets ≥44×44 (mobile/touch).
+- [x] **922 [P1]** — Form errors: text linked via `aria-describedby`.
+- [x] **923 [P1]** — Required form inputs: `required` + message.
+- [x] **924 [P1]** — All decorative images `alt=""`.
+- [x] **925 [P1]** — Semantic heading hierarchy (h1→h2→p).
+- [x] **926 [P1]** — Skip link "Lewati ke konten" at start of body.
+- [x] **927 [P1]** — `<nav>` header with label if menu present.
+- [x] **928 [P1]** — Footer doesn't trap focus (a11y landmark).
+- [x] **929 [P1]** — Action buttons: use `<button>` (not `<a>` without href) — submit concern.
+- [x] **930 [P1]** — Link to add uses `<a href="/add-todo">` (crawlable + keyboard).
+- [x] **931 [P1]** — Repeat hidden content: use `.visually-hidden` when needed.
+- [x] **932 [P1]** — Clear toast score: role + live.
+- [x] **933 [P1]** — Accessible `<html>` font; 200% zoom still usable.
+- [x] **934 [P1]** — Contrast on focus/active/hover.
+- [x] **935 [P1]** — Input placeholder doesn't replace the label.
+- [x] **936 [P1]** — Autocomplete (search) — not needed.
+- [x] **937 [P1]** — Refocus the form on submit error.
+- [x] **938 [P1]** — No red-on-red on error (text+icon).
+- [x] **939 [P1]** — `aria-current` on active filter chip.
+- [x] **940 [P1]** — Live region for "2 tersisa" updates.
+- [x] **941 [P1]** — Modal scroll-locks the body.
+- [x] **942 [P1]** — Delete confirm: focus moves to Cancel button.
+- [x] **943 [P1]** — Desktop & mobile keyboard/screen sizes tested.
+- [x] **944 [P1]** — Add/edit form — submit via Enter (native).
+- [ ] **945 [P1]** — High contrast mode (Windows HC) — use tokens + surface patterns.
+- [x] **946 [P1]** — Dark mode contrast also meets AA.
+- [x] **947 [P1]** — Aria button names not abbreviated only.
+- [x] **948 [P1]** — Announce changes when editing on a second page — natural.
+- [x] **949 [P1]** — Don't show green focus when not focused — always ring.
+- [x] **950 [P1]** — Ensure all interactive elements are keyboard-reachable (no display:none on focus targets).
+- [x] **951 [P1]** — Toast doesn't interfere with screen reader reading.
+- [ ] **952 [P1]** — Pick a device: basic screen reader test (NVDA/ORCA).
+- [x] **953 [P1]** — Don't auto-advance animations without control.
+- [x] **954 [P1]** — Consistent `aria-label` on nav & repeated actions.
+- [x] **955 [P1]** — Status chips have text labels (not just colored dots).
+- [x] **956 [P1]** — Empty state not empty from an a11y perspective (not image-only).
+- [x] **957 [P1]** — Clean focus movement steps.
+- [ ] **958 [P1]** — Minimum 14px font size in UI.
+- [x] **959 [P1]** — No UPPERCASE emphasis for long text (except button labels).
+- [ ] **960 [P1]** — Accessibility audit (axe) in CI — target 0 critical (P2).
 
 ---
 
-## 8. TESTING & QUALITY — butir 961–1005
+## 8. TESTING & QUALITY — items 961–1005
 
-- [x] **961 [P0]** — Sediakan minimal **1 test** untuk service todo (CRUD + persist) — short-circuit regresi.
+- [x] **961 [P0]** — Provide at least **1 test** for the todo service (CRUD + persistence) — short-circuit regressions.
 - [x] **962 [P1]** — Unit test `todo.service` (sort, find, filter, persist).
 - [x] **963 [P1]** — Unit test validator helper (required, maxLength).
 - [x] **964 [P1]** — Integration test route `/` (GET 200, render HTML).
-- [x] **965 [P1]** — Integration: POST / (tambah), redirect + data tersimpan.
-- [x] **966 [P1]** — Integration: PUT /:id ubah nama, response.
-- [x] **967 [P1]** — Integration: DELETE /:id menghapus.
-- [x] **968 [P1]** — Test edge: input kosong → error; id invalid → 404/redirect.
-- [x] **969 [P1]** — Test data corrupt → recovery to default.
+- [x] **965 [P1]** — Integration: POST / (add), redirect + data saved.
+- [x] **966 [P1]** — Integration: PUT /:id rename, response.
+- [x] **967 [P1]** — Integration: DELETE /:id removes item.
+- [x] **968 [P1]** — Edge test: empty input → error; invalid id → 404/redirect.
+- [x] **969 [P1]** — Test corrupted data → recovery to default.
 - [x] **970 [P1]** — Test 404 route.
-- [x] **971 [P1]** — Test helper `render` mengembalikan 200.
-- [ ] **972 [P1]** — Snapshot kecil markup? — rapuh; skip.
-- [x] **973 [P1]** — Test framework: **Vitest** (ringan) atau `node:test` bawaan — tanpa jurang berlebih.
-- [x] **974 [P1]** — Test di CI (untuk itics flow).
-- [x] **975 [P1]** — Coverage target 80% pada service — P2.
-- [x] **976 [P1]** — Test warna? — lint.
+- [x] **971 [P1]** — Test `render` helper returns 200.
+- [ ] **972 [P1]** — Small markup snapshot? — fragile; skip.
+- [x] **973 [P1]** — Test framework: **Vitest** (lightweight) or built-in `node:test` — no excessive overhead.
+- [x] **974 [P1]** — Tests in CI (for CI/CD flow).
+- [x] **975 [P1]** — 80% coverage target on service — P2.
+- [x] **976 [P1]** — Lint for test colors? — lint.
 - [x] **977 [P1]** — E2E happy path via curl / supertest.
-- [ ] **978 [P1]** — Test responsive via Playwright (P2) — screenshot breakpoint.
-- [ ] **979 [P1]** — A11y scan axe sekali — P2.
-- [ ] **980 [P1]** — Lihat Lighthouse budget CI — P2.
-- [x] **981 [P1]** — Smoke test prod (health + index) — P1 saat deploy.
-- [x] **982 [P1]** — Tambah `pretest` typecheck.
-- [ ] **983 [P1]** — Utils test kecil: flash parse — skip.
-- [x] **984 [P1]** — Cek velocidade mutasi serial.
+- [ ] **978 [P1]** — Responsive test via Playwright (P2) — screenshot breakpoints.
+- [ ] **979 [P1]** — A11y scan axe once — P2.
+- [ ] **980 [P1]** — Check Lighthouse budget CI — P2.
+- [x] **981 [P1]** — Smoke test prod (health + index) — P1 at deploy time.
+- [x] **982 [P1]** — Add `pretest` typecheck.
+- [ ] **983 [P1]** — Small utils test: flash parse — skip.
+- [x] **984 [P1]** — Check serial mutation speed.
 - [x] **985 [P1]** — Test stale file? Flush.
 - [x] **986 [P1]** — Test max limit (1000) — guard.
-- [x] **987 [P1]** — Test XSS escaped (input `<script>` tersimpan sebagai teks).
+- [x] **987 [P1]** — Test XSS escaped (input `<script>` saved as text).
 - [x] **988 [P1]** — Test Unicode (emoji) input.
-- [x] **989 [P1]** — Test long name (201 char) rejected.
+- [x] **989 [P1]** — Test long name (201 chars) rejected.
 - [x] **990 [P1]** — Test duplicate name OK.
 - [x] **991 [P1]** — Test empty todos state render.
 - [x] **992 [P1]** — Test sort behavior.
-- [x] **993 [P1]** — Test toggle complete.
-- [x] **994 [P1]** — Scaffold: `pnpm test` adil.
-- [x] **995 [P1]** — Deterministic data path di test (tmp dir).
-- [x] **996 [P1]** — Cleanup test file tak.
+- [x] **993 [P1]** — Test toggle completion.
+- [x] **994 [P1]** — Scaffold: `pnpm test` works.
+- [x] **995 [P1]** — Deterministic data path in tests (tmp dir).
+- [x] **996 [P1]** — Cleanup test file.
 
 ### 8.1 Lint & Format (Biome) — 1017–1025
 
-- [x] **997 [P0]** — Migrasi ESLint → **Biome**: `biome.json` dengan config TS.
-- [x] **998 [P0]** — Script: `lint` = `biome check`; `format` = `biome format --write`.
-- [x] **999 [P1]** — enable `organizeImports` (sort import auto).
-- [x] **1000 [P1]** — Aktifkan rule recommended + `noExplicitAny` (fix semua).
-- [x] **1001 [P1]** — `useSortedClasses` bila CSS-in-JS — tidak.
-- [x] **1002 [P1]** — Lint-staged: `biome check --write --staged`.
-- [x] **1003 [P1]** — Integrasi editor (VSCode extension) — api.
-- [x] **1004 [P1]** — Format pada commit otomatis.
-- [x] **1005 [P1]** — Tidak ada konflik prettier/eslint — satu tool (Biome).
+- [x] **997 [P0]** — Migrate ESLint → **Biome**: `biome.json` with TS config.
+- [x] **998 [P0]** — Scripts: `lint` = `biome check`; `format` = `biome format --write`.
+- [x] **999 [P1]** — Enable `organizeImports` (auto-sort imports).
+- [x] **1000 [P1]** — Enable recommended rules + `noExplicitAny` (fix all).
+- [x] **1001 [P1]** — `useSortedClasses` for CSS-in-JS — not applicable.
+- [x] **1002 [P1]** — lint-staged: `biome check --write --staged`.
+- [x] **1003 [P1]** — Editor integration (VSCode extension) — api.
+- [x] **1004 [P1]** — Format on commit automatically.
+- [x] **1005 [P1]** — No prettier/eslint conflicts — single tool (Biome).
 
 ---
 
-## 9. PROJECT / DX / DEVOPS — butir 1006–1050
+## 9. PROJECT / DX / DEVOPS — items 1006–1050
 
-- [x] **1006 [P0]** — Tulis `README.md`: deskripsi, setup (`pnpm install`, `pnpm dev`), struktur, scripts, data lokasi.
-- [x] **1007 [P0]** — Hapus env setelah kehadiran local data; dokumentasi port.
-- [x] **1008 [P1]** — `.gitignore`: tambah `data/`, hapus pengecualian env? (Biarkan).
-- [x] **1009 [P1]** — Build script cross-platform (`rm -rf` di Windows gagal) → gunakan `rimraf` (dev) OR `pnpm dlx rimraf`? — perbaiki.
-- [x] **1010 [P1]** — Script dev: `nodemon src/index.ts` tanpa NODE_ENV paksa.
-- [x] **1011 [P1]** — Set `"type": "module"`? tetapkan CJS (biar stabil) — dokumentasikan.
+- [x] **1006 [P0]** — Write `README.md`: description, setup (`pnpm install`, `pnpm dev`), structure, scripts, data location.
+- [x] **1007 [P0]** — Remove env after local data is in place; document the port.
+- [x] **1008 [P1]** — `.gitignore`: add `data/`, remove env exception? (Keep it).
+- [x] **1009 [P1]** — Cross-platform build script (`rm -rf` fails on Windows) → use `rimraf` (dev) OR `pnpm dlx rimraf`? — fix it.
+- [x] **1010 [P1]** — Dev script: `nodemon src/index.ts` without forced NODE_ENV.
+- [x] **1011 [P1]** — Set `"type": "module"`? Stick with CJS (stable) — document it.
 - [x] **1012 [P1]** — Node engines: `"node": ">=20"`.
 - [x] **1013 [P1]** — Package manager field: `pnpm@>=9`.
-- [x] **1014 [P1]** — Hapus `.npmrc` bila tak digunakan.
-- [x] **1015 [P1]** — Update `.prettierignore` → hapus (Biome handles); padahal file masih boleh.
-- [x] **1016 [P1]** — Docker: lokal tak perlu (hapus) atau buat `Dockerfile` single-stage sederhana bila deploy — P2.
-- [ ] **1017 [P1]** — PM2 ecosystem bila prod — P2.
-- [x] **1018 [P1]** — Deploy target: VPS/Railway/Fly — dokumentasi.
-- [x] **1019 [P1]** — Health endpoint dipakai untuk uptime check.
-- [x] **1020 [P1]** — CI GitHub Actions: lint+build+test.
-- [ ] **1021 [P1]** — CD optional (workspace deploy).
+- [x] **1014 [P1]** — Remove `.npmrc` if unused.
+- [x] **1015 [P1]** — Update `.prettierignore` → remove (Biome handles it); file may still exist.
+- [x] **1016 [P1]** — Docker: not needed locally (remove) or create a simple single-stage `Dockerfile` for deployment — P2.
+- [ ] **1017 [P1]** — PM2 ecosystem for production — P2.
+- [x] **1018 [P1]** — Deploy target: VPS/Railway/Fly — documented.
+- [x] **1019 [P1]** — Health endpoint used for uptime checks.
+- [x] **1020 [P1]** — GitHub Actions CI: lint+build+test.
+- [ ] **1021 [P1]** — Optional CD (workspace deploy).
 - [x] **1022 [P1]** — Versioning `0.2.0`.
-- [x] **1023 [P1]** — Changelog sederhana.
-- [x] **1024 [P1]** — GitHub metrics? Tidak.
-- [x] **1025 [P1]** — Editorconfig konsisten (ada).
-- [x] **1026 [P1]** — `eslintrc/prettier` files dihapus — bersih.
-- [x] **1027 [P1]** — Docs: arsitektur data (JSON local) — sekilas di README.
-- [x] **1028 [P1]** — Ke mana upgrade ketika butuh multi-user → imbuhan dokumentasi.
-- [x] **1029 [P1]** — Backup data: copy `data/todos.json` ke manual.
-- [x] **1030 [P1]** — Export/Import sebagai JSON (fitur P2: tombol unduh/unggah).
-- [x] **1031 [P1]** — Git tags semver.
-- [x] **1032 [P1]** — CI pin pnpm version.
-- [x] **1033 [P1]** — Lockfile commited — ya.
-- [x] **1034 [P1]** — Audit dependencies rutin.
-- [x] **1035 [P1]** — Checklist PR kecil (format + test).
-- [x] **1036 [P1]** — VSCode settings: `format on save` pakai biome — P2.
-- [x] **1037 [P1]** — Kontribusi: CONTRIBUTING brief bila publik.
-- [x] **1038 [P1]** — License Apache sudah.
+- [x] **1023 [P1]** — Simple changelog.
+- [x] **1024 [P1]** — GitHub metrics? No.
+- [x] **1025 [P1]** — Consistent editorconfig (present).
+- [x] **1026 [P1]** — `eslintrc/prettier` files removed — clean.
+- [x] **1027 [P1]** — Docs: data architecture (local JSON) — summarized in README.
+- [x] **1028 [P1]** — Upgrade path when multi-user is needed → documented in supplement.
+- [x] **1029 [P1]** — Data backup: copy `data/todos.json` manually.
+- [x] **1030 [P1]** — Export/Import as JSON (P2 feature: download/upload button).
+- [x] **1031 [P1]** — Git semver tags.
+- [x] **1032 [P1]** — CI pins pnpm version.
+- [x] **1033 [P1]** — Lockfile committed — yes.
+- [x] **1034 [P1]** — Routine dependency audit.
+- [x] **1035 [P1]** — Small PR checklist (format + test).
+- [x] **1036 [P1]** — VSCode settings: `format on save` using biome — P2.
+- [x] **1037 [P1]** — Contributing: brief CONTRIBUTING guide if public.
+- [x] **1038 [P1]** — Apache license already present.
 - [ ] **1039 [P1]** — Monitoring up (uptime check) — P2.
-- [ ] **1040 [P1]** — Manual deploy script (opsional).
-- [x] **1041 [P1]** — Time zone default lokal.
-- [x] **1042 [P1]** — Adopt codegen? Tidak.
-- [x] **1043 [P1]** — Refactor documentasi singkat penting.
-- [ ] **1044 [P1]** — Performance test deployment — P2.
-- [x] **1045 [P1]** — Storage path custom via `DATA_PATH` env — dokumentasi.
-- [x] **1046 [P1]** — Semua app local — privasi penuh (POI selling point).
-- [x] **1047 [P1]** — Hapus sisa `express-ts-starter` branding dari README — ganti todo-app.
-- [x] **1048 [P1]** — `pnpm build` verifikasi outDir.
+- [ ] **1040 [P1]** — Manual deploy script (optional).
+- [x] **1041 [P1]** — Default local timezone.
+- [x] **1042 [P1]** — Adopt codegen? No.
+- [x] **1043 [P1]** — Short refactoring documentation is important.
+- [ ] **1044 [P1]** — Deployment performance test — P2.
+- [x] **1045 [P1]** — Custom storage path via `DATA_PATH` env — documented.
+- [x] **1046 [P1]** — Entire app runs locally — full privacy (selling point).
+- [x] **1047 [P1]** — Remove leftover `express-ts-starter` branding from README — replace with todo-app.
+- [x] **1048 [P1]** — `pnpm build` verifies outDir.
 - [x] **1049 [P1]** — `.editorconfig` charset/lf.
-- [x] **1050 [P1]** — Jalankan audit penuh setelah refactor & catat item yang fix.
+- [x] **1050 [P1]** — Run full audit after refactor & document items that were fixed.
 
 ---
 
-## RINGKASAN EKSEKUSI (fase 1 — sudah/belum)
+## EXECUTION SUMMARY (phase 1 — done/not done)
 
-| Kategori | Butir | P0 |
+| Category | Items | P0 |
 |---|---|---|
 | UI/UX Redesign | 1–460 (460) | 30 |
 | SEO | 461–555 (95) | 3 |
 | Performance | 556–660 (105) | 3 |
 | Best Practice | 661–750 (90) | 2 |
 | Efficiency & Refactor | 751–840 (90) | 2 |
-| Keamanan | 841–905 (65) | 1 |
-| Aksesibilitas | 906–960 (55) | 2 |
+| Security | 841–905 (65) | 1 |
+| Accessibility | 906–960 (55) | 2 |
 | Testing & Quality | 961–1005 (45) | 3 |
 | Project/DX/DevOps | 1006–1050 (45) | 2 |
 
-**Total butir: 1.050.**
+**Total items: 1,050.**
 
-> Catatan akhir: tabel ringkasan di atas adalah titik masuk. Saat mengambil keputusan untuk implementasi, mulai dari baris ber-**[P0]**, kemudian P1 sesuai phase. Status checklist `[x]` diperbarui tiap selesai satu poin.
+> Final note: the summary table above is the entry point. When making implementation decisions, start with the **[P0]** rows, then P1 by phase. The `[x]` checklist status is updated each time a point is completed.

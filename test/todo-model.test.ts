@@ -13,17 +13,17 @@ after(async () => {
     await stopDb();
 });
 
-test('969 — defaults skema: completed false, due null, stempel waktu diisi, prioritas opsional', async () => {
+test('969 — schema defaults: completed false, due null, timestamps set, priority optional', async () => {
     const doc = await TodoModel.create({ name: 'Rencana minimalis' });
     assert.equal(doc.name, 'Rencana minimalis');
     assert.equal(doc.completed, false, 'completed default false');
     assert.equal(doc.due, null, 'due default null');
-    assert.equal(doc.priority, undefined, 'prioritas opsional');
-    assert.ok(doc.createdAt instanceof Date, 'createdAt diisi mongoose');
-    assert.ok(doc.updatedAt instanceof Date, 'updatedAt diisi mongoose');
+    assert.equal(doc.priority, undefined, 'priority optional');
+    assert.ok(doc.createdAt instanceof Date, 'createdAt set by mongoose');
+    assert.ok(doc.updatedAt instanceof Date, 'updatedAt set by mongoose');
 });
 
-test('969 — enum prioritas menolak nilai tak dikenal (skema ODM)', async () => {
+test('969 — priority enum rejects unknown values (ODM schema)', async () => {
     const doc = new TodoModel({ name: 'Prioritas aneh', priority: 'urgent' } as never);
-    await assert.rejects(() => doc.save(), /priority/, 'validasi enum menolak "urgent"');
+    await assert.rejects(() => doc.save(), /priority/, 'enum validation rejects "urgent"');
 });

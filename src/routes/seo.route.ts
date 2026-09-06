@@ -3,7 +3,7 @@ import { SITE_URL } from '../config/app.ts';
 
 const router: Router = express.Router();
 
-/* 473/495 — sitemap dinamis via route; daftar halaman statis yang bisa di-index. */
+/* 473/495 — dynamic sitemap via route; the static pages that can be indexed. */
 router.get('/sitemap.xml', (_req, res) => {
     const urls = ['/', '/add-todo'].map((path) => `<url><loc>${SITE_URL}${path}</loc><changefreq>daily</changefreq></url>`);
     res.type('application/xml')
@@ -16,7 +16,7 @@ router.get('/sitemap.xml', (_req, res) => {
         );
 });
 
-/* 474/539 — robots.txt: bloque rute API ke crawler. */
+/* 474/539 — robots.txt: block API routes from crawlers. */
 router.get('/robots.txt', (_req, res) => {
     res.type('text/plain')
         .set('Cache-Control', 'no-cache')

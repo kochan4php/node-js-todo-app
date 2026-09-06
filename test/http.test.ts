@@ -41,14 +41,14 @@ after(
         }),
 );
 
-test('rute HTTP end-to-end (server Express asli + MongoDB) ', async (t) => {
-    await t.test('991 — GET / saat kosong: 200, empty-state, lang=id', async () => {
+test('HTTP routes end-to-end (real Express server + MongoDB) ', async (t) => {
+    await t.test('991 — GET / when empty: 200, empty-state, lang=id', async () => {
         const html = await htmlOf('/');
-        assert.ok(html.includes('Lembar masih'), 'empty-state tampil');
+        assert.ok(html.includes('Lembar masih'), 'empty-state displayed');
         assert.match(html, /lang="id"/);
     });
 
-    await t.test('965/985/987 — POST / tambah; tersimpan di MongoDB; XSS di-escape di HTML', async () => {
+    await t.test('965/985/987 — POST / creates; persisted in MongoDB; XSS escaped in HTML', async () => {
         const payload = 'Beli susu <script>alert(1)</script>';
         const res = await req('/', {
             method: 'POST',
@@ -60,14 +60,14 @@ test('rute HTTP end-to-end (server Express asli + MongoDB) ', async (t) => {
         assert.equal(res.headers.get('location'), '/?flash=created');
 
         const todos = await getAll();
-        assert.equal(todos[0]?.name, payload, 'nilai tersimpan verbatim di MongoDB');
+        assert.equal(todos[0]?.name, payload, 'value stored verbatim in MongoDB');
 
         const html = await htmlOf('/');
-        assert.ok(html.includes('&lt;script&gt;'), 'rendering HTML meng-escape <script>');
+        assert.ok(html.includes('&lt;script&gt;'), 'HTML rendering escapes <script>');
         assert.ok(!html.includes('<script>alert(1)</script>'));
     });
 
-    await t.test('988 — unicode/emoji diterima dan tampil', async () => {
+    await t.test('988 — unicode/emoji accepted and rendered', async () => {
         const name = 'Rencana 🎉 émoji ✓';
         const res = await req('/', {
             method: 'POST',
@@ -77,10 +77,10 @@ test('rute HTTP end-to-end (server Express asli + MongoDB) ', async (t) => {
         });
         assert.equal(res.status, 302);
         const html = await htmlOf('/');
-        assert.ok(html.includes(`>${name}<`), `render nama unicode: ${name}`);
+        assert.ok(html.includes(`>${name}<`), `html renders unicode name: ${name}`);
     });
 
-    await t.test('990 — nama duplikat tetap diterima', async () => {
+    await t.test('990 — duplicate names still accepted', async () => {
         const name = 'Rencana 🎉 émoji ✓';
         const res = await req('/', {
             method: 'POST',
@@ -91,10 +91,10 @@ test('rute HTTP end-to-end (server Express asli + MongoDB) ', async (t) => {
         assert.equal(res.status, 302);
         const html = await htmlOf('/');
         const count = (html.match(/>Rencana 🎉 émoji ✓</g) ?? []).length;
-        assert.ok(count >= 2, `daftar memuat >1 duplikat (ditemukan ${count})`);
+        assert.ok(count >= 2, `list shows >1 duplicate (found ${count})`);
     });
 
-    await t.test('989 — nama 201 karakter di-cap jadi 200 saat render', async () => {
+    await t.test('989 — 201-char name capped to 200 on render', async () => {
         const res = await req('/', {
             method: 'POST',
             headers: { 'content-type': 'application/x-www-form-urlencoded' },
@@ -103,13 +103,13 @@ test('rute HTTP end-to-end (server Express asli + MongoDB) ', async (t) => {
         });
         assert.equal(res.status, 302);
         const html = await htmlOf('/');
-        assert.ok(html.includes('a'.repeat(200)), 'nama terpotong tepat 200 karakter');
+        assert.ok(html.includes('a'.repeat(200)), 'name cut to exactly 200 characters');
     });
 
-    await t.test('966 — PUT /?_method=PUT mengubah nama', async () => {
+    await t.test('966 — PUT /?_method=PUT renames the todo', async () => {
         const data = await getAll();
         const target = data.find((todo) => todo.name === 'Beli susu <script>alert(1)</script>');
-        assert.ok(target, 'todo XSS ditemukan di data');
+        assert.ok(target, 'XSS todo found in data');
 
         const res = await req('/', {
             method: 'PUT',
@@ -125,21 +125,21 @@ test('rute HTTP end-to-end (server Express asli + MongoDB) ', async (t) => {
         assert.ok(!html.includes('Beli susu &lt;script&gt;'));
     });
 
-    await t.test('993 — POST /toggle/:id membalik status', async () => {
+    await t.test('993 — POST /toggle/:id flips the status', async () => {
         const data = await getAll();
         const target = data.find((todo) => todo.name === 'Belanja pagi');
         assert.ok(target);
 
         assert.equal((await req(`/toggle/${target.id}`, { method: 'POST', redirect: 'manual' })).status, 302);
         const done = await htmlOf('/');
-        assert.match(done, /is-done/, 'dicontreng setelah toggle');
+        assert.match(done, /is-done/, 'checked after toggle');
 
         assert.equal((await req(`/toggle/${target.id}`, { method: 'POST', redirect: 'manual' })).status, 302);
         const undone = await htmlOf('/');
-        assert.ok(!/class="todo-item[^"]*is-done/.test(undone), 'tidak is-done setelah toggle ulang');
+        assert.ok(!/class="todo-item[^"]*is-done/.test(undone), 'not is-done after toggling back');
     });
 
-    await t.test('968 — id tak dikenal di-fallback ke 302 ?flash=invalid', async () => {
+    await t.test('968 — unknown id falls back to 302 ?flash=invalid', async () => {
         const put = await req('/', {
             method: 'PUT',
             headers: { 'content-type': 'application/x-www-form-urlencoded' },
@@ -152,7 +152,7 @@ test('rute HTTP end-to-end (server Express asli + MongoDB) ', async (t) => {
         assert.equal((await req(`/toggle/000000000000000000000000`, { method: 'POST', redirect: 'manual' })).status, 302);
     });
 
-    await t.test('967 — DELETE / menghapus dari daftar', async () => {
+    await t.test('967 — DELETE / removes from the list', async () => {
         const data = await getAll();
         const target = data.find((todo) => todo.name === 'Belanja pagi');
         assert.ok(target);
@@ -170,7 +170,7 @@ test('rute HTTP end-to-end (server Express asli + MongoDB) ', async (t) => {
         assert.ok(!html.includes('Belanja pagi'));
     });
 
-    await t.test('jalur UI — update & delete lewat override ?_method di query (bentuk form asli)', async () => {
+    await t.test('UI path — update & delete via ?_method query override (native form shape)', async () => {
         const seed = await req('/', {
             method: 'POST',
             headers: { 'content-type': 'application/x-www-form-urlencoded' },
@@ -190,7 +190,7 @@ test('rute HTTP end-to-end (server Express asli + MongoDB) ', async (t) => {
         });
         assert.equal(update.status, 302);
         assert.equal(update.headers.get('location'), '/?flash=updated');
-        assert.match(await htmlOf('/'), /Untuk override \(berubah\)/, 'PUT via ?_method=PUT mengubah nama');
+        assert.match(await htmlOf('/'), /Untuk override \(berubah\)/, 'PUT via ?_method=PUT renames');
 
         const del = await req(`/?_method=DELETE`, {
             method: 'POST',
@@ -201,24 +201,24 @@ test('rute HTTP end-to-end (server Express asli + MongoDB) ', async (t) => {
         assert.equal(del.status, 302);
         assert.equal(del.headers.get('location'), '/?flash=deleted');
         const html = await htmlOf('/');
-        assert.ok(!html.includes('Untuk override'), 'DELETE via ?_method=DELETE menghapus');
+        assert.ok(!html.includes('Untuk override'), 'DELETE via ?_method=DELETE removes');
     });
 
-    await t.test('970 — rute tak dikenal → halaman 404 (status 404)', async () => {
+    await t.test('970 — unknown route → 404 page (status 404)', async () => {
         const res = await req('/halaman-tak-ada');
         assert.equal(res.status, 404);
         const html = await res.text();
         assert.ok(html.includes('Kesalahan 404'));
     });
 
-    await t.test('964/971 — render GET / dan /add-todo keduanya 200', async () => {
+    await t.test('964/971 — render GET / and /add-todo, both 200', async () => {
         const home = await htmlOf('/');
         assert.ok(home.includes('Apa rencanamu'));
         const add = await htmlOf('/add-todo');
         assert.ok(add.includes('Apa yang ingin'));
     });
 
-    await t.test('981 — smoke produksi: health-check mengonfirmasi DB tersambung + API root 200', async () => {
+    await t.test('981 — production smoke: health-check confirms DB connected + API root 200', async () => {
         const health = await req('/api/health-check');
         assert.equal(health.status, 200);
         const body = (await health.json()) as { success: boolean; message: string; data: { status: string; db: string } };
@@ -230,28 +230,28 @@ test('rute HTTP end-to-end (server Express asli + MongoDB) ', async (t) => {
         assert.equal(api.status, 200);
 
         const csp = health.headers.get('content-security-policy') ?? '';
-        assert.ok(csp.includes("script-src 'self' 'nonce-"), 'CSP memuat nonce per-request');
+        assert.ok(csp.includes("script-src 'self' 'nonce-"), 'CSP carries a per-request nonce');
         assert.ok(
             !csp.includes('upgrade-insecure-requests'),
-            'CSP TANPA upgrade-insecure-requests (merusak redirect fetch async di HTTP lokal)',
+            'CSP WITHOUT upgrade-insecure-requests (breaks async fetch redirects over local HTTP)',
         );
     });
 
-    await t.test('1030 — GET /api/export mengunduh semua data sebagai JSON', async () => {
+    await t.test('1030 — GET /api/export downloads all data as JSON', async () => {
         const res = await req('/api/export');
         assert.equal(res.status, 200);
         assert.ok(String(res.headers.get('content-type')).startsWith('application/json'));
         assert.equal(String(res.headers.get('content-disposition')).includes('todos.json'), true);
 
         const todos = (await res.json()) as Array<{ name: string }>;
-        assert.ok(todos.length >= 3, `sisa data belum kosong (${todos.length})`);
+        assert.ok(todos.length >= 3, `remnant data not empty (${todos.length})`);
         assert.ok(
             todos.some((todo) => todo.name === 'a'.repeat(200)),
-            'nama 200 karakter ikut ter-ekspor',
+            '200-char name included in export',
         );
     });
 
-    await t.test('1030 — POST /api/import valid mengganti seluruh data', async () => {
+    await t.test('1030 — POST /api/import with valid payload replaces all data', async () => {
         const payload = [
             {
                 id: 'abc-1',
@@ -274,18 +274,18 @@ test('rute HTTP end-to-end (server Express asli + MongoDB) ', async (t) => {
         assert.equal(body.data.imported, 2);
 
         const html = await htmlOf('/');
-        assert.ok(html.includes('Rencana dari cadangan'), 'spasi berlebihan dirapikan oleh sanitiser');
-        assert.ok(html.includes('Tanpa id &amp; tanggal'), '& di-escape saat render');
-        assert.ok(!html.includes('a'.repeat(200)), 'data lama benar-benar diganti');
+        assert.ok(html.includes('Rencana dari cadangan'), 'excess spaces collapsed by the sanitizer');
+        assert.ok(html.includes('Tanpa id &amp; tanggal'), '& escaped on render');
+        assert.ok(!html.includes('a'.repeat(200)), 'old data fully replaced');
 
         const persisted = await getAll();
         assert.ok(
             persisted.every((todo: Todo) => todo.name !== 'a'.repeat(200)),
-            'data lama juga hilang dari MongoDB',
+            'old data also gone from MongoDB',
         );
     });
 
-    await t.test('1030 — POST /api/import menolak payload tidak valid tanpa menyentuh data', async () => {
+    await t.test('1030 — POST /api/import rejects invalid payload without touching data', async () => {
         const notArray = await req('/api/import', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
@@ -308,10 +308,10 @@ test('rute HTTP end-to-end (server Express asli + MongoDB) ', async (t) => {
         assert.equal(nullItem.status, 400);
 
         const html = await htmlOf('/');
-        assert.ok(html.includes('Rencana dari cadangan'), 'data tetap utuh setelah penolakan');
+        assert.ok(html.includes('Rencana dari cadangan'), 'data intact after rejection');
     });
 
-    await t.test('1030 — POST /api/import menolak melebihi MAX_TODOS (dan melampaui batas body global)', async () => {
+    await t.test('1030 — POST /api/import rejects payloads over MAX_TODOS (and over the global body limit)', async () => {
         const items = Array.from({ length: 1001 }, (_, i) => ({ name: `x${i}` }));
         const res = await req('/api/import', {
             method: 'POST',

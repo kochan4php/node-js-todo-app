@@ -16,7 +16,7 @@ jobs:
             - uses: actions/checkout@v4
 
             - uses: pnpm/action-setup@v4
-              # Versi pnpm dibaca dari field `packageManager` (pinned).
+              # pnpm version is read from the `packageManager` field (pinned).
               with:
                   run_install: false
 
@@ -38,5 +38,5 @@ jobs:
             - run: pnpm test
             - run: pnpm build
 
-            - name: Cek kerentanan dependensi (produksi)
+            - name: Check dependency vulnerabilities (production)
               run: pnpm audit --prod

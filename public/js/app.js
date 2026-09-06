@@ -3,8 +3,9 @@
     const BASE_TITLE = theme.dataset.title || document.title;
 
     /* ------------------------------------------------------------------
-       Entri GSAP — intro masthead + reveal data-reveal via IntersectionObserver.
-       Tanpa GSAP atau prefers-reduced-motion: elemen tetap terlihat (default).
+       GSAP entry — masthead intro + reveal of [data-reveal] via
+       IntersectionObserver. Without GSAP or with prefers-reduced-motion:
+       elements simply stay visible (default).
     ------------------------------------------------------------------ */
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -49,14 +50,14 @@
     }
 
     if (!window.gsap || prefersReduced) {
-        /* mode senyap tanpa GSAP / gerak dikurangi — biarkan CSS & DOM polos */
+        /* quiet mode without GSAP / reduced motion — leave plain CSS & DOM */
     } else {
         introMasthead();
         runReveals();
     }
 
     if (window.gsap && !prefersReduced) {
-        /* Hitungan stat ledger — angka mono naik pelan */
+        /* Ledger stat count-up — mono numbers climb slowly */
         document.querySelectorAll('.ledger-num strong').forEach((el) => {
             const target = Math.max(0, parseInt(el.textContent, 10));
             if (!target) return;
@@ -74,7 +75,7 @@
     }
 
     /* ------------------------------------------------------------------
-       Tema terang / gelap
+       Light / dark theme
     ------------------------------------------------------------------ */
     const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
@@ -86,7 +87,7 @@
             try {
                 localStorage.setItem('theme', next);
             } catch {
-                /* penyimpanan tidak tersedia — tema tetap dipakai sesi ini */
+                /* storage unavailable — the theme still applies for this session */
             }
         });
     }
@@ -132,8 +133,8 @@
             toast.insertBefore(btn, toast.querySelector('.toast-close'));
         }
         toastStack.appendChild(toast);
-        /* Maksimal 3 toast sejalan: lepaskan yang tertua SEKARANG (dismissToast
-           menunggu animationend → loop-nya tak pernah berhenti). */
+        /* Max 3 toasts in a row: drop the oldest NOW (dismissToast awaits
+           animationend → that loop would never terminate). */
         while (toastStack.children.length > 3) {
             const oldest = toastStack.children[0];
             oldest.dataset.leave = '1';
@@ -145,10 +146,10 @@
 
     document.querySelectorAll('.toast[data-toast]').forEach(wireToast);
 
-    /* Flash tidak disimpan di URL (butir 267) — dibersihkan via syncState() di bawah. */
+    /* Flash is not kept in the URL (item 267) — cleared via syncState() below. */
 
     /* ------------------------------------------------------------------
-       Modal konfirmasi hapus
+       Delete confirmation modal
     ------------------------------------------------------------------ */
     const confirmModal = document.getElementById('confirm-modal');
     const confirmName = confirmModal ? confirmModal.querySelector('[data-confirm-name]') : null;
@@ -171,7 +172,7 @@
         pendingForm = trigger.closest('form');
         confirmModal.hidden = false;
         lockScroll();
-        /* 942 — fokus awal ke tombol Batal (aksi non-destruktif). */
+        /* 942 — initial focus on the Cancel button (non-destructive action). */
         confirmModal.querySelector('.modal-actions [data-modal-close]').focus();
     }
 
@@ -189,15 +190,15 @@
             el.addEventListener('click', closeConfirmModal);
         });
 
-        /* Hapus asinkron: tanpa reload, item mengecil lalu hilang (266).
-           Ditawarkan "Batalkan" (undo, 409) selama 7 detik.
-           Gagal jaringan → tawarkan retry (263), bukan reload diam-diam.
-           List menjadi kosong → reload penuh. */
+        /* Async delete: no reload, the item shrinks then disappears (266).
+           Offers "Batalkan" (undo, 409) for 7 seconds.
+           Network failure → offer retry (263), not a silent reload.
+           List becomes empty → full reload. */
         function attemptDelete(form, item, saved) {
             if (!form) return;
 
-            /* FormData asli berformat multipart yang tidak diparse server
-               (hanya urlencoded) → kirim URL-encoded agar req.body terbaca. */
+            /* The native FormData is multipart, which the server does not
+               parse (urlencoded only) → send URL-encoded so req.body is read. */
             fetch(form.getAttribute('action'), {
                 method: 'POST',
                 body: new URLSearchParams(new FormData(form)),
@@ -277,7 +278,7 @@
             })
                 .then((response) => (response.ok ? response.json() : Promise.reject(new Error(response.statusText))))
                 .then((payload) => {
-                    if (!payload.ok || !payload.todo) throw new Error('restore gagal');
+                    if (!payload.ok || !payload.todo) throw new Error('restore failed');
                     const todo = payload.todo;
                     const node = saved.node;
                     const list = document.getElementById('todo-list');
@@ -337,7 +338,7 @@
     });
 
     /* ------------------------------------------------------------------
-       Toggle selesai — progresif: fetch bila ada JS, form bila tidak
+       Toggle done — progressive: fetch when JS is available, form otherwise
     ------------------------------------------------------------------ */
     function namePartOf(label) {
         return label.replace(/^Tandai (selesai|belum selesai):\s*/i, '');
@@ -431,7 +432,7 @@
     });
 
     /* ------------------------------------------------------------------
-       Pencarian & filter
+       Search & filter
     ------------------------------------------------------------------ */
     const searchInput = document.getElementById('todo-search');
     const searchClear = document.getElementById('search-clear');
@@ -522,7 +523,7 @@
     }
 
     /* ------------------------------------------------------------------
-       Counter karakter lembut (341): "n/200" di bawah input nama
+       Soft character counter (341): "n/200" under the name input
     ------------------------------------------------------------------ */
     document.querySelectorAll('[data-counter-for]').forEach((counter) => {
         const input = document.getElementById(counter.dataset.counterFor);
@@ -535,7 +536,7 @@
     });
 
     /* ------------------------------------------------------------------
-       Error form hilang saat mulai ketik ulang (255) + fokus awal (353)
+       Form errors clear on retyping (255) + initial focus (353)
     ------------------------------------------------------------------ */
     document.querySelectorAll('.form-field.is-error').forEach((field) => {
         const input = field.querySelector('input, select, textarea');
@@ -545,9 +546,10 @@
     });
 
     /* ------------------------------------------------------------------
-       Pratinjau langsung halaman form — nama, prioritas, jatuh tempo
-       muncul di rel "Pratinjau" sebagaimana tampil di daftar.
-       Tanpa JS: rel hanya statis (dekoratif), form tetap berfungsi penuh.
+       Live preview for the form pages — name, priority, due date
+       appear in the "Pratinjau" rail exactly as they will in the list.
+       Without JS the rail is just static (decorative), the form still
+       works fully.
     ------------------------------------------------------------------ */
     (() => {
         const root = document.querySelector('[data-preview]');
@@ -618,7 +620,7 @@
     })();
 
     /* ------------------------------------------------------------------
-       Posisi scroll dipulihkan saat kembali dari edit (271)
+       Scroll position restored when returning from edit (271)
     ------------------------------------------------------------------ */
     (() => {
         const KEY = 'todo-scroll-y';
@@ -627,7 +629,7 @@
                 try {
                     sessionStorage.setItem(KEY, String(window.scrollY));
                 } catch {
-                    /* penyimpanan tidak tersedia */
+                    /* storage unavailable */
                 }
             });
         });
@@ -636,7 +638,7 @@
             saved = sessionStorage.getItem(KEY);
             sessionStorage.removeItem(KEY);
         } catch {
-            /* penyimpanan tidak tersedia */
+            /* storage unavailable */
         }
         if (saved) {
             requestAnimationFrame(() => {
@@ -646,8 +648,8 @@
     })();
 
     /* ------------------------------------------------------------------
-       Filter / urutan / pencarian bertahan di URL (412) — tanpa reload.
-       syncState() juga membuang ?flash= dari URL (267).
+       Filter / sort / search persist in the URL (412) — no reload.
+       syncState() also drops ?flash= from the URL (267).
     ------------------------------------------------------------------ */
     function syncState() {
         const params = new URLSearchParams(location.search);
@@ -666,7 +668,7 @@
         updateTitle(q, f, s);
     }
 
-    /* 272 — judul tab ikut konteks daftar yang sedang disaring. */
+    /* 272 — the tab title follows the currently filtered list context. */
     function updateTitle(q, f, s) {
         const label = f ? ({ active: 'Aktif', done: 'Selesai' }[f] ?? '') : '';
         const extras = [label, q ? `cari "${q}"` : '', s ? `diurut ${s}` : ''].filter(Boolean).join(' · ');
@@ -699,8 +701,8 @@
     syncState();
 
     /* ------------------------------------------------------------------
-       CTA magnetik — ikut kursor halus via CSS var (--mx/--my)
-       Dipakai hanya bila pointer presisi (mouse), bukan raba layar.
+       Magnetic CTA — follows the cursor smoothly via CSS vars (--mx/--my).
+       Only used with a precise pointer (mouse), not touch screens.
     ------------------------------------------------------------------ */
     (() => {
         const btn = document.querySelector('.btn-cta');
@@ -728,7 +730,7 @@
     })();
 
     /* ------------------------------------------------------------------
-       Indikator loading saat submit form add/edit (anti submit ganda)
+       Loading indicator on add/edit form submit (prevents double submit)
     ------------------------------------------------------------------ */
     document.querySelectorAll('form.form').forEach((form) => {
         form.addEventListener('submit', () => {
@@ -740,8 +742,8 @@
     });
 
     /* ------------------------------------------------------------------
-       Urutkan list (client): Terbaru / A–Z / Z–A — selesai tetap di bawah
-       (369). Nilai tersinkron ke URL (412).
+       Sort the list (client): Terbaru / A–Z / Z–A — done stays at the
+       bottom (369). Value syncs to the URL (412).
     ------------------------------------------------------------------ */
     if (sortSelect) {
         sortSelect.addEventListener('change', () => {
@@ -757,8 +759,8 @@
     }
 
     /* ------------------------------------------------------------------
-       Cadangan data (1030): unduh via /api/export (anchor), impor lewat
-       input file → POST /api/import → muat ulang. Tanpa dependency.
+       Data backup (1030): download via /api/export (anchor), import via
+       file input → POST /api/import → reload. No dependencies.
     ------------------------------------------------------------------ */
     const importBtn = document.getElementById('import-btn');
     const importFile = document.getElementById('import-file');
@@ -786,7 +788,7 @@
                     .then((response) => response.json())
                     .then((result) => {
                         if (result?.success) return location.reload();
-                        throw new Error('payload invalid');
+                        throw new Error('invalid payload');
                     })
                     .catch(() => {
                         showToast('Impor gagal. Periksa format berkas JSON.', 'error', 7000);
@@ -798,7 +800,7 @@
     }
 
     /* ------------------------------------------------------------------
-       Pintasan keyboard (221): "/" cari, "n" buat rencana baru
+       Keyboard shortcuts (221): "/" searches, "n" creates a new todo
     ------------------------------------------------------------------ */
     document.addEventListener('keydown', (event) => {
         if (event.metaKey || event.ctrlKey || event.altKey) return;
@@ -817,7 +819,7 @@
     });
 
     /* ------------------------------------------------------------------
-       Tarik ke atas (201): muncul setelah scroll jauh (rAF, tanpa jitter)
+       Back to top (201): appears after scrolling far (rAF, no jitter)
     ------------------------------------------------------------------ */
     const scrollTop = document.getElementById('scroll-top');
     const appHeaderInner = document.querySelector('.app-header-inner');

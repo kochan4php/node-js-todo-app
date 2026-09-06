@@ -1,97 +1,100 @@
 # Changelog
 
-Catatan perubahan proyek — mengikuti format [Keep a Changelog](https://keepachangelog.com/id/ID/1.1.0/) & [SemVer](https://semver.org/lang/id/).
+Project changelog — follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) & [SemVer](https://semver.org/).
 
 ## [0.3.0] — 2026-09-06
 
-Storage berpindah penuh dari file JSON lokal ke **MongoDB via Mongoose ODM**.
-Aplikasi tidak lagi menyentuh data di disk — saat di-deploy, data hidup 100% di
-basis data yang ditunjuk `MONGODB_URI`.
+Storage moved fully from local JSON files to **MongoDB via Mongoose ODM**.
+The app no longer touches any data on disk — when deployed, all data lives in
+the database pointed to by `MONGODB_URI`.
 
 ### Added
 
-- Skema tunggal Mongoose `Todo` (`name` 200 karakter, `completed`, enum
-  `priority`, `due`, `createdAt`/`updatedAt` otomatis) di `src/app/models/`.
-- Bootstrap koneksi `src/db/connect.ts` di index: aplikasi menolak mulai bila
-  MongoDB tidak terjangkau, dan menutup koneksi saat sinyal terminasi.
-- `GET /api/health-check` kini melaporkan status koneksi DB (`data.db`).
-- Tes dengan `mongodb-memory-server` (MongoDB di memori per proses tes, tanpa
-  server terpasang lokal); CI meng-cache binary mongod + mengizinkan build
-  script via `pnpm-workspace.yaml`.
+- Single Mongoose `Todo` schema (`name` 200 chars, `completed`, `priority`
+  enum, `due`, automatic `createdAt`/`updatedAt`) in `src/app/models/`.
+- Connection bootstrap `src/db/connect.ts` in index: the app refuses to start
+  when MongoDB is unreachable, and closes the connection on termination
+  signals.
+- `GET /api/health-check` now reports the DB connection status (`data.db`).
+- Tests use `mongodb-memory-server` (in-memory MongoDB per test process, no
+  server to install locally); CI caches the mongod binary and allows the
+  build script via `pnpm-workspace.yaml`.
 
 ### Changed
 
-- Service dan controller menjadi asinkron; semua akses data lewat model
-  Mongoose (`getAll` urut sebagai `createdAt` menurun, `MAX_TODOS` dihitung via
-  `countDocuments`); id berubah dari UUID string menjadi ObjectId hex (24
-  karakter) — dipetakan otomatis ke `id` di controller/view.
-- Ekspor/impor tetap memakai berkas `todos.json` sebagai format cadangan;
-  impor mengganti seluruh koleksi dan mempertahankan `createdAt`/`updatedAt`
-  dari cadangan.
-- `src/app/store/todo.store.ts` (read/write JSON + buffer + `.bak`) dihapus
-  beserta dua tes penyimpanan file-nya; diganti tes default & enum skema.
-- README/package.json diperbarui: `MONGODB_URI` (default
-  `mongodb://127.0.0.1:27017/rencana`), keyword `mongodb`/`mongoose`, versi 0.3.0.
+- Service and controller became async; all data access goes through the
+  Mongoose model (`getAll` sorted by `createdAt` desc, `MAX_TODOS` computed
+  via `countDocuments`); ids changed from UUID strings to ObjectId hex (24
+  chars) — mapped automatically to `id` in controller/view.
+- Export/import still uses the `todos.json` file as the backup format; import
+  replaces the whole collection and preserves `createdAt`/`updatedAt` from
+  the backup.
+- `src/app/store/todo.store.ts` (JSON read/write + buffer + `.bak`) removed,
+  along with its two file-storage tests; replaced with schema default & enum
+  tests.
+- README/package.json updated: `MONGODB_URI` (default
+  `mongodb://127.0.0.1:27017/rencana`), `mongodb`/`mongoose` keywords, 0.3.0.
 
 ### Fixed
 
-- Dialog konfirmasi hapus kini tampil persis di tengah viewport di semua lebar
-  layar (shell grid melebar penuh + kartu disenterkan; dulu kartu 440px
-  mencemplung ke kiri karena shell menyusut selebar teks deskripsi).
+- The delete-confirmation dialog now renders exactly centered in the viewport
+  at every screen width (full-width grid shell + centered card; before, the
+  440px card drifted left because the shell shrank to the description text's
+  width).
 
 ## [0.2.0] — 2026-09-06
 
-Versi stabil pertama selesai dikerjakan seluruh seksi revisi: performa, SEO,
-keamanan, aksesibilitas, testing, dan tata kelola proyek.
+First stable version — every revision section completed: performance, SEO,
+security, accessibility, testing, and project governance.
 
 ### Added
 
-- Interaksi client: pencarian, urutkan (terbaru / A–Z / Z–A), filter status,
-  toggle selesai, tombol kembali ke atas, pintasan keyboard (`/` cari, `n` buat).
-- Kendali waktu JS ke placeholder asli (`<time>` + `datetime`), tanpa bingkai
-  bahasa.
-- Nilai cache optimal (immutable 1 tahun · pelengkap revalidasi 1 jam) dan
-  penyimpanan list yang stabil di `data/todos.json`.
-- Halaman `404` dan `500` yang ramah, `lang="id"` konsisten, plus `robots`
-  diarahkan ke `noindex` pada halaman non-konten.
-- Peta rute `sitemap.xml` dan `robots.txt`.
-- Sinkronisasi tombol tema terang/gelap dengan `localStorage` + `prefers-color-scheme`.
-- Transisi halus (GSAP) yang dihormati oleh `prefers-reduced-motion`.
-- Perlindungan data: JSON korup dicadangkan ke `.bak`, kapasitas maksimal
-  `MAX_TODOS`, tenggat mustahil ditolak pada simpul tanggal (UTC).
-- Keamanan: CSP berbasis nonce, header standar (helmet), `Permissions-Policy`,
-  `X-Frame-Options`, penanganan error terpusat, log tak membanjiri di health.
-- Rute API `GET /api/export` dan `POST /api/import` untuk cadangan/pemulihan
-  data JSON.
-- Aksesibilitas: tautan lewati konten, fokus dialog konfirmasi ke tombol
-  "Batal", validasi formulir native (`required`), `aria-live` untuk daftar dan
-  rekap, pencarian dan filter yang bisa dipangkas via keyboard.
-- Testing: `node:test` tanpa dependency tambahan — 29 kasus uji (unit validator,
-  layanan, penyimpanan korup, integrasi HTTP), ambang cakupan garis 80%.
-- CI GitHub Actions (lint, typecheck, build, test, audit) dan gerbang pra-push
-  via Husky.
+- Client interactions: search, sort (newest / A–Z / Z–A), status filter,
+  done toggle, back-to-top button, keyboard shortcuts (`/` search, `n` new).
+- Time rendered in native `<time>` + `datetime` placeholders, no framework.
+- Optimal cache values (immutable 1 year · revalidation 1 hour) and stable
+  list storage in `data/todos.json`.
+- Friendly `404` and `500` pages, consistent `lang="id"`, plus `robots`
+  `noindex` on non-content pages.
+- `sitemap.xml` and `robots.txt` route maps.
+- Light/dark theme pill synced with `localStorage` + `prefers-color-scheme`.
+- Smooth GSAP transitions honoring `prefers-reduced-motion`.
+- Data protection: corrupt JSON backed up to `.bak`, a hard `MAX_TODOS`
+  capacity, impossible deadlines rejected at the date node (UTC).
+- Security: nonce-based CSP, standard headers (helmet), `Permissions-Policy`,
+  `X-Frame-Options`, centralized error handling, logs not flooding on health.
+- `GET /api/export` and `POST /api/import` routes for JSON data backups.
+- Accessibility: skip link, confirm-dialog focus on the "Batal" button,
+  native form validation (`required`), `aria-live` for the list and recap,
+  fully keyboard-operable search and filter.
+- Testing: `node:test` with zero extra dependencies — 29 test cases (validator
+  unit tests, service, corrupt storage, HTTP integration), 80% line-coverage
+  threshold.
+- GitHub Actions CI (lint, typecheck, build, test, audit) and Husky pre-push
+  gates.
 
 ### Changed
 
-- Penyimpanan di-muat satu kali ke memori dan disimpan atomik (tulis ke `.tmp`
-  lalu rename), memperbaiki latensi dan konsistensi file.
-- `package.json` memakai `"type": "module"`; dev `node --watch src/index.ts`,
+- Storage is loaded once into memory and written atomically (write to `.tmp`
+  then rename), fixing latency and file consistency.
+- `package.json` uses `"type": "module"`; dev `node --watch src/index.ts`,
   test `node --test "test/*.test.ts"`.
 
 ### Fixed
 
-- Modal praktis memakai `<button>` alih-alih `<a>` — tidak memicu navigasi.
-- Filter status memakai `BG` & `Type=Set-Cookie` yang diperbaharui hanya saat
-  berubah.
-- Deskripsi halaman rumus `masthead` tak lagi melesat karena `content-visibility`.
-- Nomor rekap di markup stabil (tanpa animasi GSAP yang berubah teks awal).
-- Penyimpanan yang rusak pada run pertama terbit .bak sebelum memulai dari kosong.
+- Modal actions use `<button>` instead of `<a>` — no navigation triggered.
+- Status filter uses `BG` & `Set-Cookie` refreshed only when it changes.
+- Masthead form description no longer jitters because of `content-visibility`.
+- Recap numbers in the markup are stable (no GSAP animations mutating initial
+  text).
+- Corrupt storage on the first run writes the `.bak` before starting empty.
 
 ### Security
 
-- Dependensi bebas kerentanan yang dikenal (`pnpm audit` bersih).
-- Semua data tersimpan lokal di perangkat — tak ada akun, tak ada kebocoran lintas pengguna.
+- Dependencies free of known vulnerabilities (`pnpm audit` clean).
+- All data stored locally on-device — no accounts, no cross-user leakage.
 
-## [0.1.0] — awal proyek
+## [0.1.0] — project start
 
-- Kerangka `express-ts-starter`: Express + TypeScript + EJS + express-ejs-layouts.
+- Scaffolded from `express-ts-starter`: Express + TypeScript + EJS +
+  express-ejs-layouts.

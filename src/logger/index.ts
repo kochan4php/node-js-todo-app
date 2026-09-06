@@ -1,6 +1,6 @@
 type Level = 'info' | 'warn' | 'error';
 
-/* 722 — jenjang log: info/warn di dev, hanya warn+error di produksi. */
+/* 722 — log level: info/warn in dev, warn+error only in production. */
 const MIN_LEVEL: Level = process.env.NODE_ENV === 'production' ? 'warn' : 'info';
 const RANK: Record<Level, number> = { info: 0, warn: 1, error: 2 };
 

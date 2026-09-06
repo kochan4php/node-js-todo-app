@@ -1,32 +1,32 @@
 <!--
-Terima kasih sudah berkontribusi! Isi dengan ringkas. PR kecil lebih disukai —
-satu perubahan terfokus per PR.
+Thanks for contributing! Keep it concise. Small PRs are preferred —
+one focused change per PR.
 -->
 
-## Ringkasan
+## Summary
 
-Deskripsikan dalam 1–2 kalimat perubahan ini dan mengapa dibutuhkan. Contoh:
-_Menambahkan tombol "Unduh salinan" yang memicu `GET /api/export` untuk_
-_cadangan data manual._
+Describe in 1–2 sentences what this changes and why it's needed. Example:
+_Adds a "Download copy" button that triggers `GET /api/export` for manual_
+_data backups._
 
-## Perubahan
+## Changes
 
-- [ ] Fitur / perbaikan / penyempurnaan (hapus yang tak relevan)
-- [ ] Baru-nafsu perilaku ini punya **tes** yang gagal bila rusak (`pnpm test`)
-- [ ] Tanpa perubahan ini, bug/isu berikut masih ada: (isi bila berlaku)
+- [ ] Feature / fix / improvement (delete what's not applicable)
+- [ ] New behavior has a **test** that fails when broken (`pnpm test`)
+- [ ] Without this change, the following bug/issue would remain: (fill if applicable)
 
-## Gerbang kualitas (wajib hijau)
+## Quality gates (must be green)
 
 - [ ] `pnpm lint`
 - [ ] `pnpm typecheck`
 - [ ] `pnpm test`
 - [ ] `pnpm build`
 
-## Jenis PR
+## PR type
 
-- [ ] `feat` — fitur baru
-- [ ] `fix` — perbaikan bug
-- [ ] `refactor` — penyempurnaan tanpa mengubah perilaku
-- [ ] `perf` — peningkatan performa
-- [ ] `test` — menambah/mengubah tes
-- [ ] lainnya: __________________
+- [ ] `feat` — new feature
+- [ ] `fix` — bug fix
+- [ ] `refactor` — improvement without changing behavior
+- [ ] `perf` — performance improvement
+- [ ] `test` — adding/changing tests
+- [ ] other: __________________

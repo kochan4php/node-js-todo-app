@@ -44,7 +44,7 @@ async function insertOne(item: {
     const count = await TodoModel.countDocuments();
     if (count >= MAX_TODOS) return null;
     const doc = await TodoModel.create(item);
-    logger.info(`Tambah ${item.name}`);
+    logger.info(`Added ${item.name}`);
     return toTodo(doc);
 }
 
@@ -65,7 +65,7 @@ export async function update(id: string, name: string, priority?: Priority, due?
     doc.priority = priority;
     doc.due = due ?? null;
     await doc.save();
-    logger.info(`Ubah ${id}`);
+    logger.info(`Updated ${id}`);
     return toTodo(doc);
 }
 
@@ -75,7 +75,7 @@ export async function toggle(id: string): Promise<Todo | null> {
     if (!doc) return null;
     doc.completed = !doc.completed;
     await doc.save();
-    logger.info(`Selesaikan ${id}`);
+    logger.info(`Toggled ${id}`);
     return toTodo(doc);
 }
 
@@ -83,16 +83,17 @@ export async function remove(id: string): Promise<boolean> {
     if (!validId(id)) return false;
     const { deletedCount } = await TodoModel.deleteOne({ _id: id });
     if (deletedCount === 0) return false;
-    logger.info(`Hapus ${id}`);
+    logger.info(`Deleted ${id}`);
     return true;
 }
 
-/* 1030 — pemulihan penuh: ganti seluruh koleksi dari cadangan JSON. */
+/* 1030 — full restore: replace the whole collection from a JSON backup. */
 export async function importTodos(items: ImportItem[]): Promise<number> {
     await TodoModel.deleteMany({});
     if (items.length) {
-        /* createdAt/updatedAt selalu eksplisit (fallback kini) agar nilai cadangan
-           dipertahankan; timestamps dinonaktifkan supaya tidak ditimpa. */
+        /* createdAt/updatedAt are always explicit (falling back to now) so
+           backup values are preserved; timestamps are disabled so they are
+           not overwritten. */
         await TodoModel.insertMany(
             items.map((item) => {
                 const now = new Date();

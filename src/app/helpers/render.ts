@@ -3,10 +3,11 @@ import { resolve } from 'node:path';
 import type { Response } from 'express';
 import { APP_NAME, SITE_URL } from '../../config/app.ts';
 
-/* 608 — versi aset untuk ?v= bust cache; ambil dari package.json. */
+/* 608 — asset version for ?v= cache busting; read from package.json. */
 const ASSET_VERSION = JSON.parse(readFileSync(resolve(import.meta.dirname, '../../../package.json'), 'utf8')).version as string;
 
-/* 463 — judul fallback; 479 — pattern "Nama App · Deskripsi" lahir di layout helper. */
+/* 463 — fallback title; 479 — the "App Name · Description" pattern is born
+   in the layout helper. */
 const DEFAULT_TITLE = APP_NAME;
 const DEFAULT_DESCRIPTION = 'Catat, selesaikan, dan rayakan langkah kecilmu — semua tersimpan di perangkatmu, tanpa akun, tanpa database.';
 const DEFAULT_ROBOTS = 'index, follow';
@@ -29,10 +30,10 @@ export function render(res: Response, view: string, data?: ViewData): void {
     const description = typeof d.description === 'string' ? d.description : DEFAULT_DESCRIPTION;
     const robots = typeof d.robots === 'string' ? d.robots : DEFAULT_ROBOTS;
 
-    /* 465/492/507/544 — canonical & og:url absolut, tanpa query. */
+    /* 465/492/507/544 — canonical & og:url absolute, without query string. */
     const canonical = `${SITE_URL}${path}`;
 
-    res.set('Cache-Control', 'no-cache'); /* 537 — HTML direvalidasi, bukan disimpan buta */
+    res.set('Cache-Control', 'no-cache'); /* 537 — HTML revalidated, not blindly cached */
     res.render(view, {
         ...d,
         title,

@@ -16,7 +16,7 @@ const router: Router = express.Router();
  */
 router.get('/', MainController.index);
 
-/* 1030 — batas body impor lebih longgar daripada 10kb global, tapi tetap dibatasi. */
+/* 1030 — import body limit is looser than the 10kb global, but still capped. */
 router.get('/export', DataController.exportData);
 router.post('/import', express.json({ limit: '1mb' }), DataController.importData);
 

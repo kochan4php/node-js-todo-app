@@ -45,14 +45,14 @@
                 const system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
                 document.documentElement.dataset.theme = stored || system;
             } catch (error) {
-                /* jangan gagalkan rendering bila localStorage diblokir */
+                /* don't fail rendering when localStorage is blocked */
             }
         })();
     </script>
 
 <link rel="preload" as="font" type="font/woff2" href="/fonts/geist-latin-wght-normal.woff2">
 
-    <!-- 164 — latar kritikal inline: cegah flash putih pada mode gelap sebelum CSS dimuat -->
+    <!-- 164 — critical inline background: prevent white flash in dark mode before CSS loads -->
     <style>
         html {
             background: #f8fafc;

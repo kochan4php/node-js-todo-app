@@ -1,7 +1,7 @@
 {
     "name": "node-js-todo-app",
     "version": "0.3.0",
-    "description": "Aplikasi todo — Express.js 5 + TypeScript + EJS, data terpusat di MongoDB via Mongoose ODM.",
+    "description": "Todo app — Express.js 5 + TypeScript + EJS, data centralized in MongoDB via Mongoose ODM.",
     "license": "Apache-2.0",
     "author": "Deo Subarno",
     "type": "module",

@@ -4,8 +4,8 @@ import type { Priority, Todo } from '../../interfaces/todo.ts';
 
 const PRIORITIES: readonly Priority[] = ['low', 'medium', 'high'];
 
-/* Skema tunggal (ODM) — semua akses data lewat model ini, tidak ada lagi
-   file JSON lokal. `timestamps` mengelola createdAt/updatedAt. */
+/* Single ODM schema — all data access goes through this model, no more
+   local JSON files. `timestamps` manages createdAt/updatedAt. */
 const todoSchema = new Schema(
     {
         name: { type: String, required: true, trim: true, maxlength: 200 },
@@ -28,7 +28,7 @@ type TodoDoc = {
     updatedAt: Date;
 };
 
-/* Dokument Mongo (ObjectId/Dates) → bentuk Todo yang dipakai view & API. */
+/* Mongo document (ObjectId/Dates) → the Todo shape used by views & API. */
 export function toTodo(doc: TodoDoc): Todo {
     return {
         id: doc._id.toString(),

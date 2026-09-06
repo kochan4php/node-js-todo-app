@@ -25,7 +25,7 @@ test('961/962 — CRUD: create → getById → update → toggle → remove', as
     await reset();
     const created = await svc.create('Belajar Node');
     assert.ok(created);
-    assert.equal(created.id.length, 24, 'id berupa ObjectId hex (MongoDB)');
+    assert.equal(created.id.length, 24, 'id is an ObjectId hex (MongoDB)');
     assert.equal((await svc.getById(created.id))?.name, 'Belajar Node');
     assert.equal(await svc.getById('tidak-ada'), null);
 
@@ -42,9 +42,9 @@ test('961/962 — CRUD: create → getById → update → toggle → remove', as
     assert.equal(await svc.getById(created.id), null);
 });
 
-test('962/992 — getAll: aktif dahulu, tiap kelompok terbaru di depan', async () => {
+test('962/992 — getAll: active first, latest within each group', async () => {
     await reset();
-    /* restore() menerima createdAt eksplisit → urutan deterministik (bukan mslama). */
+    /* restore() takes an explicit createdAt → deterministic order. */
     const a = await svc.restore({ name: 'Rencana A', completed: false, createdAt: '2026-01-01T00:00:00.000Z' });
     const b = await svc.restore({ name: 'Rencana B', completed: false, createdAt: '2026-01-02T00:00:00.000Z' });
     const c = await svc.restore({ name: 'Rencana C', completed: false, createdAt: '2026-01-03T00:00:00.000Z' });
@@ -64,12 +64,12 @@ test('962/992 — getAll: aktif dahulu, tiap kelompok terbaru di depan', async (
     assert.equal((await svc.getAll()).at(-1)?.completed, true);
 });
 
-test('962 — getAll saat persediaan kosong → []', async () => {
+test('962 — getAll with an empty store → []', async () => {
     await reset();
     assert.deepEqual(await svc.getAll(), []);
 });
 
-test('985 — mutasi langsung tersimpan di MongoDB (bukan hanya memori)', async () => {
+test('985 — mutations persist straight to MongoDB (not just memory)', async () => {
     await reset();
     await svc.create('Flush ke DB');
     assert.equal(await TodoModel.countDocuments(), 1);
@@ -79,14 +79,14 @@ test('985 — mutasi langsung tersimpan di MongoDB (bukan hanya memori)', async 
     assert.equal(name, 'Flush lagi');
 });
 
-test('986 — guard batas MAX_TODOS (TODOS_LIMIT=5): yang ke-6 ditolak', async () => {
+test('986 — MAX_TODOS guard (TODOS_LIMIT=5): the 6th is rejected', async () => {
     await reset();
-    for (let i = 0; i < 5; i++) assert.ok(await svc.create(`Rencana ke-${i}`), `bisa menambah ke-${i + 1}`);
+    for (let i = 0; i < 5; i++) assert.ok(await svc.create(`Rencana ke-${i}`), `can add #${i + 1}`);
     assert.equal(await svc.create('Rencana ke-6'), null);
     assert.equal(await svc.restore({ name: 'Pulih ke-6', completed: false, createdAt: 't' }), null);
 });
 
-test('988/990 — unicode & nama duplikat diterima', async () => {
+test('988/990 — unicode & duplicate names accepted', async () => {
     await reset();
     await svc.create('Sama');
     await svc.create('Sama');
@@ -96,7 +96,7 @@ test('988/990 — unicode & nama duplikat diterima', async () => {
     assert.ok(names.includes('Rencana 🎉 émoji ✓'));
 });
 
-test('962 — restore: simpan lengkap + counter batas juga berlaku', async () => {
+test('962 — restore: full save, the limit counter also applies', async () => {
     await reset();
     const t = await svc.restore({ name: 'Pulihkan', completed: true, createdAt: new Date().toISOString(), priority: 'high', due: null });
     assert.ok(t);
