@@ -1095,54 +1095,54 @@
 
 ## 8. TESTING & QUALITY — butir 961–1005
 
-- [ ] **961 [P0]** — Sediakan minimal **1 test** untuk service todo (CRUD + persist) — short-circuit regresi.
-- [ ] **962 [P1]** — Unit test `todo.service` (sort, find, filter, persist).
-- [ ] **963 [P1]** — Unit test validator helper (required, maxLength).
-- [ ] **964 [P1]** — Integration test route `/` (GET 200, render HTML).
-- [ ] **965 [P1]** — Integration: POST / (tambah), redirect + data tersimpan.
-- [ ] **966 [P1]** — Integration: PUT /:id ubah nama, response.
-- [ ] **967 [P1]** — Integration: DELETE /:id menghapus.
-- [ ] **968 [P1]** — Test edge: input kosong → error; id invalid → 404/redirect.
-- [ ] **969 [P1]** — Test data corrupt → recovery to default.
-- [ ] **970 [P1]** — Test 404 route.
-- [ ] **971 [P1]** — Test helper `render` mengembalikan 200.
+- [x] **961 [P0]** — Sediakan minimal **1 test** untuk service todo (CRUD + persist) — short-circuit regresi.
+- [x] **962 [P1]** — Unit test `todo.service` (sort, find, filter, persist).
+- [x] **963 [P1]** — Unit test validator helper (required, maxLength).
+- [x] **964 [P1]** — Integration test route `/` (GET 200, render HTML).
+- [x] **965 [P1]** — Integration: POST / (tambah), redirect + data tersimpan.
+- [x] **966 [P1]** — Integration: PUT /:id ubah nama, response.
+- [x] **967 [P1]** — Integration: DELETE /:id menghapus.
+- [x] **968 [P1]** — Test edge: input kosong → error; id invalid → 404/redirect.
+- [x] **969 [P1]** — Test data corrupt → recovery to default.
+- [x] **970 [P1]** — Test 404 route.
+- [x] **971 [P1]** — Test helper `render` mengembalikan 200.
 - [ ] **972 [P1]** — Snapshot kecil markup? — rapuh; skip.
-- [ ] **973 [P1]** — Test framework: **Vitest** (ringan) atau `node:test` bawaan — tanpa jurang berlebih.
-- [ ] **974 [P1]** — Test di CI (untuk itics flow).
-- [ ] **975 [P1]** — Coverage target 80% pada service — P2.
-- [ ] **976 [P1]** — Test warna? — lint.
-- [ ] **977 [P1]** — E2E happy path via curl / supertest.
+- [x] **973 [P1]** — Test framework: **Vitest** (ringan) atau `node:test` bawaan — tanpa jurang berlebih.
+- [x] **974 [P1]** — Test di CI (untuk itics flow).
+- [x] **975 [P1]** — Coverage target 80% pada service — P2.
+- [x] **976 [P1]** — Test warna? — lint.
+- [x] **977 [P1]** — E2E happy path via curl / supertest.
 - [ ] **978 [P1]** — Test responsive via Playwright (P2) — screenshot breakpoint.
 - [ ] **979 [P1]** — A11y scan axe sekali — P2.
 - [ ] **980 [P1]** — Lihat Lighthouse budget CI — P2.
-- [ ] **981 [P1]** — Smoke test prod (health + index) — P1 saat deploy.
-- [ ] **982 [P1]** — Tambah `pretest` typecheck.
+- [x] **981 [P1]** — Smoke test prod (health + index) — P1 saat deploy.
+- [x] **982 [P1]** — Tambah `pretest` typecheck.
 - [ ] **983 [P1]** — Utils test kecil: flash parse — skip.
-- [ ] **984 [P1]** — Cek velocidade mutasi serial.
-- [ ] **985 [P1]** — Test stale file? Flush.
-- [ ] **986 [P1]** — Test max limit (1000) — guard.
-- [ ] **987 [P1]** — Test XSS escaped (input `<script>` tersimpan sebagai teks).
-- [ ] **988 [P1]** — Test Unicode (emoji) input.
-- [ ] **989 [P1]** — Test long name (201 char) rejected.
-- [ ] **990 [P1]** — Test duplicate name OK.
-- [ ] **991 [P1]** — Test empty todos state render.
-- [ ] **992 [P1]** — Test sort behavior.
-- [ ] **993 [P1]** — Test toggle complete.
-- [ ] **994 [P1]** — Scaffold: `pnpm test` adil.
-- [ ] **995 [P1]** — Deterministic data path di test (tmp dir).
-- [ ] **996 [P1]** — Cleanup test file tak.
+- [x] **984 [P1]** — Cek velocidade mutasi serial.
+- [x] **985 [P1]** — Test stale file? Flush.
+- [x] **986 [P1]** — Test max limit (1000) — guard.
+- [x] **987 [P1]** — Test XSS escaped (input `<script>` tersimpan sebagai teks).
+- [x] **988 [P1]** — Test Unicode (emoji) input.
+- [x] **989 [P1]** — Test long name (201 char) rejected.
+- [x] **990 [P1]** — Test duplicate name OK.
+- [x] **991 [P1]** — Test empty todos state render.
+- [x] **992 [P1]** — Test sort behavior.
+- [x] **993 [P1]** — Test toggle complete.
+- [x] **994 [P1]** — Scaffold: `pnpm test` adil.
+- [x] **995 [P1]** — Deterministic data path di test (tmp dir).
+- [x] **996 [P1]** — Cleanup test file tak.
 
 ### 8.1 Lint & Format (Biome) — 1017–1025
 
-- [ ] **997 [P0]** — Migrasi ESLint → **Biome**: `biome.json` dengan config TS.
-- [ ] **998 [P0]** — Script: `lint` = `biome check`; `format` = `biome format --write`.
-- [ ] **999 [P1]** — enable `organizeImports` (sort import auto).
-- [ ] **1000 [P1]** — Aktifkan rule recommended + `noExplicitAny` (fix semua).
-- [ ] **1001 [P1]** — `useSortedClasses` bila CSS-in-JS — tidak.
-- [ ] **1002 [P1]** — Lint-staged: `biome check --write --staged`.
-- [ ] **1003 [P1]** — Integrasi editor (VSCode extension) — api.
-- [ ] **1004 [P1]** — Format pada commit otomatis.
-- [ ] **1005 [P1]** — Tidak ada konflik prettier/eslint — satu tool (Biome).
+- [x] **997 [P0]** — Migrasi ESLint → **Biome**: `biome.json` dengan config TS.
+- [x] **998 [P0]** — Script: `lint` = `biome check`; `format` = `biome format --write`.
+- [x] **999 [P1]** — enable `organizeImports` (sort import auto).
+- [x] **1000 [P1]** — Aktifkan rule recommended + `noExplicitAny` (fix semua).
+- [x] **1001 [P1]** — `useSortedClasses` bila CSS-in-JS — tidak.
+- [x] **1002 [P1]** — Lint-staged: `biome check --write --staged`.
+- [x] **1003 [P1]** — Integrasi editor (VSCode extension) — api.
+- [x] **1004 [P1]** — Format pada commit otomatis.
+- [x] **1005 [P1]** — Tidak ada konflik prettier/eslint — satu tool (Biome).
 
 ---
 

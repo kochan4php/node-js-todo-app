@@ -1,28 +1,9 @@
 import type { Request, Response } from 'express';
 import { MAX_TODOS } from '../../config/app.ts';
-import type { Priority } from '../../interfaces/todo.ts';
 import { createdShort, dueInfo, relativeWhen, todayLong } from '../helpers/date.ts';
 import { render } from '../helpers/render.ts';
+import { sanitizeDue, sanitizeName, sanitizePriority } from '../helpers/validate.ts';
 import { create, getAll, getById, remove, restore, toggle as toggleTodo, update as updateTodo } from '../services/todo.service.ts';
-
-const PRIORITIES: readonly Priority[] = ['low', 'medium', 'high'];
-
-function sanitize(value: unknown): string {
-    if (typeof value !== 'string') return '';
-    return value.trim().replace(/\s+/g, ' ').slice(0, 200);
-}
-
-function sanitizePriority(value: unknown): Priority | undefined {
-    return typeof value === 'string' && (PRIORITIES as readonly string[]).includes(value) ? (value as Priority) : undefined;
-}
-
-function sanitizeDue(value: unknown): string | null {
-    if (typeof value !== 'string' || !value) return null;
-    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
-    if (!match) return null;
-    const date = new Date(`${match[1]}-${match[2]}-${match[3]}T00:00:00`);
-    return Number.isNaN(date.getTime()) ? null : value.trim();
-}
 
 function statsOf(todos: Awaited<ReturnType<typeof getAll>>) {
     const completed = todos.filter((todo) => todo.completed).length;
@@ -63,7 +44,7 @@ function addForm(_: Request, res: Response) {
 }
 
 function store(req: Request, res: Response) {
-    const name = sanitize(req.body.name);
+    const name = sanitizeName(req.body.name);
     const priority = sanitizePriority(req.body.priority);
     const due = sanitizeDue(req.body.due);
 
@@ -116,7 +97,7 @@ function editForm(req: Request, res: Response) {
 
 function update(req: Request, res: Response) {
     const id = String(req.body.id ?? '');
-    const name = sanitize(req.body.name);
+    const name = sanitizeName(req.body.name);
     const priority = sanitizePriority(req.body.priority);
     const due = sanitizeDue(req.body.due);
     const todo = getById(id);
@@ -152,7 +133,7 @@ function destroy(req: Request, res: Response) {
 
 function restoreTodo(req: Request, res: Response) {
     const todo = restore({
-        name: sanitize(req.body.name),
+        name: sanitizeName(req.body.name),
         completed: req.body.completed === 'true',
         createdAt: String(req.body.createdAt ?? ''),
         priority: sanitizePriority(req.body.priority),

@@ -12,12 +12,16 @@
         "dev": "node --watch src/index.ts",
         "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p .",
         "start": "node dist/index.js",
-        "typecheck": "tsc --noEmit",
+        "typecheck": "tsc --noEmit -p . && tsc --noEmit -p tsconfig.test.json",
         "lint": "biome check .",
         "lint:fix": "biome check --write .",
         "format": "biome format --write .",
         "update-deps": "pnpm update --latest",
-        "prepare": "husky"
+        "prepare": "husky",
+        "test": "node --test \"test/*.test.ts\"",
+        "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=\"src/**\" --test-coverage-lines=80 \"test/*.test.ts\"",
+        "pretest": "pnpm typecheck",
+        "pretest:coverage": "pnpm typecheck"
     },
     "keywords": [
         "todo",

@@ -58,10 +58,19 @@ src/
 ## Quality gate
 
 ```bash
-pnpm lint        # biome check
-pnpm typecheck   # tsc --noEmit
-pnpm build       # tsc → dist/
+pnpm lint          # biome check
+pnpm typecheck     # tsc --noEmit (src + test)
+pnpm test          # node:test (+ pretest: typecheck otomatis)
+pnpm test:coverage # node:test + laporan coverage (threshold 80% baris src/)
+pnpm build         # tsc → dist/
 ```
+
+Suite `test/` memakai `node:test` bawaan (tanpa dependency tambahan) dan
+menjalankan Node 24 langsung untuk request TypeScript — mencakup unit
+(validator, service, store), integrasi HTTP (sever Express sungguhan via
+`fetch`), korupsi JSON, batas maksimum, XSS/escape, Unicode, dan smoke
+produksi. `pretest` menjalankan typecheck dulu; `test:coverage` gagal bila
+cakupan garis `src/` di bawah 80%.
 
 Husky pre-commit menjalankan biome + lint-staged. Commit memakai
 conventional (feat:/fix:/perf:).
