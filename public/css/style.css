@@ -17,7 +17,7 @@
     --surface-2: #eef1f5;
     --ink: #0f172a;
     --ink-soft: #475569;
-    --ink-mute: #94a3b8;
+    --ink-mute: #64748b;
     --border: rgba(15, 23, 42, 0.09);
     --border-strong: rgba(15, 23, 42, 0.16);
 
@@ -50,8 +50,8 @@
     /* Geometri — radius 2.5rem untuk wadah besar (Bento) */
     --r-xl: clamp(1.4rem, 3vw, 2rem);
     --r-lg: clamp(1rem, 2vw, 1.25rem);
-    --content-w: min(1180px, 100% - clamp(32px, 8vw, 96px));
-    --content-w-narrow: min(680px, 100% - clamp(32px, 8vw, 96px));
+    --content-w: min(1180px, 100% - clamp(32px, 8vw, 96px) - env(safe-area-inset-left) - env(safe-area-inset-right));
+    --content-w-narrow: min(560px, 100% - clamp(32px, 8vw, 96px) - env(safe-area-inset-left) - env(safe-area-inset-right));
 
     /* Gerak — anti-linear */
     --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -78,7 +78,7 @@
     --surface-2: #232329;
     --ink: #f4f4f5;
     --ink-soft: #a1a1aa;
-    --ink-mute: #6f6f7a;
+    --ink-mute: #9ca3af;
     --border: rgba(244, 244, 245, 0.09);
     --border-strong: rgba(244, 244, 245, 0.18);
 
@@ -117,6 +117,7 @@ html {
 body {
     margin: 0;
     min-height: 100dvh;
+    overflow-x: clip;
     font-family: var(--f-sans);
     font-size: 1rem;
     line-height: 1.6;
@@ -215,7 +216,7 @@ strong {
     gap: 1rem;
     width: min(1180px, 100%);
     margin-inline: auto;
-    padding: 0.55rem 0.55rem 0.55rem clamp(0.85rem, 2vw, 1.1rem);
+    padding: 0.4rem 0.4rem 0.4rem clamp(0.85rem, 2vw, 1.1rem);
     border: 1px solid var(--border);
     border-radius: 999px;
     background: color-mix(in srgb, var(--surface) 82%, transparent);
@@ -287,12 +288,53 @@ strong {
     text-overflow: ellipsis;
 }
 
+.app-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.header-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 44px;
+    padding: 0.5rem 1rem 0.5rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition:
+        background-color 0.3s var(--ease),
+        color 0.3s var(--ease),
+        border-color 0.3s var(--ease),
+        transform 0.3s var(--ease);
+}
+
+.header-add svg {
+    width: 1.05rem;
+    height: 1.05rem;
+}
+
+.header-add:hover {
+    background: var(--accent-soft);
+    border-color: transparent;
+    color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.header-add:active {
+    transform: scale(0.97);
+}
+
 .theme-pill {
     flex: none;
     display: grid;
     place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
     border: 1px solid var(--border);
     border-radius: 50%;
     background: transparent;
@@ -690,6 +732,7 @@ strong {
     align-items: center;
     gap: 0.6rem;
     min-width: 0;
+    min-height: 44px;
     padding: 0.5rem 0.75rem;
     border: 1px solid var(--border);
     border-radius: 999px;
@@ -730,8 +773,8 @@ strong {
     flex: none;
     display: grid;
     place-items: center;
-    width: 1.6rem;
-    height: 1.6rem;
+    width: 2rem;
+    height: 2rem;
     border: 0;
     border-radius: 50%;
     background: var(--surface-2);
@@ -762,11 +805,12 @@ strong {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    padding: 0.42rem 0.85rem;
+    min-height: 44px;
+    padding: 0.55rem 0.95rem;
     border: 1px solid var(--border);
     border-radius: 999px;
     background: transparent;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 550;
     color: var(--ink-soft);
     cursor: pointer;
@@ -789,6 +833,10 @@ strong {
     color: var(--surface);
 }
 
+.filter-chip.is-active .filter-count {
+    color: inherit;
+}
+
 .filter-chip:active {
     transform: scale(0.97);
 }
@@ -797,7 +845,7 @@ strong {
     font-family: var(--f-mono);
     font-size: 0.68rem;
     font-weight: 500;
-    opacity: 0.65;
+    color: var(--ink-mute);
 }
 
 /* --------------------------------------------------------------------------
@@ -837,8 +885,8 @@ strong {
 .todo-check {
     display: grid;
     place-items: center;
-    width: 1.9rem;
-    height: 1.9rem;
+    width: 2.75rem;
+    height: 2.75rem;
     padding: 0;
     border: 1.5px solid var(--border-strong);
     border-radius: 50%;
@@ -862,8 +910,8 @@ strong {
 }
 
 .todo-check-icon {
-    width: 1.05rem;
-    height: 1.05rem;
+    width: 1.2rem;
+    height: 1.2rem;
 }
 
 .todo-check-icon path {
@@ -928,8 +976,8 @@ strong {
 .icon-btn {
     display: grid;
     place-items: center;
-    width: 2.1rem;
-    height: 2.1rem;
+    width: 2.75rem;
+    height: 2.75rem;
     border: 0;
     border-radius: 50%;
     background: transparent;
@@ -1099,6 +1147,7 @@ strong {
 
 .form {
     margin-top: clamp(1.75rem, 4vw, 2.25rem);
+    max-width: 480px;
 }
 
 .form-field {
@@ -1440,6 +1489,14 @@ strong {
 
     .ledger-body {
         gap: 1rem;
+    }
+
+    .header-add-label {
+        display: none;
+    }
+
+    .header-add {
+        padding-right: 0.8rem;
     }
 }
 

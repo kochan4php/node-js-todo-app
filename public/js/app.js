@@ -139,18 +139,28 @@
     let pendingForm = null;
     let lastTrigger = null;
 
+    function lockScroll() {
+        document.body.style.overflow = 'hidden';
+    }
+
+    function unlockScroll() {
+        document.body.style.overflow = '';
+    }
+
     function openConfirmModal(name, trigger) {
         if (!confirmModal) return;
         confirmName.textContent = `"${name}"`;
         lastTrigger = trigger;
         pendingForm = trigger.closest('form');
         confirmModal.hidden = false;
+        lockScroll();
         confirmOk.focus();
     }
 
     function closeConfirmModal() {
         if (!confirmModal || confirmModal.hidden) return;
         confirmModal.hidden = true;
+        unlockScroll();
         if (lastTrigger) lastTrigger.focus();
         lastTrigger = null;
         pendingForm = null;
@@ -163,8 +173,45 @@
 
         confirmOk.addEventListener('click', () => {
             const form = pendingForm;
+            const item = form ? form.closest('.todo-item') : null;
             closeConfirmModal();
-            if (form) form.submit();
+            if (!form) return;
+
+            /* Hapus asinkron: tanpa reload, item mengecil lalu hilang (P1 266)
+               Gagal atau list menjadi kosong → reload penuh (render empty-state). */
+            fetch(form.getAttribute('action'), {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { Accept: 'text/html' },
+                credentials: 'same-origin',
+            })
+                .then((response) => {
+                    if (!response.ok) throw new Error(response.statusText);
+                    if (item && window.gsap && !prefersReduced) {
+                        return new Promise((resolve) => {
+                            gsap.to(item, {
+                                autoAlpha: 0,
+                                y: 14,
+                                duration: 0.4,
+                                ease: 'power2.in',
+                                onComplete: () => {
+                                    item.remove();
+                                    resolve();
+                                },
+                            });
+                        });
+                    }
+                    if (item) item.remove();
+                    if (!document.querySelectorAll('.todo-item').length) {
+                        location.reload();
+                        return;
+                    }
+                    refreshStats();
+                    showToast('Rencana dihapus.');
+                })
+                .catch(() => {
+                    location.reload();
+                });
         });
 
         document.addEventListener('keydown', (event) => {
