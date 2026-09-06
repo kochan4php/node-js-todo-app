@@ -32,6 +32,11 @@ const init = (): Application => {
         helmet({
             contentSecurityPolicy: {
                 directives: {
+                    /* Upgrade-insecure-requests (default helmet) dihapus:
+                       aplikasi 100% self-host dan dilayani HTTP lokal/LAN —
+                       directive justru membuat browser meng-upgrade redirect
+                       fetch ke https dan semua aksi async (toggle/delete) gagal. */
+                    'upgrade-insecure-requests': null,
                     'script-src': [
                         "'self'",
                         (_req, res) => {

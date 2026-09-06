@@ -174,6 +174,40 @@ test('rute HTTP end-to-end (server Express asli)', async (t) => {
         assert.ok(!html.includes('Belanja pagi'));
     });
 
+    await t.test('jalur UI — update & delete lewat override ?_method di query (bentuk form asli)', async () => {
+        const seed = await req('/', {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            body: form({ name: 'Untuk override' }),
+            redirect: 'manual',
+        });
+        assert.equal(seed.status, 302);
+        const data = JSON.parse(readFileSync(dataFile, 'utf8')) as Array<{ id: string; name: string }>;
+        const target = data.find((todo) => todo.name === 'Untuk override');
+        assert.ok(target);
+
+        const update = await req(`/?_method=PUT`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            body: form({ id: target.id, name: 'Untuk override (berubah)' }),
+            redirect: 'manual',
+        });
+        assert.equal(update.status, 302);
+        assert.equal(update.headers.get('location'), '/?flash=updated');
+        assert.match(await htmlOf('/'), /Untuk override \(berubah\)/, 'PUT via ?_method=PUT mengubah nama');
+
+        const del = await req(`/?_method=DELETE`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            body: form({ id: target.id }),
+            redirect: 'manual',
+        });
+        assert.equal(del.status, 302);
+        assert.equal(del.headers.get('location'), '/?flash=deleted');
+        const html = await htmlOf('/');
+        assert.ok(!html.includes('Untuk override'), 'DELETE via ?_method=DELETE menghapus');
+    });
+
     await t.test('970 — rute tak dikenal → halaman 404 (status 404)', async () => {
         const res = await req('/halaman-tak-ada');
         assert.equal(res.status, 404);
@@ -197,6 +231,13 @@ test('rute HTTP end-to-end (server Express asli)', async (t) => {
 
         const api = await req('/api');
         assert.equal(api.status, 200);
+
+        const csp = health.headers.get('content-security-policy') ?? '';
+        assert.ok(csp.includes("script-src 'self' 'nonce-"), 'CSP memuat nonce per-request');
+        assert.ok(
+            !csp.includes('upgrade-insecure-requests'),
+            'CSP TANPA upgrade-insecure-requests (merusak redirect fetch async di HTTP lokal)',
+        );
     });
 
     await t.test('1030 — GET /api/export mengunduh semua data sebagai JSON', async () => {

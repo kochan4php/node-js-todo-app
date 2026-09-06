@@ -190,9 +190,11 @@
         function attemptDelete(form, item, saved) {
             if (!form) return;
 
+            /* FormData asli berformat multipart yang tidak diparse server
+               (hanya urlencoded) → kirim URL-encoded agar req.body terbaca. */
             fetch(form.getAttribute('action'), {
                 method: 'POST',
-                body: new FormData(form),
+                body: new URLSearchParams(new FormData(form)),
                 headers: { Accept: 'text/html' },
                 credentials: 'same-origin',
             })
