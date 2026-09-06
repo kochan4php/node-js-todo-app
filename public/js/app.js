@@ -1,5 +1,6 @@
 (() => {
     const theme = document.documentElement;
+    const BASE_TITLE = theme.dataset.title || document.title;
 
     /* ------------------------------------------------------------------
        Entri GSAP — intro masthead + reveal data-reveal via IntersectionObserver.
@@ -181,25 +182,13 @@
             el.addEventListener('click', closeConfirmModal);
         });
 
-        confirmOk.addEventListener('click', () => {
-            const form = pendingForm;
-            const item = form ? form.closest('.todo-item') : null;
-            const saved = item
-                ? {
-                      name: item.querySelector('.todo-name').textContent,
-                      completed: item.classList.contains('is-done'),
-                      createdAt: new Date().toISOString(),
-                      priority: item.dataset.priority || '',
-                      due: item.dataset.due || '',
-                      node: item,
-                  }
-                : null;
-            closeConfirmModal();
+        /* Hapus asinkron: tanpa reload, item mengecil lalu hilang (266).
+           Ditawarkan "Batalkan" (undo, 409) selama 7 detik.
+           Gagal jaringan → tawarkan retry (263), bukan reload diam-diam.
+           List menjadi kosong → reload penuh. */
+        function attemptDelete(form, item, saved) {
             if (!form) return;
 
-            /* Hapus asinkron: tanpa reload, item mengecil lalu hilang (266).
-               Ditawarkan "Batalkan" (undo, 409) selama 7 detik.
-               Gagal atau list menjadi kosong → reload penuh. */
             fetch(form.getAttribute('action'), {
                 method: 'POST',
                 body: new FormData(form),
@@ -239,8 +228,28 @@
                     leave();
                 })
                 .catch(() => {
-                    location.reload();
+                    showToast('Gagal menghapus. Coba lagi.', 'error', 7000, {
+                        label: 'Coba lagi',
+                        onClick: () => attemptDelete(form, item, saved),
+                    });
                 });
+        }
+
+        confirmOk.addEventListener('click', () => {
+            const form = pendingForm;
+            const item = form ? form.closest('.todo-item') : null;
+            const saved = item
+                ? {
+                      name: item.querySelector('.todo-name').textContent,
+                      completed: item.classList.contains('is-done'),
+                      createdAt: new Date().toISOString(),
+                      priority: item.dataset.priority || '',
+                      due: item.dataset.due || '',
+                      node: item,
+                  }
+                : null;
+            closeConfirmModal();
+            attemptDelete(form, item, saved);
         });
 
         function undoDelete(saved) {
@@ -572,6 +581,14 @@
         else params.delete('s');
         const qs = params.toString();
         history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+        updateTitle(q, f, s);
+    }
+
+    /* 272 — judul tab ikut konteks daftar yang sedang disaring. */
+    function updateTitle(q, f, s) {
+        const label = f ? ({ active: 'Aktif', done: 'Selesai' }[f] ?? '') : '';
+        const extras = [label, q ? `cari "${q}"` : '', s ? `diurut ${s}` : ''].filter(Boolean).join(' · ');
+        document.title = extras ? `${extras} — ${BASE_TITLE}` : BASE_TITLE;
     }
 
     const sortSelect = document.getElementById('todo-sort');

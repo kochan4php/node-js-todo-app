@@ -28,12 +28,12 @@
 - [x] **6 [P0]** — Tetapkan 1 (satu) bahasa konsisten untuk seluruh copy UI (title, tombol, pesan, empty state) — pilih Bahasa Indonesia.
 - [x] **7 [P1]** — Buat pedoman desain mini (palet, rahasia blur, aturan shadow) di `README.md` atau komentar token CSS agar kontributor berikut mengikuti.
 - [x] **8 [P1]** — Terapkan *visual hierarchy*: satu aksen kuat per layar, tombol utama menonjol, tombol sekunder senyap.
-- [ ] **9 [P1]** — Patok *layout baseline* lebar konten ~640px (todo app: fokus baca cepat), bukan full-width.
+- [x] **9 [P1]** — Patok *layout baseline* lebar konten ~640px (todo app: fokus baca cepat), bukan full-width.
 - [x] **10 [P1]** — Definisikan *type scale* modular (mis. 0.75 / 0.875 / 1 / 1.25 / 1.5 / 2rem) dan patuhi di semua heading & body.
 - [x] **11 [P1]** — Rancang *information architecture* ulang: index = daftar + aksi utama; add/edit = satu fokus tugas; 404 = menolong pengguna kembali pulang.
 - [x] **12 [P1]** — Hindari *decorative-only* blur berlebihan pada area teks — kekontrasan teks lebih dulu, glassmen dressing kedua.
-- [ ] **13 [P2]** — Siapkan *design system* versi ringan (komponen: button, input, badge, toast, modal, checkbox) sebagai patokan kode bersama.
-- [ ] **14 [P1]** — Lakukan *design audit* sebelum coding: daftar semua halaman (index, add, edit, 404) + semua state → buat kisi desainnya.
+- [x] **13 [P2]** — Siapkan *design system* versi ringan (komponen: button, input, badge, toast, modal, checkbox) sebagai patokan kode bersama.
+- [x] **14 [P1]** — Lakukan *design audit* sebelum coding: daftar semua halaman (index, add, edit, 404) + semua state → buat kisi desainnya.
 - [x] **15 [P2]** — Sedangkan animasi dibuat halus dan singkat (150–300ms), bukan mengganti unsur fungsional.
 - [x] **16 [P1]** — Semua elemen interaktif wajib punya *hit area* minimal 44×44px (standar aksesibilitas sentuh).
 - [x] **17 [P2]** — Sediakan *micro-copy* yang membimbing: placeholder input = contoh, label bantu = sumber kebingungan.
@@ -111,7 +111,7 @@
 - [x] **83 [P1]** — Teks truncated todo: `text-overflow: ellipsis` + `max-width` bila diperlukan.
 - [x] **84 [P2]** — Heading halaman konsisten & deskriptif ("Apa rencanamu hari ini?").
 - [x] **85 [P1]** — Ukuran ikon tombol aksi: 1em (jangan 2× ukuran teks) — seimbang.
-- [ ] **86 [P2]** — Pertimbangkan *variable font* tunggal untuk kurangi request.
+- [x] **86 [P2]** — Pertimbangkan *variable font* tunggal untuk kurangi request.
 - [x] **87 [P1]** — Italic error style hapus; gunakan *alert role*.
 - [x] **88 [P1]** — Judul 404 "404" boleh besar (5rem), sub-judul 1.25rem jelas.
 - [x] **89 [P2]** — Bila memakai Bahasa Indonesia, hindari istilah jargon Inggris di copy.
@@ -119,7 +119,7 @@
 - [x] **91 [P2]** — Ukuran tombol mobile min 44px height.
 - [x] **92 [P1]** — Kapitalisasi judul natural; jangan ALL CAPS panjang.
 - [x] **93 [P1]** — *Word-break* aman untuk teks panjang (jangan overflow card).
-- [ ] **94 [P2]** — Pertimbangkan *opti font* untuk ikon tombol (ikon pakai font-family ikon).
+- [x] **94 [P2]** — Pertimbangkan *opti font* untuk ikon tombol (ikon pakai font-family ikon).
 - [x] **95 [P1]** — Jarak antar paragraf di empty-state minimal 8px.
 - [x] **96 [P2]** — Tips placeholder: "Tambahkan rencana…" bukan "kegiatan".
 - [x] **97 [P1]** — Hapus `font-weight: normal` global (reset bawaan) — biar font-weight natural.
@@ -135,9 +135,9 @@
 ### 1.4 Spacing, Layout, & Grid — 106–135
 
 - [ ] **106 [P0]** — Bangun *spacing scale* token: `--space-1..8` (4,8,12,16,24,32,48,64px).
-- [ ] **107 [P0]** — Empat *major surface*: app shell (container), card (panel utama), list-item, form — semua pakai scale yang sama.
+- [x] **107 [P0]** — Empat *major surface*: app shell (container), card (panel utama), list-item, form — semua pakai scale yang sama.
 - [x] **108 [P0]** — Hapus `margin-left/right` inline & tombol-jumbo di `.add-todo-main`; gunakan flex/grid dengan gap.
-- [ ] **109 [P1]** — Warnai *container* menjadi *centered column* max-width 640px, `padding 24px`.
+- [x] **109 [P1]** — Warnai *container* menjadi *centered column* max-width 640px, `padding 24px`.
 - [x] **110 [P1]** — Kartu utama (content) `border-radius: 16–24px` (glass) — bukan 4px.
 - [x] **111 [P1]** — Jarak antar list item 12px; gap grup aksi 8px.
 - [x] **112 [P1]** — Ruang antar heading-to-content ≥ 16px; antar paragraf ≥ 8px.
@@ -301,7 +301,7 @@
 - [x] **260 [P1]** — **Edit success**: kembali ke list + toast "Diperbarui".
 - [x] **261 [P1]** — **Invalid id** (edit): redirect home + flash error.
 - [ ] **262 [P1]** — **Session error** (masa depan bila auth): pesan khusus.
-- [ ] **263 [P1]** — **Network error** (bila fetch async): retry button.
+- [x] **263 [P1]** — **Network error** (bila fetch async): retry button.
 - [ ] **264 [P1]** — **Disabled UX**: jangan sembunyikan, tampilkan alasan.
 - [x] **265 [P1]** — **Tooltip** aksi icon (title + aria-label).
 - [x] **266 [P1]** — **Async delete** tanpa full reload (fetch + DOM remove) — P1 progressive.
@@ -310,7 +310,7 @@
 - [x] **269 [P2]** — **Undo delete** 5 detik — P2.
 - [x] **270 [P1]** — **Count jalur** kembali ke stat konsisten (stat dihitung ulang).
 - [x] **271 [P1]** — **Scroll restore** saat kembali dari edit.
-- [ ] **272 [P1]** — **Headline update** (document.title) saat state berubah — opsional.
+- [x] **272 [P1]** — **Headline update** (document.title) saat state berubah — opsional.
 - [x] **273 [P1]** — **Persistence indicator**: "Tersimpan di perangkat ini" (karena local).
 - [x] **274 [P1]** — **Empty state tombol** = aksi utama (Add).
 - [x] **275 [P1]** — **Loading skeleton** bila render async lambat — opsional.
@@ -320,7 +320,7 @@
 - [x] **279 [P1]** — **Checkbox toggle** yang menggembirakan (cek besar, transisi).
 - [x] **280 [P1]** — **Empty list baru** state langsung kosong → ilustrasi panggil aksi.
 - [x] **281 [P1]** — **Toast stack** (max 3) tidak menumpuk.
-- [ ] **282 [P1]** — **Error di log** paralel (server console).
+- [x] **282 [P1]** — **Error di log** paralel (server console).
 - [x] **283 [P1]** — **Form cancel** tidak memunculkan error.
 - [x] **284 [P1]** — **Focus outline** terlihat pada setiap aksi keyboard.
 - [x] **285 [P1]** — **Berikan umpan balik instan** setiap input (validasi live optional).
@@ -330,21 +330,21 @@
 - [x] **286 [P1]** — Uniform easing: `cubic-bezier(.2,.8,.3,1)`; durasi 150–300ms.
 - [x] **287 [P1]** — Hover card: `translateY(-2px)` + shadow +0.08 (linear).
 - [x] **288 [P1]** — Button press: scale 0.98 + shadow pudar.
-- [ ] **289 [P2]** — Item add: slide-fade-in ringan (via CSS `@starting-style` atau animasi autoplay).
+- [x] **289 [P2]** — Item add: slide-fade-in ringan (via CSS `@starting-style` atau animasi autoplay).
 - [x] **290 [P1]** — Hapus item: scale+y fade (via JS remove class sebelum remove).
 - [x] **291 [P1]** — Checkbox centang: draw check path 200ms (memanjakan).
 - [ ] **292 [P1]** — Blob background: keyframes float 14s + multi blob.
 - [x] **293 [P1]** — Theme toggle: cross-fade `body` (bila dark mode).
 - [x] **294 [P1]** — Toast: slide-up + fade-in 250ms, out 200ms + auto 4s.
 - [x] **295 [P1]** — Modal: backdrop fade + card scale 1.02→1.
-- [ ] **296 [P1]** — Focus ring: ring muncul 0ms, hilang halus — jangan jeda.
+- [x] **296 [P1]** — Focus ring: ring muncul 0ms, hilang halus — jangan jeda.
 - [x] **297 [P2]** — Skeleton shimmer 1.2s loop (bila dipakai).
 - [ ] **298 [P1]** — Sparkle on complete (optional, subtle blur titik).
 - [x] **299 [P2]** — Progress fill animasi di stats.
 - [x] **300 [P1]** — Ikuti `prefers-reduced-motion`: disable transform/animasi >200ms.
 - [x] **301 [P1]** — Jangan animasi *layout-affecting* (width/height/margin) — biar murah.
 - [x] **302 [P1]** — Animasi hanya via `transform` & `opacity`.
-- [ ] **303 [P1]** — `will-change: transform` hanya pada elemen yang benar-benar dianimasikan.
+- [x] **303 [P1]** — `will-change: transform` hanya pada elemen yang benar-benar dianimasikan.
 - [x] **304 [P1]** — Hover mobile: tidak perlu efek hover (sentuh) — jaga touch feedback (active).
 - [x] **305 [P1]** — Transisi tombol ikut tema (background-* color saja).
 - [x] **306 [P2]** — Scroll smooth (mild) — optional, hindari layout jitter.
