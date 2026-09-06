@@ -1,6 +1,6 @@
 <%- include('partials/header') %>
 
-<main class="content">
+<main class="content" id="main-content">
     <section class="masthead">
         <div class="masthead-copy">
             <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Buku rencana · harian</p>
@@ -44,7 +44,7 @@
                          aria-valuenow="<%= stats.percent %>">
                         <span class="progress-bar" id="progress-bar" style="--p: <%= stats.percent / 100 %>"></span>
                     </div>
-                    <p class="progress-caption" id="progress-text"><%= stats.completed %> dari <%= stats.total %> selesai</p>
+                    <p class="progress-caption" id="progress-text" aria-live="polite"><%= stats.completed %> dari <%= stats.total %> selesai</p>
 
                     <div class="all-done <%= stats.active === 0 ? '' : 'is-hidden' %>" id="all-done" role="status">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -93,7 +93,7 @@
                 </div>
                 <% } %>
 
-                <div class="todo-list" id="todo-list">
+                <div class="todo-list" id="todo-list" aria-live="polite">
                     <% if (stats.total === 0) { %>
                     <%- include('partials/empty-list') %>
                     <% } else { %>
@@ -121,7 +121,7 @@
         {
             "@type": "ListItem",
             "position": <%= i + 1 %>,
-            "name": "<%= todo.name.replace(/\\/g, '\\\\').replace(/"/g, '\\"') %>"
+            "name": "<%= todo.name.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/</g, '\\u003c').replace(/>/g, '\\u003e') %>"
         }<%= i + 1 < todos.length ? ',' : '' %>
         <% }) %>
     ]

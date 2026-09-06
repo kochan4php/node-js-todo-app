@@ -965,130 +965,130 @@
 
 ## 6. KEAMANAN (SECURITY) — butir 841–905
 
-- [ ] **841 [P0]** — Tambah `helmet` — atur security headers (X-Content-Type-Options, CSP dasar, dll).
-- [ ] **842 [P1]** — Escape semua output EJS (`<%= %>`) — cegah XSS.
-- [ ] **843 [P1]** — Jangan pakai `<%- %>` untuk data user tanpa sanitasi.
-- [ ] **844 [P1]** — Validasi input: `req.body.name` wajib string, trim, max 200 char.
-- [ ] **845 [P1]** — Validasi `req.params.id` UUID format — cegah path traversal/DoS string.
-- [ ] **846 [P1]** — Body parser limit `express.json/urlencoded({ limit: '10kb' })`.
-- [ ] **847 [P1]** — `helmet.hidePoweredBy` — jangan bocorkan framework.
-- [ ] **848 [P1]** — CSP dasar: `default-src 'self'` + fonts inline-style — konten eksternal dikontrol.
-- [ ] **849 [P1]** — Tidak ada secret/key di repo (jwt secret dihapus).
-- [ ] **850 [P1]** — `Referrer-Policy: strict-origin-when-cross-origin`.
-- [ ] **851 [P1]** — `Permissions-Policy` (geolocation=() dll) — opsional.
-- [ ] **852 [P1]** — Jangan tampilkan stack trace di prod (error view ramah).
-- [ ] **853 [P1]** — Jangan log body sensitive.
-- [ ] **854 [P1]** — `--inspect` no di prod.
+- [x] **841 [P0]** — Tambah `helmet` — atur security headers (X-Content-Type-Options, CSP dasar, dll).
+- [x] **842 [P1]** — Escape semua output EJS (`<%= %>`) — cegah XSS.
+- [x] **843 [P1]** — Jangan pakai `<%- %>` untuk data user tanpa sanitasi.
+- [x] **844 [P1]** — Validasi input: `req.body.name` wajib string, trim, max 200 char.
+- [x] **845 [P1]** — Validasi `req.params.id` UUID format — cegah path traversal/DoS string.
+- [x] **846 [P1]** — Body parser limit `express.json/urlencoded({ limit: '10kb' })`.
+- [x] **847 [P1]** — `helmet.hidePoweredBy` — jangan bocorkan framework.
+- [x] **848 [P1]** — CSP dasar: `default-src 'self'` + fonts inline-style — konten eksternal dikontrol.
+- [x] **849 [P1]** — Tidak ada secret/key di repo (jwt secret dihapus).
+- [x] **850 [P1]** — `Referrer-Policy: strict-origin-when-cross-origin`.
+- [x] **851 [P1]** — `Permissions-Policy` (geolocation=() dll) — opsional.
+- [x] **852 [P1]** — Jangan tampilkan stack trace di prod (error view ramah).
+- [x] **853 [P1]** — Jangan log body sensitive.
+- [x] **854 [P1]** — `--inspect` no di prod.
 - [ ] **855 [P1]** — Rate limit (optional) pada mutasi bila publik — express-rate-limit ringan.
-- [ ] **856 [P1]** — No eval / Function constructor di JS.
-- [ ] **857 [P1]** — API health tanpa data pribadi.
-- [ ] **858 [P1]** — CORS dibatasi (same-origin) — tak perlu `*`.
-- [ ] **859 [P1]** — Fitur server yang tidak dipakai: remove frameguard? Helmet bawaan.
-- [ ] **860 [P1]** — Cache JSON store tidak diserve publik (data dir ignore).
-- [ ] **861 [P1]** — `trust proxy` hati-hati bila dipakai (IP spoof) — set `1` saja bila di proxy.
-- [ ] **862 [P1]** — Tangani `unhandledRejection` — log & exit? warn.
-- [ ] **863 [P1]** — Tangani mutasi duplikat (idempotensi POST) — simple.
-- [ ] **864 [P1]** — Form hijack — SameSite? Cookie tak ada lagi.
-- [ ] **865 [P1]** — No CSRF dibutuhkan (no cookie/session) — jika tambah auth nanti, pertimbangkan.
-- [ ] **866 [P1]** — Validation regex untuk UUID — jangan buka injection via id.
-- [ ] **867 [P1]** — Jangan mirror input ke class/style.
-- [ ] **868 [P1]** — Update dependency rutin (security patches).
+- [x] **856 [P1]** — No eval / Function constructor di JS.
+- [x] **857 [P1]** — API health tanpa data pribadi.
+- [x] **858 [P1]** — CORS dibatasi (same-origin) — tak perlu `*`.
+- [x] **859 [P1]** — Fitur server yang tidak dipakai: remove frameguard? Helmet bawaan.
+- [x] **860 [P1]** — Cache JSON store tidak diserve publik (data dir ignore).
+- [x] **861 [P1]** — `trust proxy` hati-hati bila dipakai (IP spoof) — set `1` saja bila di proxy.
+- [x] **862 [P1]** — Tangani `unhandledRejection` — log & exit? warn.
+- [x] **863 [P1]** — Tangani mutasi duplikat (idempotensi POST) — simple.
+- [x] **864 [P1]** — Form hijack — SameSite? Cookie tak ada lagi.
+- [x] **865 [P1]** — No CSRF dibutuhkan (no cookie/session) — jika tambah auth nanti, pertimbangkan.
+- [x] **866 [P1]** — Validation regex untuk UUID — jangan buka injection via id.
+- [x] **867 [P1]** — Jangan mirror input ke class/style.
+- [x] **868 [P1]** — Update dependency rutin (security patches).
 - [ ] **869 [P1]** — Umumkan `npm audit` / `pnpm audit` dalam CI — untuk produksi.
-- [ ] **870 [P1]** — Jangan pakai old express 4 versi paham? Update ke 4.x patch atau 5 bila stabil.
-- [ ] **871 [P1]** — Container? Untuk lokal tidak perlu — hindari attack surface.
-- [ ] **872 [P1]** — Secret di env — tidak ada lagi; PORT default.
-- [ ] **873 [P1]** — File path terlindungi — DATA_PATH eksternal bisa.
+- [x] **870 [P1]** — Jangan pakai old express 4 versi paham? Update ke 4.x patch atau 5 bila stabil.
+- [x] **871 [P1]** — Container? Untuk lokal tidak perlu — hindari attack surface.
+- [x] **872 [P1]** — Secret di env — tidak ada lagi; PORT default.
+- [x] **873 [P1]** — File path terlindungi — DATA_PATH eksternal bisa.
 - [ ] **874 [P1]** — Siapkan forward proxy — di luar scope.
-- [ ] **875 [P1]** — Health endpoint sabar (no flooding info).
-- [ ] **876 [P1]** — Header response remove `X-Powered-By`.
-- [ ] **877 [P1]** — Trust NO user input ke dalam template/include path.
-- [ ] **878 [P1]** — Tolak request body besar di limit.
-- [ ] **879 [P1]** — NORMALIZE unicode input? — trim cukup.
-- [ ] **880 [P1]** — SSRF — tidak ada URL fetch.
-- [ ] **881 [P1]** — Provider dependency minimal — attack surface kecil.
-- [ ] **882 [P1]** — Update EJS patch (XSS fix masa lalu) — latest.
-- [ ] **883 [P1]** — Sediakan `crypto.randomUUID` standar.
-- [ ] **884 [P1]** — No `eval` di template (default EJS aman).
-- [ ] **885 [P1]** — CSP style-src inline untuk token — ok.
-- [ ] **886 [P1]** — `helmet` version terbaru di deps.
+- [x] **875 [P1]** — Health endpoint sabar (no flooding info).
+- [x] **876 [P1]** — Header response remove `X-Powered-By`.
+- [x] **877 [P1]** — Trust NO user input ke dalam template/include path.
+- [x] **878 [P1]** — Tolak request body besar di limit.
+- [x] **879 [P1]** — NORMALIZE unicode input? — trim cukup.
+- [x] **880 [P1]** — SSRF — tidak ada URL fetch.
+- [x] **881 [P1]** — Provider dependency minimal — attack surface kecil.
+- [x] **882 [P1]** — Update EJS patch (XSS fix masa lalu) — latest.
+- [x] **883 [P1]** — Sediakan `crypto.randomUUID` standar.
+- [x] **884 [P1]** — No `eval` di template (default EJS aman).
+- [x] **885 [P1]** — CSP style-src inline untuk token — ok.
+- [x] **886 [P1]** — `helmet` version terbaru di deps.
 - [ ] **887 [P1]** — Rate limit pada path `/` mutasi bila publik.
-- [ ] **888 [P1]** — Cache-Control `no-store` pada response mutasi.
-- [ ] **889 [P1]** — Jangan simpan password (tidak ada auth).
-- [ ] **890 [P1]** — Login? — dihapus — jangan sebagian auth.
-- [ ] **891 [P1]** — Sirkuit kecil = audit mudah.
-- [ ] **892 [P1]** — Document security (README) — ukuran mitigasi.
-- [ ] **893 [P1]** — Don't put function in URLs.
-- [ ] **894 [P1]** — Pastikan data unik (todos.json) tidak trackable.
-- [ ] **895 [P1]** — Express 4 → 5 migration opsional (async handler tidak perlu).
-- [ ] **896 [P1]** — Gunakan `res.redirect` pada PRG — bukan render langsung.
-- [ ] **897 [P1]** — Anti-autocomplete di form? Tidak perlu (bukan data sensitif).
-- [ ] **898 [P1]** — Container wait — non-relevant.
-- [ ] **899 [P1]** — Akses jalan data via symlink? Tidak.
-- [ ] **900 [P1]** — Log request tidak menampilkan cookies.
-- [ ] **901 [P1]** — Avoid leak ID dalam daftar — UUID ok.
-- [ ] **902 [P1]** — Integer overflow — tidak.
-- [ ] **903 [P1]** — Menu protected — semua publik (todo).
-- [ ] **904 [P1]** — Secure by default: tidak ada aktivitas berbahaya.
-- [ ] **905 [P1]** — Sediakan sekuriti config di docs (helmet, limiter).
+- [x] **888 [P1]** — Cache-Control `no-store` pada response mutasi.
+- [x] **889 [P1]** — Jangan simpan password (tidak ada auth).
+- [x] **890 [P1]** — Login? — dihapus — jangan sebagian auth.
+- [x] **891 [P1]** — Sirkuit kecil = audit mudah.
+- [x] **892 [P1]** — Document security (README) — ukuran mitigasi.
+- [x] **893 [P1]** — Don't put function in URLs.
+- [x] **894 [P1]** — Pastikan data unik (todos.json) tidak trackable.
+- [x] **895 [P1]** — Express 4 → 5 migration opsional (async handler tidak perlu).
+- [x] **896 [P1]** — Gunakan `res.redirect` pada PRG — bukan render langsung.
+- [x] **897 [P1]** — Anti-autocomplete di form? Tidak perlu (bukan data sensitif).
+- [x] **898 [P1]** — Container wait — non-relevant.
+- [x] **899 [P1]** — Akses jalan data via symlink? Tidak.
+- [x] **900 [P1]** — Log request tidak menampilkan cookies.
+- [x] **901 [P1]** — Avoid leak ID dalam daftar — UUID ok.
+- [x] **902 [P1]** — Integer overflow — tidak.
+- [x] **903 [P1]** — Menu protected — semua publik (todo).
+- [x] **904 [P1]** — Secure by default: tidak ada aktivitas berbahaya.
+- [x] **905 [P1]** — Sediakan sekuriti config di docs (helmet, limiter).
 
 ---
 
 ## 7. AKSESIBILITAS (A11Y) — butir 906–960
 
-- [ ] **906 [P0]** — Semua kontrol punya `<label>` tersambung (`for`/`id`) — bukan placeholder saja.
-- [ ] **907 [P0]** — `lang="id"` (sudah jadi di SEO).
-- [ ] **908 [P1]** — Karakter simbol ikon diberi `aria-hidden="true"` + `aria-label` di elemen interaktif.
-- [ ] **909 [P1]** — Tombol icon edit/delete: `aria-label="Ubah rencana"` / "Hapus rencana".
-- [ ] **910 [P1]** — Checkbox todo: role checkbox + label (nama todo) — focusable.
-- [ ] **911 [P1]** — Navigasi keyboard penuh: Tab order natural; Enter/Space pada tombol.
-- [ ] **912 [P1]** — Focus ring terlihat jelas (2px kontras + offset).
-- [ ] **913 [P1]** — Modal konfirmasi: focus trap + `role="dialog"` + `aria-modal` + Esc close.
-- [ ] **914 [P1]** — Toast/error: `role="alert"` / `role="status"` — announce SR.
-- [ ] **915 [P1]** — Empty state: teks dengan `aria-label` — tetap terbaca.
-- [ ] **916 [P1]** — Filter/search status diumumkan (`aria-live="polite"` count result).
-- [ ] **917 [P1]** — Kontras WCAG AA (4.5:1) di semua teks & kontrol.
-- [ ] **918 [P1]** — Jangan warna sebagai satu-satunya sinyal status (sertakan teks/ikon).
-- [ ] **919 [P1]** — `prefers-reduced-motion` — matikan animasi; tanpa layering motion.
-- [ ] **920 [P1]** — `prefers-reduced-transparency` — demote blur → surface solid.
-- [ ] **921 [P1]** — Target sentuh ≥44×44 (mobile/touch).
-- [ ] **922 [P1]** — Form error: teks terhubung via `aria-describedby`.
-- [ ] **923 [P1]** — Form input required: `required` + pesan.
-- [ ] **924 [P1]** — Semua gambar dekoratif `alt=""`.
-- [ ] **925 [P1]** — Semantik heading skema (h1→h2→p).
-- [ ] **926 [P1]** — Skip link "Lewati ke konten" di awal body.
-- [ ] **927 [P1]** — Header `<nav>` dengan label bila ada menu.
-- [ ] **928 [P1]** — Footer tidak menahan (a11y landmark).
-- [ ] **929 [P1]** — Tombol aksi: gunakan `<button>` (bukan `<a>` tanpa href) — submit concern.
-- [ ] **930 [P1]** — Link ke add menggunakan `<a href="/add-todo">` (crawlable + keyboard).
-- [ ] **931 [P1]** — Ulangi konten tersembunyi: gunakan `.visually-hidden` bila perlu.
-- [ ] **932 [P1]** — Toast score jelas: role + life.
-- [ ] **933 [P1]** — `<html>` font accessible; zoom 200% tetap layak.
-- [ ] **934 [P1]** — Kontras pada focus/active/hover.
-- [ ] **935 [P1]** — Input placeholder bukan ganti label.
-- [ ] **936 [P1]** — Autocomplete (search) — tidak perlu.
-- [ ] **937 [P1]** — Ulangi fokus ke form saat error di submit.
-- [ ] **938 [P1]** — Tidak merahjadi merah pada op-error (teks+ikon).
-- [ ] **939 [P1]** — `aria-current` pada chip filter aktif.
-- [ ] **940 [P1]** — Live region untuk "2 tersisa" update.
-- [ ] **941 [P1]** — Modal scroll lock body.
-- [ ] **942 [P1]** — Delete confirm: fokus pindah ke tombol Batal.
-- [ ] **943 [P1]** — Desktop & mobile keyboard/screens sizes.
-- [ ] **944 [P1]** — Form add/edit — submit via Enter (native).
+- [x] **906 [P0]** — Semua kontrol punya `<label>` tersambung (`for`/`id`) — bukan placeholder saja.
+- [x] **907 [P0]** — `lang="id"` (sudah jadi di SEO).
+- [x] **908 [P1]** — Karakter simbol ikon diberi `aria-hidden="true"` + `aria-label` di elemen interaktif.
+- [x] **909 [P1]** — Tombol icon edit/delete: `aria-label="Ubah rencana"` / "Hapus rencana".
+- [x] **910 [P1]** — Checkbox todo: role checkbox + label (nama todo) — focusable.
+- [x] **911 [P1]** — Navigasi keyboard penuh: Tab order natural; Enter/Space pada tombol.
+- [x] **912 [P1]** — Focus ring terlihat jelas (2px kontras + offset).
+- [x] **913 [P1]** — Modal konfirmasi: focus trap + `role="dialog"` + `aria-modal` + Esc close.
+- [x] **914 [P1]** — Toast/error: `role="alert"` / `role="status"` — announce SR.
+- [x] **915 [P1]** — Empty state: teks dengan `aria-label` — tetap terbaca.
+- [x] **916 [P1]** — Filter/search status diumumkan (`aria-live="polite"` count result).
+- [x] **917 [P1]** — Kontras WCAG AA (4.5:1) di semua teks & kontrol.
+- [x] **918 [P1]** — Jangan warna sebagai satu-satunya sinyal status (sertakan teks/ikon).
+- [x] **919 [P1]** — `prefers-reduced-motion` — matikan animasi; tanpa layering motion.
+- [x] **920 [P1]** — `prefers-reduced-transparency` — demote blur → surface solid.
+- [x] **921 [P1]** — Target sentuh ≥44×44 (mobile/touch).
+- [x] **922 [P1]** — Form error: teks terhubung via `aria-describedby`.
+- [x] **923 [P1]** — Form input required: `required` + pesan.
+- [x] **924 [P1]** — Semua gambar dekoratif `alt=""`.
+- [x] **925 [P1]** — Semantik heading skema (h1→h2→p).
+- [x] **926 [P1]** — Skip link "Lewati ke konten" di awal body.
+- [x] **927 [P1]** — Header `<nav>` dengan label bila ada menu.
+- [x] **928 [P1]** — Footer tidak menahan (a11y landmark).
+- [x] **929 [P1]** — Tombol aksi: gunakan `<button>` (bukan `<a>` tanpa href) — submit concern.
+- [x] **930 [P1]** — Link ke add menggunakan `<a href="/add-todo">` (crawlable + keyboard).
+- [x] **931 [P1]** — Ulangi konten tersembunyi: gunakan `.visually-hidden` bila perlu.
+- [x] **932 [P1]** — Toast score jelas: role + life.
+- [x] **933 [P1]** — `<html>` font accessible; zoom 200% tetap layak.
+- [x] **934 [P1]** — Kontras pada focus/active/hover.
+- [x] **935 [P1]** — Input placeholder bukan ganti label.
+- [x] **936 [P1]** — Autocomplete (search) — tidak perlu.
+- [x] **937 [P1]** — Ulangi fokus ke form saat error di submit.
+- [x] **938 [P1]** — Tidak merahjadi merah pada op-error (teks+ikon).
+- [x] **939 [P1]** — `aria-current` pada chip filter aktif.
+- [x] **940 [P1]** — Live region untuk "2 tersisa" update.
+- [x] **941 [P1]** — Modal scroll lock body.
+- [x] **942 [P1]** — Delete confirm: fokus pindah ke tombol Batal.
+- [x] **943 [P1]** — Desktop & mobile keyboard/screens sizes.
+- [x] **944 [P1]** — Form add/edit — submit via Enter (native).
 - [ ] **945 [P1]** — High contrast mode (Windows HC) — pakai token + surface pattern.
-- [ ] **946 [P1]** — Dark mode contrast juga AA.
-- [ ] **947 [P1]** — Nama aria tombol tidak abbreviated only.
-- [ ] **948 [P1]** — Announce perubahan saat edit di halaman kedua — natural.
-- [ ] **949 [P1]** — Jangan fokus hijau jika tidak fokus — selalu ring.
-- [ ] **950 [P1]** — Pastikan semua elemen interaktif dapat dijangkau keyboard (no display:none on focus target).
-- [ ] **951 [P1]** — Toast tidak mengganggu pembacaan SR.
+- [x] **946 [P1]** — Dark mode contrast juga AA.
+- [x] **947 [P1]** — Nama aria tombol tidak abbreviated only.
+- [x] **948 [P1]** — Announce perubahan saat edit di halaman kedua — natural.
+- [x] **949 [P1]** — Jangan fokus hijau jika tidak fokus — selalu ring.
+- [x] **950 [P1]** — Pastikan semua elemen interaktif dapat dijangkau keyboard (no display:none on focus target).
+- [x] **951 [P1]** — Toast tidak mengganggu pembacaan SR.
 - [ ] **952 [P1]** — Pilih perangkat: screenreader test basic (NVDA/ORCA).
-- [ ] **953 [P1]** — Jangan auto-advance animasi tanpa kontrol.
-- [ ] **954 [P1]** — `aria-label` konsisten pada nav & aksi berulang.
-- [ ] **955 [P1]** — Status chip punya teks label (bukan dot warna saja).
-- [ ] **956 [P1]** — Empty state tidak kosong secara a11y (bukan gambar only).
-- [ ] **957 [P1]** — Langkah focus movement clean.
+- [x] **953 [P1]** — Jangan auto-advance animasi tanpa kontrol.
+- [x] **954 [P1]** — `aria-label` konsisten pada nav & aksi berulang.
+- [x] **955 [P1]** — Status chip punya teks label (bukan dot warna saja).
+- [x] **956 [P1]** — Empty state tidak kosong secara a11y (bukan gambar only).
+- [x] **957 [P1]** — Langkah focus movement clean.
 - [ ] **958 [P1]** — Font size min 14px di UI.
-- [ ] **959 [P1]** — Tidak ada emphasis UPPERCASE untuk teks panjang (kecuali label tombol).
+- [x] **959 [P1]** — Tidak ada emphasis UPPERCASE untuk teks panjang (kecuali label tombol).
 - [ ] **960 [P1]** — Audit aksesibilitas (axe) di CI — target 0 critical (P2).
 
 ---

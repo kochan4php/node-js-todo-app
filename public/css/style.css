@@ -28,6 +28,33 @@
         U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* 926 — Skip link: hanya terlihat saat menerima fokus keyboard. */
+.skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: var(--z-toast);
+    padding: 0.6rem 1.1rem;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--surface);
+    font-size: 0.9rem;
+    font-weight: 550;
+    text-decoration: none;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-12px);
+    transition:
+        opacity 0.2s var(--ease),
+        transform 0.2s var(--ease);
+}
+
+.skip-link:focus-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+}
+
 /* --------------------------------------------------------------------------
    1. TOKENS
    -------------------------------------------------------------------------- */

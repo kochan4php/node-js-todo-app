@@ -42,6 +42,19 @@ src/
 - Storage: JSON dimuat sekali ke memori, mutasi ditulis atomic (tmp + rename);
   file dibuat otomatis saat run pertama; korup dicadangkan ke `.bak`.
 
+## Keamanan
+
+- `helmet` aktif: X-Content-Type-Options, CSP `default-src 'self'` + nonce untuk
+  script inline tema, Strict-Transport-Security, Referrer-Policy, dan
+  `X-Powered-By` dimatikan.
+- `Permissions-Policy` menolak geolokasi/kamera/mikro.
+- Tidak ada cookie/session — risiko CSRF tidak ada. Tidak ada secret di repo.
+- Input divalidasi: nama wajib string, di-trim, digabung spasi ganda, maks 200
+  karakter; due dicek format `YYYY-MM-DD`; prioritas hanya low/medium/high.
+- Body parser limit 10kb; mutasi direspon `Cache-Control: no-store`.
+- `data/todos.json` (berisi data pribadi) tidak ikut git; cuma `public/` yang
+  dilayani static. Saat JSON korup, disalin ke `.bak` lalu mulai dari kosong.
+
 ## Quality gate
 
 ```bash

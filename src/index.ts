@@ -20,3 +20,11 @@ for (const signal of ['SIGINT', 'SIGTERM'] as const) {
         setTimeout(() => process.exit(1), 5000).unref();
     });
 }
+
+/* 862 — promise/error tak tertangani: log, biarkan server berjalan. */
+process.on('unhandledRejection', (reason: unknown) => {
+    logger.error(`Unhandled rejection: ${reason as string}`);
+});
+process.on('uncaughtException', (error: Error) => {
+    logger.error(`Uncaught exception: ${error.stack ?? error.message}`);
+});

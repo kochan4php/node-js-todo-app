@@ -43,6 +43,12 @@ const init = (): Application => {
             },
         }),
     );
+    /* 851 — Permissions-Policy: tolak geolokasi/kamera/mikro di semua halaman. */
+    app.use((_req, res, next: NextFunction) => {
+        res.set('Permissions-Policy', 'geolocation=(), camera=(), microphone=()');
+        next();
+    });
+
     app.use(compression());
     app.use(express.static(resolve(import.meta.dirname, '../public'), { maxAge: '7d', etag: true }));
     app.use(express.json({ limit: '10kb' }));

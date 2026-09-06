@@ -1,6 +1,6 @@
 <%- include('partials/header') %>
 
-<main class="content">
+<main class="content" id="main-content">
     <div class="page-head" data-reveal>
         <a class="back-link" href="/">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -17,7 +17,7 @@
                 <h1 class="form-title">Perbaiki sesuai <em>yang kamu mau.</em></h1>
                 <p class="form-hint">Ubah nama rencana, lalu simpan perubahannya.</p>
 
-                <form method="post" action="/?_method=PUT" class="form" novalidate>
+                <form method="post" action="/?_method=PUT" class="form">
                     <input type="hidden" name="id" value="<%= todo.id %>">
 
                     <div class="form-field <%= typeof error !== 'undefined' ? 'is-error' : '' %>">
@@ -29,7 +29,9 @@
                                placeholder="Mis. Beli susu sebelum jam 8"
                                maxlength="200"
                                autocomplete="off"
-                               autofocus>
+                               required
+                               autofocus
+                               <%= typeof error !== 'undefined' ? 'aria-invalid="true" aria-describedby="todo-name-error"' : '' %>>
                         <p class="field-counter" data-counter-for="todo-name" aria-hidden="true"></p>
                         <% if (typeof error !== 'undefined') { %>
                         <p class="form-error" id="todo-name-error" role="alert">

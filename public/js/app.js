@@ -165,7 +165,8 @@
         pendingForm = trigger.closest('form');
         confirmModal.hidden = false;
         lockScroll();
-        confirmOk.focus();
+        /* 942 — fokus awal ke tombol Batal (aksi non-destruktif). */
+        confirmModal.querySelector('.modal-actions [data-modal-close]').focus();
     }
 
     function closeConfirmModal() {
