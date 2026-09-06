@@ -241,7 +241,7 @@ test('HTTP routes end-to-end (real Express server + MongoDB) ', async (t) => {
         const res = await req('/api/export');
         assert.equal(res.status, 200);
         assert.ok(String(res.headers.get('content-type')).startsWith('application/json'));
-        assert.equal(String(res.headers.get('content-disposition')).includes('todos.json'), true);
+        assert.equal(String(res.headers.get('content-disposition')).includes('plans.json'), true);
 
         const todos = (await res.json()) as Array<{ name: string }>;
         assert.ok(todos.length >= 3, `remnant data not empty (${todos.length})`);

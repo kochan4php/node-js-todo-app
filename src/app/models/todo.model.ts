@@ -16,7 +16,7 @@ const todoSchema = new Schema(
     { timestamps: true },
 );
 
-export const TodoModel = model('Todo', todoSchema);
+export const TodoModel = model('Todo', todoSchema, 'plans');
 
 type TodoDoc = {
     _id: mongoose.Types.ObjectId;

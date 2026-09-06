@@ -6,7 +6,7 @@ import { getAll, importTodos } from '../services/todo.service.ts';
 
 /* 1030 — manual backup: download a JSON copy of all data. */
 async function exportData(_req: Request, res: Response) {
-    res.set('Content-Disposition', 'attachment; filename="todos.json"');
+    res.set('Content-Disposition', 'attachment; filename="plans.json"');
     res.set('Cache-Control', 'no-store');
     res.type('application/json').json(await getAll());
 }
@@ -18,7 +18,7 @@ function badRequest(res: Response, message: string) {
 /* 1030 — restore: replace all data from a previously exported JSON. */
 async function importData(req: Request, res: Response) {
     const body: unknown = req.body;
-    if (!Array.isArray(body)) return badRequest(res, 'Format salah: kirim array JSON (isi berkas todos.json).');
+    if (!Array.isArray(body)) return badRequest(res, 'Format salah: kirim array JSON (isi berkas plans.json).');
 
     const items = body as unknown[];
     if (items.length > MAX_TODOS) return badRequest(res, `Maksimal ${MAX_TODOS} rencana per impor.`);

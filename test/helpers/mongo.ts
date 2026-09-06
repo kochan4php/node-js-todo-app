@@ -8,7 +8,7 @@ export type StopFn = () => Promise<void>;
    process); the production connection path (connectDb) gets exercised too. */
 export async function connectTestDb(): Promise<StopFn> {
     const mongod = await MongoMemoryServer.create();
-    await connectDb(mongod.getUri('plans-test'));
+    await connectDb(mongod.getUri('planner-test'));
     return async () => {
         await mongoose.connection.dropDatabase();
         await mongoose.disconnect();

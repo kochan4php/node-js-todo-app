@@ -15,7 +15,7 @@ pnpm start      # run from dist/ (production)
 
 You need a running MongoDB (`mongod` locally, Docker, or Atlas). Default port
 `3000`; set via env `PORT`. Optional env vars:
-`MONGODB_URI` (connection, default `mongodb://127.0.0.1:27017/plans`),
+`MONGODB_URI` (connection, default `mongodb://127.0.0.1:27017/planner`),
 `TODOS_LIMIT` (max number of todos, default 1000), `SITE_URL` (absolute
 domain for canonical/sitemap).
 
@@ -55,7 +55,7 @@ All data lives in the MongoDB collection (the database on the `MONGODB_URI`
 connection). To keep it safe:
 
 - **Download a copy** — the download button on the home page or
-  `GET /api/export` produces a `todos.json` file with all todos. Store it in a
+  `GET /api/export` produces a `plans.json` file with all todos. Store it in a
   safe place.
 - **Restore** — the import button on the home page (pick a `.json` file) or
   `POST /api/import` replaces all current data. Import rejects invalid
