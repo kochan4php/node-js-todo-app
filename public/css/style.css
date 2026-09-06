@@ -525,6 +525,12 @@ strong {
     transform: scale(0.98);
 }
 
+/* Tombol teks tanpa ikon: padding simetris + tinggi sama dengan varian icon-bubble. */
+.btn:not(:has(.btn-ico)) {
+    min-height: calc(2.5rem + 2 * 0.4rem + 2px);
+    padding: 0.4rem 1.3rem;
+}
+
 .btn:disabled {
     pointer-events: none;
     opacity: 0.55;

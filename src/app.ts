@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import { resolve } from 'node:path';
 import compression from 'compression';
 import express, { type Application, type NextFunction, type Request, type Response } from 'express';
@@ -22,7 +23,26 @@ const init = (): Application => {
     app.set('trust proxy', 1); /* 602 — di belakang satu reverse proxy */
 
     /* Urutan (592): helmet → compression → static → parser body → rute. */
-    app.use(helmet());
+    /* Nonce per-request agar script inline tema bisa jalan tanpa 'unsafe-inline'. */
+    app.use((_req, res, next: NextFunction) => {
+        res.locals.cspNonce = randomBytes(16).toString('base64');
+        next();
+    });
+    app.use(
+        helmet({
+            contentSecurityPolicy: {
+                directives: {
+                    'script-src': [
+                        "'self'",
+                        (_req, res) => {
+                            const outgoing = res as unknown as { locals: { cspNonce?: string } };
+                            return `'nonce-${outgoing.locals.cspNonce}'`;
+                        },
+                    ],
+                },
+            },
+        }),
+    );
     app.use(compression());
     app.use(express.static(resolve(import.meta.dirname, '../public'), { maxAge: '7d', etag: true }));
     app.use(express.json({ limit: '10kb' }));
