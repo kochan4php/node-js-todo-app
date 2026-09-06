@@ -1663,6 +1663,15 @@ kbd {
     animation: fade-in 0.3s var(--ease);
 }
 
+/* Shell lebar penuh + karton disenterkan di dalamnya. Tanpa ini,
+   place-items membuat shell menyusut selebar teks deskripsi (~770px)
+   dan kartu 440px mencemplung ke kiri → dialog tampak tak di tengah. */
+.modal-shell {
+    display: grid;
+    place-items: center;
+    width: 100%;
+}
+
 @supports (backdrop-filter: blur(1px)) {
     .modal-backdrop {
         -webkit-backdrop-filter: blur(10px);
