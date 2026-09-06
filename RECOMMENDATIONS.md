@@ -532,106 +532,106 @@
 
 ### 2.1 Struktur & Meta — 461–500
 
-- [ ] **461 [P0]** — Tambah `lang="id"` pada `<html>` (kini `lang="en"` walau konten Indonesia).
-- [ ] **462 [P0]** — Tambah meta `description` unik per halaman.
-- [ ] **463 [P0]** — Tambah `<title>` fallback default bila variabel kosong (layout guard).
-- [ ] **464 [P1]** — Meta `robots` (index,follow) untuk halaman publik.
-- [ ] **465 [P1]** — `canonical` URL ke domain utama.
-- [ ] **466 [P1]** — Meta `author`, `keywords` opsional.
-- [ ] **467 [P1]** — `og:type=website`, `og:site_name`, `og:title`, `og:description`, `og:image`.
-- [ ] **468 [P1]** — `twitter:card=summary`, `twitter:title`, `twitter:description`.
-- [ ] **469 [P1]** — Meta `theme-color` (ungu) — tampilan browser mobile.
-- [ ] **470 [P1]** — Semantik HTML5: `header`, `main`, `footer`, `nav`, `section` — bukan div-generik semua.
-- [ ] **471 [P1]** — 1 `<h1>` per halaman; hierarki h2/h3 logis.
-- [ ] **472 [P1]** — URL deskriptif & bermakna: `/add-todo`, `/edit-todo/:id`.
-- [ ] **473 [P1]** — Sitemap.xml di `/sitemap.xml` (list index + add).
-- [ ] **474 [P1]** — robots.txt di `/robots.txt` (allow /, sitemap ref).
-- [ ] **475 [P1]** — Href di dalam konten: `href="/"` normal, bukan `javascript:`.
-- [ ] **476 [P1]** — JSON-LD `WebSite` (+ `SearchAction` bila search server).
-- [ ] **477 [P1]** — JSON-LD `ItemList` / `TodoList` di index (bila bermanfaat).
-- [ ] **478 [P1]** — Pastikan halaman tidak `noindex` tanpa sengaja (meta robots utuh).
-- [ ] **479 [P1]** — Title pattern: "Nama App · Deskripsi singkat" lahir di layout helper.
-- [ ] **480 [P1]** — Heading mencakup kata kunci natural ("Daftar Rencana Hari Ini").
-- [ ] **481 [P1]** — Alt text gambar (logo/favicon inline tidak perlu alt kosong).
-- [ ] **482 [P1]** — `aria-label` pada nav (SEO minor + a11y).
-- [ ] **483 [P1]** — Bukan autentikasi untuk konten publik (todo app publik) — tidak di-block crawler.
-- [ ] **484 [P1]** — Status 404 benar (HTTP `404` kini controller tidak set status).
-- [ ] **485 [P1]** — Redirect pasca mutasi (PRG) menghindari duplikat index.
-- [ ] **486 [P1]** — Konsistensi trailing slash — avoid duplicated content.
+- [x] **461 [P0]** — Tambah `lang="id"` pada `<html>` (kini `lang="en"` walau konten Indonesia).
+- [x] **462 [P0]** — Tambah meta `description` unik per halaman.
+- [x] **463 [P0]** — Tambah `<title>` fallback default bila variabel kosong (layout guard).
+- [x] **464 [P1]** — Meta `robots` (index,follow) untuk halaman publik.
+- [x] **465 [P1]** — `canonical` URL ke domain utama.
+- [x] **466 [P1]** — Meta `author`, `keywords` opsional.
+- [x] **467 [P1]** — `og:type=website`, `og:site_name`, `og:title`, `og:description`, `og:image`.
+- [x] **468 [P1]** — `twitter:card=summary`, `twitter:title`, `twitter:description`.
+- [x] **469 [P1]** — Meta `theme-color` (ungu) — tampilan browser mobile.
+- [x] **470 [P1]** — Semantik HTML5: `header`, `main`, `footer`, `nav`, `section` — bukan div-generik semua.
+- [x] **471 [P1]** — 1 `<h1>` per halaman; hierarki h2/h3 logis.
+- [x] **472 [P1]** — URL deskriptif & bermakna: `/add-todo`, `/edit-todo/:id`.
+- [x] **473 [P1]** — Sitemap.xml di `/sitemap.xml` (list index + add).
+- [x] **474 [P1]** — robots.txt di `/robots.txt` (allow /, sitemap ref).
+- [x] **475 [P1]** — Href di dalam konten: `href="/"` normal, bukan `javascript:`.
+- [x] **476 [P1]** — JSON-LD `WebSite` (+ `SearchAction` bila search server).
+- [x] **477 [P1]** — JSON-LD `ItemList` / `TodoList` di index (bila bermanfaat).
+- [x] **478 [P1]** — Pastikan halaman tidak `noindex` tanpa sengaja (meta robots utuh).
+- [x] **479 [P1]** — Title pattern: "Nama App · Deskripsi singkat" lahir di layout helper.
+- [x] **480 [P1]** — Heading mencakup kata kunci natural ("Daftar Rencana Hari Ini").
+- [x] **481 [P1]** — Alt text gambar (logo/favicon inline tidak perlu alt kosong).
+- [x] **482 [P1]** — `aria-label` pada nav (SEO minor + a11y).
+- [x] **483 [P1]** — Bukan autentikasi untuk konten publik (todo app publik) — tidak di-block crawler.
+- [x] **484 [P1]** — Status 404 benar (HTTP `404` kini controller tidak set status).
+- [x] **485 [P1]** — Redirect pasca mutasi (PRG) menghindari duplikat index.
+- [x] **486 [P1]** — Konsistensi trailing slash — avoid duplicated content.
 - [ ] **487 [P1]** — `yandex`/`fb` meta opsional bila perlu.
-- [ ] **488 [P1]** — Favicon valid (SVG/PNG) + `apple-touch-icon` untuk mobile bookmark.
+- [x] **488 [P1]** — Favicon valid (SVG/PNG) + `apple-touch-icon` untuk mobile bookmark.
 - [ ] **489 [P1]** — `<link rel="manifest">` (P2).
-- [ ] **490 [P1]** — Preview screenshot `og:image` ukuran 1200×630.
-- [ ] **491 [P1]** — `og:locale: id_ID`.
-- [ ] **492 [P1]** — Href canonical menggunakan URL absolut.
-- [ ] **493 [P1]** — Meta `referrer` safe (unsafe-url hanya di API).
-- [ ] **494 [P1]** — Gzip/compress respons HTML (Performance) — SEO+LCP.
-- [ ] **495 [P1]** — Sitemap dinamis via route (kecil, list static).
+- [x] **490 [P1]** — Preview screenshot `og:image` ukuran 1200×630.
+- [x] **491 [P1]** — `og:locale: id_ID`.
+- [x] **492 [P1]** — Href canonical menggunakan URL absolut.
+- [x] **493 [P1]** — Meta `referrer` safe (unsafe-url hanya di API).
+- [x] **494 [P1]** — Gzip/compress respons HTML (Performance) — SEO+LCP.
+- [x] **495 [P1]** — Sitemap dinamis via route (kecil, list static).
 - [ ] **496 [P1]** — Google Site Verification meta — opsional.
-- [ ] **497 [P1]** — Konten teks ≥ minimal per halaman (index sudah).
-- [ ] **498 [P1]** — Internal link "Tambah" dari index → add page — natural crawl.
-- [ ] **499 [P1]** — 404 halaman tetap beri link ke homepage (crawl recovery).
-- [ ] **500 [P1]** — `Cache-Control` `no-store` hanya untuk mutasi; GET boleh cache.
+- [x] **497 [P1]** — Konten teks ≥ minimal per halaman (index sudah).
+- [x] **498 [P1]** — Internal link "Tambah" dari index → add page — natural crawl.
+- [x] **499 [P1]** — 404 halaman tetap beri link ke homepage (crawl recovery).
+- [x] **500 [P1]** — `Cache-Control` `no-store` hanya untuk mutasi; GET boleh cache.
 
 ### 2.2 Social Sharing & Rich Results — 501–530
 
-- [ ] **501 [P1]** — `og:image` konsisten brand (ungu glass card mockup).
-- [ ] **502 [P1]** — `twitter:image`.
-- [ ] **503 [P1]** — `og:description` 1-2 kalimat administratif.
-- [ ] **504 [P1]** — Title < 60 karakter (SEO snippet).
-- [ ] **505 [P1]** — Description < 155 karakter.
+- [x] **501 [P1]** — `og:image` konsisten brand (ungu glass card mockup).
+- [x] **502 [P1]** — `twitter:image`.
+- [x] **503 [P1]** — `og:description` 1-2 kalimat administratif.
+- [x] **504 [P1]** — Title < 60 karakter (SEO snippet).
+- [x] **505 [P1]** — Description < 155 karakter.
 - [ ] **506 [P1]** — JSON-LD organization (opsional).
-- [ ] **507 [P1]** — OpenGraph `url` = canonical.
+- [x] **507 [P1]** — OpenGraph `url` = canonical.
 - [ ] **508 [P1]** — `article:published_time` di blog nanti (tidak).
 - [ ] **509 [P1]** — Test dengan validator (opengraph.xyz / Meta inspector).
-- [ ] **510 [P1]** — Social preview saat share di WhatsApp/Telegram — meta lengkap.
-- [ ] **511 [P1]** — `og:title` tanpa nama domain berulang.
+- [x] **510 [P1]** — Social preview saat share di WhatsApp/Telegram — meta lengkap.
+- [x] **511 [P1]** — `og:title` tanpa nama domain berulang.
 - [ ] **512 [P1]** — `fb:app_id` — hanya bila FB integrasi (skip).
-- [ ] **513 [P1]** — Image absolute URL di og:image.
-- [ ] **514 [P1]** — `og:image:width/height` diset.
-- [ ] **515 [P1]** — `og:image:alt` diset.
+- [x] **513 [P1]** — Image absolute URL di og:image.
+- [x] **514 [P1]** — `og:image:width/height` diset.
+- [x] **515 [P1]** — `og:image:alt` diset.
 - [ ] **516 [P1]** — `twitter:creator` (opsional).
 - [ ] **517 [P1]** — `twitter:label1/value1` dll (tidak perlu).
 - [ ] **518 [P1]** — JSON-LD `BreadcrumbList` di inner pages (P2).
-- [ ] **519 [P1]** — Schema `WebApplication` (opsional niche).
+- [x] **519 [P1]** — Schema `WebApplication` (opsional niche).
 - [ ] **520 [P1]** — RSV recheck preview di Chrome DevTools.
 
 ### 2.3 Teknis Crawling/Indexing — 531–565
 
-- [ ] **521 [P1]** — Server bind benar; sitemap URL pakai domain yang dikonfigurasi.
-- [ ] **522 [P1]** — Semua internal link ber-`href` (crawlable).
-- [ ] **523 [P1]** — Tidak ada konten disembunyikan di interaksi JS-only (progress enhancement).
+- [x] **521 [P1]** — Server bind benar; sitemap URL pakai domain yang dikonfigurasi.
+- [x] **522 [P1]** — Semua internal link ber-`href` (crawlable).
+- [x] **523 [P1]** — Tidak ada konten disembunyikan di interaksi JS-only (progress enhancement).
 - [ ] **524 [P1]** — `INDEX` di `.gitignore` untuk env — biar build bersih.
 - [ ] **525 [P1]** — 301 redirect lama → baru (jika rute diubah).
-- [ ] **526 [P1]** — Pastikan halaman tak menanh header `X-Robots-Tag: noindex`.
-- [ ] **527 [P1]** — Server error (500) → tampilan ramah + status benar.
+- [x] **526 [P1]** — Pastikan halaman tak menanh header `X-Robots-Tag: noindex`.
+- [x] **527 [P1]** — Server error (500) → tampilan ramah + status benar.
 - [ ] **528 [P1]** — HTTP/2 or later (dev proxy) — header efisien.
-- [ ] **529 [P1]** — `preconnect` untuk font/asset eksternal.
-- [ ] **530 [P1]** — Avoid render-blocking (CSS inline critical small).
-- [ ] **531 [P1]** — LCP cepat (server-rendered HTML langsung — sudah bagus).
+- [x] **529 [P1]** — `preconnect` untuk font/asset eksternal.
+- [x] **530 [P1]** — Avoid render-blocking (CSS inline critical small).
+- [x] **531 [P1]** — LCP cepat (server-rendered HTML langsung — sudah bagus).
 - [ ] **532 [P1]** — FCP < 1.5s target; CLS < 0.1.
-- [ ] **533 [P1]** — Kecepatan index pakai caching statis.
-- [ ] **534 [P1]** — Beri `ETag` — caching kecil.
-- [ ] **535 [P1]** — Compression gzip/brotli.
-- [ ] **536 [P1]** — `Cache-Control` 1h untuk CSS/JS statis (immutable hash bila ada build).
-- [ ] **537 [P1]** — `Cache-Control` `no-cache` untuk HTML (revalidate).
-- [ ] **538 [P1]** — Sitemap update saat struktur berubah.
-- [ ] **539 [P1]** — Robots.txt `Allow: /`, `Disallow: /api/` (jika ada).
-- [ ] **540 [P1]** — Pastikan 404 halaman tidak di-index (meta robots noindex on error).
-- [ ] **541 [P1]** — Apabila future SSR/CSR — semua konten tetap SSR (sudah EJS).
-- [ ] **542 [P1]** — Pastikan tidak ada konten diduplikasi di 2 URL (add & edit).
-- [ ] **543 [P1]** — Href pada tombol (bukan onclick hanya) saat perlu link.
-- [ ] **544 [P1]** — per-page `og:url` + canonical.
+- [x] **533 [P1]** — Kecepatan index pakai caching statis.
+- [x] **534 [P1]** — Beri `ETag` — caching kecil.
+- [x] **535 [P1]** — Compression gzip/brotli.
+- [x] **536 [P1]** — `Cache-Control` 1h untuk CSS/JS statis (immutable hash bila ada build).
+- [x] **537 [P1]** — `Cache-Control` `no-cache` untuk HTML (revalidate).
+- [x] **538 [P1]** — Sitemap update saat struktur berubah.
+- [x] **539 [P1]** — Robots.txt `Allow: /`, `Disallow: /api/` (jika ada).
+- [x] **540 [P1]** — Pastikan 404 halaman tidak di-index (meta robots noindex on error).
+- [x] **541 [P1]** — Apabila future SSR/CSR — semua konten tetap SSR (sudah EJS).
+- [x] **542 [P1]** — Pastikan tidak ada konten diduplikasi di 2 URL (add & edit).
+- [x] **543 [P1]** — Href pada tombol (bukan onclick hanya) saat perlu link.
+- [x] **544 [P1]** — per-page `og:url` + canonical.
 - [ ] **545 [P1]** — Test render di Google Rich Results / generic crawler.
-- [ ] **546 [P1]** — Performance budget dioksigen (budget 200KB CSS/JS total) — kita 1 CSS ~10KB.
-- [ ] **547 [P1]** — Konten tidak tersembunyi `display:none` untuk SEO text (jangan spam).
-- [ ] **548 [P1]** — Favicon suatu halaman (href) unik — valid.
-- [ ] **549 [P1]** — Meta viewport tidak menghambat zoom — aman.
-- [ ] **550 [P1]** — URL scheme `https` di canonical di produksi.
-- [ ] **551 [P1]** — Semua href escape proper.
-- [ ] **552 [P1]** — Infra: sertakan `X-Content-Type-Options: nosniff` (helmet) — SEO+security.
-- [ ] **553 [P1]** — Densi halaman: page weight rendah (HTML kecil) — cepat index.
-- [ ] **554 [P1]** — Meta `format-detection: telephone=no` opsional.
+- [x] **546 [P1]** — Performance budget dioksigen (budget 200KB CSS/JS total) — kita 1 CSS ~10KB.
+- [x] **547 [P1]** — Konten tidak tersembunyi `display:none` untuk SEO text (jangan spam).
+- [x] **548 [P1]** — Favicon suatu halaman (href) unik — valid.
+- [x] **549 [P1]** — Meta viewport tidak menghambat zoom — aman.
+- [x] **550 [P1]** — URL scheme `https` di canonical di produksi.
+- [x] **551 [P1]** — Semua href escape proper.
+- [x] **552 [P1]** — Infra: sertakan `X-Content-Type-Options: nosniff` (helmet) — SEO+security.
+- [x] **553 [P1]** — Densi halaman: page weight rendah (HTML kecil) — cepat index.
+- [x] **554 [P1]** — Meta `format-detection: telephone=no` opsional.
 - [ ] **555 [P1]** — Jalankan audit Lighthouse di setiap PR stage — target SEO ≥ 90.
 
 ---

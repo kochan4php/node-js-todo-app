@@ -108,3 +108,23 @@
         </div>
     </section>
 </main>
+
+<% if (stats.total > 0) { %>
+<!-- 477 — ItemList untuk crawler: daftar rencana terpenting di halaman. -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Daftar rencana",
+    "itemListElement": [
+        <% todos.forEach((todo, i) => { %>
+        {
+            "@type": "ListItem",
+            "position": <%= i + 1 %>,
+            "name": "<%= todo.name.replace(/\\/g, '\\\\').replace(/"/g, '\\"') %>"
+        }<%= i + 1 < todos.length ? ',' : '' %>
+        <% }) %>
+    ]
+}
+</script>
+<% } %>

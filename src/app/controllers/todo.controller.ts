@@ -63,6 +63,7 @@ function index(req: Request, res: Response) {
 function addForm(_: Request, res: Response) {
     return render(res, 'add-todo', {
         title: 'Tambah Rencana',
+        description: 'Tambahkan rencana baru ke buku rencanamu — ringkas, jelas, maksimal 200 karakter.',
         layout: 'layouts/main',
         today: todayLong(),
         maxTodos: MAX_TODOS,
@@ -77,6 +78,7 @@ function store(req: Request, res: Response) {
     if (!name) {
         return render(res, 'add-todo', {
             title: 'Tambah Rencana',
+            description: 'Tambahkan rencana baru ke buku rencanamu — ringkas, jelas, maksimal 200 karakter.',
             layout: 'layouts/main',
             today: todayLong(),
             maxTodos: MAX_TODOS,
@@ -91,6 +93,7 @@ function store(req: Request, res: Response) {
     if (!todo) {
         return render(res, 'add-todo', {
             title: 'Tambah Rencana',
+            description: 'Tambahkan rencana baru ke buku rencanamu — ringkas, jelas, maksimal 200 karakter.',
             layout: 'layouts/main',
             today: todayLong(),
             maxTodos: MAX_TODOS,
@@ -111,6 +114,7 @@ function editForm(req: Request, res: Response) {
 
     return render(res, 'edit-todo', {
         title: 'Ubah Rencana',
+        description: 'Ubah nama, prioritas, dan tenggat rencana yang sudah kamu catat.',
         layout: 'layouts/main',
         todo,
         today: todayLong(),
@@ -130,6 +134,7 @@ function update(req: Request, res: Response) {
     if (!name) {
         return render(res, 'edit-todo', {
             title: 'Ubah Rencana',
+            description: 'Ubah nama, prioritas, dan tenggat rencana yang sudah kamu catat.',
             layout: 'layouts/main',
             todo,
             today: todayLong(),
