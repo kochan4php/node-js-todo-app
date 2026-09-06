@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
+import { MAX_TODOS } from '../../config/app.ts';
 import type { Priority, Todo } from '../../interfaces/todo.ts';
+import { logger } from '../../logger/index.ts';
 import { readTodos, writeTodos } from '../store/todo.store.ts';
-
-export const MAX_TODOS = 1000;
 
 type CreatedTodo = {
     name: string;
@@ -28,7 +28,8 @@ export function create(name: string, priority?: Priority, due?: string | null): 
     const now = new Date().toISOString();
     const todo: Todo = { id: randomUUID(), name, completed: false, createdAt: now, updatedAt: now, priority, due: due ?? null };
     todos.push(todo);
-    writeTodos(todos);
+    writeTodos(todos); /* 723 — audit jalur */
+    logger.info(`Tambah ${todo.name}`);
     return todo;
 }
 
@@ -38,6 +39,7 @@ export function update(id: string, name: string, priority?: Priority, due?: stri
     if (index === -1) return null;
     todos[index] = { ...todos[index], name, priority, due: due ?? null, updatedAt: new Date().toISOString() };
     writeTodos(todos);
+    logger.info(`Ubah ${id}`);
     return todos[index];
 }
 
@@ -56,6 +58,7 @@ export function restore(saved: CreatedTodo & { completed: boolean; createdAt: st
     };
     todos.push(todo);
     writeTodos(todos);
+    logger.info(`Pulihkan ${saved.name}`);
     return todo;
 }
 
@@ -65,6 +68,7 @@ export function toggle(id: string): Todo | null {
     if (index === -1) return null;
     todos[index] = { ...todos[index], completed: !todos[index].completed, updatedAt: new Date().toISOString() };
     writeTodos(todos);
+    logger.info(`Selesaikan ${id}`);
     return todos[index];
 }
 
@@ -73,5 +77,6 @@ export function remove(id: string): boolean {
     const filtered = todos.filter((todo) => todo.id !== id);
     if (filtered.length === todos.length) return false;
     writeTodos(filtered);
+    logger.info(`Hapus ${id}`);
     return true;
 }

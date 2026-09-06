@@ -26,7 +26,19 @@ export function readTodos(): Todo[] {
         const parsed: unknown = JSON.parse(readFileSync(DATA_FILE, 'utf8'));
         buffer = Array.isArray(parsed) ? ensureDefaults(parsed as Todo[]) : [];
     } catch (error) {
-        logger.warn(`Gagal membaca data, mulai dari kosong: ${(error as Error).message}`);
+        const err = error as NodeJS.ErrnoException;
+        if (err.code === 'ENOENT') {
+            /* 677/812 — seed otomatis: buat file kosong di run pertama. */
+            writeTodos(buffer ?? []);
+            return buffer as Todo[];
+        }
+        /* 813 — JSON korup: backup .bak lalu mulai dari kosong. */
+        try {
+            renameSync(DATA_FILE, `${DATA_FILE}.bak`);
+            logger.warn(`Data rusak, dicadangkan ke .bak: ${err.message}`);
+        } catch {
+            /* backup gagal — tetap lanjut dari awal */
+        }
         buffer = [];
     }
     return buffer;

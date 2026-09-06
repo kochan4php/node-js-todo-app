@@ -11,7 +11,15 @@ const DEFAULT_TITLE = APP_NAME;
 const DEFAULT_DESCRIPTION = 'Catat, selesaikan, dan rayakan langkah kecilmu — semua tersimpan di perangkatmu, tanpa akun, tanpa database.';
 const DEFAULT_ROBOTS = 'index, follow';
 
-export function render(res: Response, view: string, data?: object) {
+export interface ViewData {
+    layout: string;
+    title?: string;
+    description?: string;
+    robots?: string;
+    [key: string]: unknown;
+}
+
+export function render(res: Response, view: string, data?: ViewData): void {
     const req = res.req;
     const path = req.path === '/' ? '/' : req.path.replace(/\/+$/, '');
 
@@ -25,7 +33,7 @@ export function render(res: Response, view: string, data?: object) {
     const canonical = `${SITE_URL}${path}`;
 
     res.set('Cache-Control', 'no-cache'); /* 537 — HTML direvalidasi, bukan disimpan buta */
-    return res.render(view, {
+    res.render(view, {
         ...d,
         title,
         description,

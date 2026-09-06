@@ -1,17 +1,9 @@
 import type { Request, Response } from 'express';
+import { MAX_TODOS } from '../../config/app.ts';
 import type { Priority } from '../../interfaces/todo.ts';
 import { createdShort, dueInfo, relativeWhen, todayLong } from '../helpers/date.ts';
 import { render } from '../helpers/render.ts';
-import {
-    create,
-    getAll,
-    getById,
-    MAX_TODOS,
-    remove,
-    restore,
-    toggle as toggleTodo,
-    update as updateTodo,
-} from '../services/todo.service.ts';
+import { create, getAll, getById, remove, restore, toggle as toggleTodo, update as updateTodo } from '../services/todo.service.ts';
 
 const PRIORITIES: readonly Priority[] = ['low', 'medium', 'high'];
 

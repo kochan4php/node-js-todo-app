@@ -26,7 +26,7 @@
         "typescript",
         "ejs",
         "local-data",
-        "glassmorphism"
+        "bento-ui"
     ],
     "lint-staged": {
         "*.{ts,js,cjs,mjs,json,css}": [

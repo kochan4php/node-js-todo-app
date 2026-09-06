@@ -49,8 +49,13 @@ const init = (): Application => {
     app.use(express.urlencoded({ extended: true, limit: '10kb' }));
     app.use(expressLayouts);
     app.use(methodOverride('_method'));
-    /* 594 — di produksi log cukup short (status ringkas), dev cukup dev. */
-    app.use(morgan(process.env.NODE_ENV === 'production' ? 'short' : 'dev'));
+    /* 594 — di produksi log cukup short (status ringkas), dev cukup dev.
+       725/732 — endpoint health tidak banjiri log. */
+    app.use(
+        morgan(process.env.NODE_ENV === 'production' ? 'short' : 'dev', {
+            skip: (req) => req.path.startsWith('/api/health'),
+        }),
+    );
 
     /* 500 — mutasi tidak boleh di-cache oleh intermediate; GET HTML revalidasi (537). */
     app.use((req, res, next: NextFunction) => {
@@ -64,9 +69,9 @@ const init = (): Application => {
     app.use('/api/health-check', healthCheckRoute);
     app.use(notFoundRoute);
 
-    /* 527 — error tak terduga: log + halaman ramah + status 500. */
+    /* 527/726 — error tak terduga: stack di dev, pesan singkat di prod, halaman 500. */
     app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-        logger.error(`Terjadi error tak terduga: ${err.message}`);
+        logger.error(process.env.NODE_ENV === 'production' ? err.message : (err.stack ?? err.message));
         res.status(500);
         if (res.headersSent) return;
         render(res, '500', { title: 'Terjadi kesalahan', layout: 'layouts/main', robots: 'noindex, follow' });

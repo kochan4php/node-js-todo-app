@@ -758,105 +758,105 @@
 
 ### 4.1 Arsitektur — 671–700
 
-- [ ] **661 [P0]** — Hapus MongoDB/Typegoose & auth (100% local data) — ganti storage JSON sederhana.
-- [ ] **662 [P0]** — `src/app/services/todo.service.ts` di-export & dipakai konsisten (barrel).
-- [ ] **663 [P1]** — Pisahkan `store` lokal (read/write JSON) dari controller — 1 layer data.
-- [ ] **664 [P1]** — Router terpisah per domain (todo, health, not-found) — bersih.
-- [ ] **665 [P1]** — Nama file konsisten: kebab/single → `*.controller.ts`, `*.service.ts`.
-- [ ] **666 [P1]** — Controller tipis (parse request → call service → render).
-- [ ] **667 [P1]** — Service tangani logika (validasi ringan, persistance).
-- [ ] **668 [P1]** — Error handling terpusat: error middleware + render error view.
-- [ ] **669 [P1]** — `process.exit` tidak ada di runtime app (hapus dari database.ts).
-- [ ] **670 [P1]** — Konfigurasi env: hanya PORT & DATA_PATH; default aman.
-- [ ] **671 [P1]** — Hapus dotenv/config dari start scripts (tidak perlu multi env).
-- [ ] **672 [P1]** — `index.ts` ringkas: app.listen + graceful shutdown.
-- [ ] **673 [P1]** — Health check tanpa depend DB — selalu UP.
-- [ ] **674 [P1]** — Hapus socket.io (tidak dipakai) + middleware cors.
-- [ ] **675 [P1]** — Spesifikasi request/response 1 bahasa (JSON/HTML jelas route).
-- [ ] **676 [P1]** — Jangan menyimpan data di `public/` — gunakan `data/` root w/ .gitignore.
-- [ ] **677 [P1]** — Data default: seed file `data/todos.json` dibuat otomatis saat run.
-- [ ] **678 [P1]** — mencoba struktur: views/layouts + views/partials dipisah.
-- [ ] **679 [P1]** — Tidak ada kode duplikat antar halaman (share partial).
-- [ ] **680 [P1]** — Interfaces: `Todo` type di `src/interfaces/todo.ts` (local type, bukan model mongoose).
-- [ ] **681 [P1]** — Barrel export `helpers/index.ts` termasuk `render`.
-- [ ] **682 [P1]** — Export service dari `services/index.ts` — semua di barrel.
-- [ ] **683 [P1]** — Hapus file tidak dipakai: `hash.helper.ts`, `jwt/**`, model user/session.
-- [ ] **684 [P1]** — EJS partial reuse minim — gunakan include.
-- [ ] **685 [P1]** — API routes (`/api`, `/api/health-check`) tetap ringkas.
-- [ ] **686 [P1]** — Tidak ada logika bisnis di route.
-- [ ] **687 [P1]** — Tidak ada `any` di internal (strict TS).
-- [ ] **688 [P1]** — Semua file TS diberi eslint/biome — nol warning.
-- [ ] **689 [P1]** — Kontrol versioning data schema (migrasi trivial local).
-- [ ] **690 [P1]** — Output build `dist/` clean.
+- [x] **661 [P0]** — Hapus MongoDB/Typegoose & auth (100% local data) — ganti storage JSON sederhana.
+- [x] **662 [P0]** — `src/app/services/todo.service.ts` di-export & dipakai konsisten (barrel).
+- [x] **663 [P1]** — Pisahkan `store` lokal (read/write JSON) dari controller — 1 layer data.
+- [x] **664 [P1]** — Router terpisah per domain (todo, health, not-found) — bersih.
+- [x] **665 [P1]** — Nama file konsisten: kebab/single → `*.controller.ts`, `*.service.ts`.
+- [x] **666 [P1]** — Controller tipis (parse request → call service → render).
+- [x] **667 [P1]** — Service tangani logika (validasi ringan, persistance).
+- [x] **668 [P1]** — Error handling terpusat: error middleware + render error view.
+- [x] **669 [P1]** — `process.exit` tidak ada di runtime app (hapus dari database.ts).
+- [x] **670 [P1]** — Konfigurasi env: hanya PORT & DATA_PATH; default aman.
+- [x] **671 [P1]** — Hapus dotenv/config dari start scripts (tidak perlu multi env).
+- [x] **672 [P1]** — `index.ts` ringkas: app.listen + graceful shutdown.
+- [x] **673 [P1]** — Health check tanpa depend DB — selalu UP.
+- [x] **674 [P1]** — Hapus socket.io (tidak dipakai) + middleware cors.
+- [x] **675 [P1]** — Spesifikasi request/response 1 bahasa (JSON/HTML jelas route).
+- [x] **676 [P1]** — Jangan menyimpan data di `public/` — gunakan `data/` root w/ .gitignore.
+- [x] **677 [P1]** — Data default: seed file `data/todos.json` dibuat otomatis saat run.
+- [x] **678 [P1]** — mencoba struktur: views/layouts + views/partials dipisah.
+- [x] **679 [P1]** — Tidak ada kode duplikat antar halaman (share partial).
+- [x] **680 [P1]** — Interfaces: `Todo` type di `src/interfaces/todo.ts` (local type, bukan model mongoose).
+- [x] **681 [P1]** — Barrel export `helpers/index.ts` termasuk `render`.
+- [x] **682 [P1]** — Export service dari `services/index.ts` — semua di barrel.
+- [x] **683 [P1]** — Hapus file tidak dipakai: `hash.helper.ts`, `jwt/**`, model user/session.
+- [x] **684 [P1]** — EJS partial reuse minim — gunakan include.
+- [x] **685 [P1]** — API routes (`/api`, `/api/health-check`) tetap ringkas.
+- [x] **686 [P1]** — Tidak ada logika bisnis di route.
+- [x] **687 [P1]** — Tidak ada `any` di internal (strict TS).
+- [x] **688 [P1]** — Semua file TS diberi eslint/biome — nol warning.
+- [x] **689 [P1]** — Kontrol versioning data schema (migrasi trivial local).
+- [x] **690 [P1]** — Output build `dist/` clean.
 
 ### 4.2 Kode TypeScript — 701–730
 
-- [ ] **691 [P1]** — Strict mode tetap aktif (tsconfig `strict: true`).
-- [ ] **692 [P1]** — `noImplicitAny` — cek ulang (strict sudah).
-- [ ] **693 [P1]** — Decorator `experimentalDecorators` tidak perlu lagi (hapus typegoose) — bisa dihapus dari tsconfig.
-- [ ] **694 [P1]** — `moduleResolution` modern `NodeNext` (opsional).
-- [ ] **695 [P1]** — Utk Node 24 `target ES2022+` — fine.
-- [ ] **696 [P1]** — Hapus `@types/cli-color`, `@types/npmlog` dll (tidak dipakai).
-- [ ] **697 [P1]** — Rest operasi: gunakan explicit return types di fungsi publik.
-- [ ] **698 [P1]** — `async/await` konsisten; tidak campur .then.
-- [ ] **699 [P1]** — Jangan re-query user setelah create (register) — kembalikan data tanpa password dari satu query.
-- [ ] **700 [P1]** — Validasi input menggunakan helper ringan (funsi `required`) — bukan lib besar.
-- [ ] **701 [P1]** — Tipe untuk payload render (`ViewData` interface).
-- [ ] **702 [P1]** — `unknown` di catch + type guard (bukan `error: any`).
-- [ ] **703 [P1]** — Hapus `"main": "index.js"` salah dari package.json.
-- [ ] **704 [P1]** — Menambahkan `engines` di package.json (node >=20).
-- [ ] **705 [P1]** — `pnpm` sebagai paket manager (lockfile dipakai).
-- [ ] **706 [P1]** — README ditulis (modul path, run, struktur).
-- [ ] **707 [P1]** — Script `build` memakai `tsc` — bisa `tsup` bila butuh bundle (P2).
-- [ ] **708 [P1]** — Tidak pakai `dotenv` bila tidak ada .env? Simpan PORT default.
-- [ ] **709 [P1]** — `win-node-env` dihapus (tidak perlu, NODE_ENV via cross script mana pun).
-- [ ] **710 [P1]** — Hapus `socket.io` type imports.
-- [ ] **711 [P1]** — `IRequest` interface dihapus (tidak dipakai auth).
-- [ ] **712 [P1]** — Helper `render` walau kecil — keep (nice).
-- [ ] **713 [P1]** — Rute defense: validasi `req.params.id` format.
-- [ ] **714 [P1]** — Helper `response.helper` untuk API (biarkan).
-- [ ] **715 [P1]** — Penyederhanaan middleware: hapus auth/isAdmin.
-- [ ] **716 [P1]** — Pastikan `dist` tidak di-commit (.gitignore).
-- [ ] **717 [P1]** — `create-env.ts` dihapus (env tidak perlu).
-- [ ] **718 [P1]** — Tunggu: hapus `--maxWorkers`... (tiada).
-- [ ] **719 [P1]** — Sediakan `typecheck` script terpisah.
-- [ ] **720 [P1]** — Consistent import order via Biome organizeImports (CI).
+- [x] **691 [P1]** — Strict mode tetap aktif (tsconfig `strict: true`).
+- [x] **692 [P1]** — `noImplicitAny` — cek ulang (strict sudah).
+- [x] **693 [P1]** — Decorator `experimentalDecorators` tidak perlu lagi (hapus typegoose) — bisa dihapus dari tsconfig.
+- [x] **694 [P1]** — `moduleResolution` modern `NodeNext` (opsional).
+- [x] **695 [P1]** — Utk Node 24 `target ES2022+` — fine.
+- [x] **696 [P1]** — Hapus `@types/cli-color`, `@types/npmlog` dll (tidak dipakai).
+- [x] **697 [P1]** — Rest operasi: gunakan explicit return types di fungsi publik.
+- [x] **698 [P1]** — `async/await` konsisten; tidak campur .then.
+- [x] **699 [P1]** — Jangan re-query user setelah create (register) — kembalikan data tanpa password dari satu query.
+- [x] **700 [P1]** — Validasi input menggunakan helper ringan (funsi `required`) — bukan lib besar.
+- [x] **701 [P1]** — Tipe untuk payload render (`ViewData` interface).
+- [x] **702 [P1]** — `unknown` di catch + type guard (bukan `error: any`).
+- [x] **703 [P1]** — Hapus `"main": "index.js"` salah dari package.json.
+- [x] **704 [P1]** — Menambahkan `engines` di package.json (node >=20).
+- [x] **705 [P1]** — `pnpm` sebagai paket manager (lockfile dipakai).
+- [x] **706 [P1]** — README ditulis (modul path, run, struktur).
+- [x] **707 [P1]** — Script `build` memakai `tsc` — bisa `tsup` bila butuh bundle (P2).
+- [x] **708 [P1]** — Tidak pakai `dotenv` bila tidak ada .env? Simpan PORT default.
+- [x] **709 [P1]** — `win-node-env` dihapus (tidak perlu, NODE_ENV via cross script mana pun).
+- [x] **710 [P1]** — Hapus `socket.io` type imports.
+- [x] **711 [P1]** — `IRequest` interface dihapus (tidak dipakai auth).
+- [x] **712 [P1]** — Helper `render` walau kecil — keep (nice).
+- [x] **713 [P1]** — Rute defense: validasi `req.params.id` format.
+- [x] **714 [P1]** — Helper `response.helper` untuk API (biarkan).
+- [x] **715 [P1]** — Penyederhanaan middleware: hapus auth/isAdmin.
+- [x] **716 [P1]** — Pastikan `dist` tidak di-commit (.gitignore).
+- [x] **717 [P1]** — `create-env.ts` dihapus (env tidak perlu).
+- [x] **718 [P1]** — Tunggu: hapus `--maxWorkers`... (tiada).
+- [x] **719 [P1]** — Sediakan `typecheck` script terpisah.
+- [x] **720 [P1]** — Consistent import order via Biome organizeImports (CI).
 
 ### 4.3 Logging & Observability — 731–755
 
-- [ ] **721 [P1]** — Ganti `npmlog` (deprecated) dengan logger mini sendiri (console + timestamp) atau `pino` (P2).
-- [ ] **722 [P1]** — Log level dir jenjang: debug/dev, info/prod.
-- [ ] **723 [P1]** — Log mutasi (add/edit/delete) — auditable.
-- [ ] **724 [P1]** — Jangan log data sensitif (tidak ada lagi).
-- [ ] **725 [P1]** — Health endpoint log? Sepi.
-- [ ] **726 [P1]** — Error log: stack di dev, pesan di prod.
+- [x] **721 [P1]** — Ganti `npmlog` (deprecated) dengan logger mini sendiri (console + timestamp) atau `pino` (P2).
+- [x] **722 [P1]** — Log level dir jenjang: debug/dev, info/prod.
+- [x] **723 [P1]** — Log mutasi (add/edit/delete) — auditable.
+- [x] **724 [P1]** — Jangan log data sensitif (tidak ada lagi).
+- [x] **725 [P1]** — Health endpoint log? Sepi.
+- [x] **726 [P1]** — Error log: stack di dev, pesan di prod.
 - [ ] **727 [P1]** — Structured log (JSON) bila di produksi — P2.
-- [ ] **728 [P1]** — Timezone lokal / ISO dengan zona.
-- [ ] **729 [P1]** — `morgan` cukup untuk request log.
-- [ ] **730 [P1]** — Jangan log body request penuh (privasi).
+- [x] **728 [P1]** — Timezone lokal / ISO dengan zona.
+- [x] **729 [P1]** — `morgan` cukup untuk request log.
+- [x] **730 [P1]** — Jangan log body request penuh (privasi).
 - [ ] **731 [P1]** — ID request (correlation) — P2 bila perlu.
-- [ ] **732 [P1]** — Cegah log flood dari health-check interval (skip di prod).
+- [x] **732 [P1]** — Cegah log flood dari health-check interval (skip di prod).
 - [ ] **733 [P1]** — Kategorikan log (app, request, store).
 - [ ] **734 [P1]** — File drain rotate (opsional P2).
-- [ ] **735 [P1]** — Sediakan `console.error` di handler error global.
+- [x] **735 [P1]** — Sediakan `console.error` di handler error global.
 
 ### 4.4 Proses & Git — 756–770
 
-- [ ] **736 [P1]** — Pre-commit: biome check (bukan eslint) + lint-staged.
-- [ ] **737 [P1]** — Commit message conventional (`feat:`, `fix:`).
+- [x] **736 [P1]** — Pre-commit: biome check (bukan eslint) + lint-staged.
+- [x] **737 [P1]** — Commit message conventional (`feat:`, `fix:`).
 - [ ] **738 [P1]** — Branch per fitur + PR.
-- [ ] **739 [P1]** — `.editorconfig` konsisten (sudah ada).
-- [ ] **740 [P1]** — `.prettierrc` digantikan Biome (hapus prettier) — satu tool.
-- [ ] **741 [P1]** — Hapus `.eslintrc` — biome config.
-- [ ] **742 [P1]** — Lockfile di-rejeki (pnpm-lock.yaml) — version reproducible.
-- [ ] **743 [P1]** — No secrets in repo (sudah tak ada).
+- [x] **739 [P1]** — `.editorconfig` konsisten (sudah ada).
+- [x] **740 [P1]** — `.prettierrc` digantikan Biome (hapus prettier) — satu tool.
+- [x] **741 [P1]** — Hapus `.eslintrc` — biome config.
+- [x] **742 [P1]** — Lockfile di-rejeki (pnpm-lock.yaml) — version reproducible.
+- [x] **743 [P1]** — No secrets in repo (sudah tak ada).
 - [ ] **744 [P1]** — Rebase sebelum merge (linear history) — opsional.
 - [ ] **745 [P1]** — Code review checklist kecil (README).
 - [ ] **746 [P1]** — Tag release (v0.2.0...) — disiplin versi.
 - [ ] **747 [P1]** — CI: pnpm install --frozen-lockfile + biome + build + test.
-- [ ] **748 [P1]** — Jangan ganggu commit saat rush — tetap lint.
+- [x] **748 [P1]** — Jangan ganggu commit saat rush — tetap lint.
 - [ ] **749 [P1]** — Changelog (bagian README / GitHub Releases).
-- [ ] **750 [P1]** — LICENSE tetap (Apache 2.0).
+- [x] **750 [P1]** — LICENSE tetap (Apache 2.0).
 
 ---
 
@@ -864,102 +864,102 @@
 
 ### 5.1 Hapus Dead Code & Dependencies — 771–800
 
-- [ ] **751 [P0]** — Hapus dependency: mongoose, @typegoose/typegoose, bcrypt, jsonwebtoken, cookie-parser, cors, express-rate-limit, socket.io, npmlog, dotenv, win-node-env.
-- [ ] **752 [P0]** — Hapus devDependency: @types/bcrypt, @types/cookie-parser, @types/cors, @types/jsonwebtoken, @types/npmlog, @types/cli-color, cli-color, eslint, @typescript-eslint/*, prettier.
-- [ ] **753 [P1]** — Hapus direktori/ file: `src/jwt`, `src/app/models/{user,session}.model.ts`, `src/app/services/{user,session}.service.ts`, `src/app/middlewares`, `src/app/controllers/admin`, `src/routes/admin`, `src/app/controllers/auth.controller.ts`, `src/config/{env,database}.ts` (kecuali PORT), `src/logger` jika diganti.
-- [ ] **754 [P1]** — Hapus `src/app/models/index.ts` (tidak ada model mongoose).
-- [ ] **755 [P1]** — Hapus `pnpm-workspace.yaml` allowBuilds bcrypt (dependensi hilang) — atau sesuaikan.
-- [ ] **756 [P1]** — Hapus docker DB: `docker/mongodb`, `docker/mongo-express`, `docker/docker-compose.yml`, `docker-compose.yml` (Mongo service).
-- [ ] **757 [P1]** — Hapus `create-env.ts`, `env/`, `.env.example` (tidak ada env secret).
-- [ ] **758 [P1]** — Ganti `npmlog` → log konsol ringan (kurangi deps deprecated).
-- [ ] **759 [P1]** — Hapus `style.css.map`.
-- [ ] **760 [P1]** — Hapus setup `win-node-env` — cross-env? Samai NODE_ENV via JSON script biasa.
-- [ ] **761 [P1]** — Hapus script docker yang sudah obsolete di package.json.
-- [ ] **762 [P1]** — Hapus `setup-app*` bila tak dipakai.
-- [ ] **763 [P1]** — Pastikan `update-deps` pnpm tetap ada.
-- [ ] **764 [P1]** — Audit `pnpm outdated` — nol dependensi usang.
+- [x] **751 [P0]** — Hapus dependency: mongoose, @typegoose/typegoose, bcrypt, jsonwebtoken, cookie-parser, cors, express-rate-limit, socket.io, npmlog, dotenv, win-node-env.
+- [x] **752 [P0]** — Hapus devDependency: @types/bcrypt, @types/cookie-parser, @types/cors, @types/jsonwebtoken, @types/npmlog, @types/cli-color, cli-color, eslint, @typescript-eslint/*, prettier.
+- [x] **753 [P1]** — Hapus direktori/ file: `src/jwt`, `src/app/models/{user,session}.model.ts`, `src/app/services/{user,session}.service.ts`, `src/app/middlewares`, `src/app/controllers/admin`, `src/routes/admin`, `src/app/controllers/auth.controller.ts`, `src/config/{env,database}.ts` (kecuali PORT), `src/logger` jika diganti.
+- [x] **754 [P1]** — Hapus `src/app/models/index.ts` (tidak ada model mongoose).
+- [x] **755 [P1]** — Hapus `pnpm-workspace.yaml` allowBuilds bcrypt (dependensi hilang) — atau sesuaikan.
+- [x] **756 [P1]** — Hapus docker DB: `docker/mongodb`, `docker/mongo-express`, `docker/docker-compose.yml`, `docker-compose.yml` (Mongo service).
+- [x] **757 [P1]** — Hapus `create-env.ts`, `env/`, `.env.example` (tidak ada env secret).
+- [x] **758 [P1]** — Ganti `npmlog` → log konsol ringan (kurangi deps deprecated).
+- [x] **759 [P1]** — Hapus `style.css.map`.
+- [x] **760 [P1]** — Hapus setup `win-node-env` — cross-env? Samai NODE_ENV via JSON script biasa.
+- [x] **761 [P1]** — Hapus script docker yang sudah obsolete di package.json.
+- [x] **762 [P1]** — Hapus `setup-app*` bila tak dipakai.
+- [x] **763 [P1]** — Pastikan `update-deps` pnpm tetap ada.
+- [x] **764 [P1]** — Audit `pnpm outdated` — nol dependensi usang.
 - [ ] **765 [P1]** — Jangan instal ulang modal — pnpm clean.
-- [ ] **766 [P1]** — Total deps runtime menyusut drastis (express, ejs, layouts, method-override, morgan, compression, helmet).
-- [ ] **767 [P1]** — DevDeps menyusut (typescript, ts-node, nodemon, @types/*, biome, husky, lint-staged).
-- [ ] **768 [P1]** — `package.json` name/version diperbarui relevan.
-- [ ] **769 [P1]** — Keywords update (hapus mongodb/mongoose/socket.io).
-- [ ] **770 [P1]** — Remove `main: index.js` stale.
-- [ ] **771 [P1]** — Hapus `.npmrc` bila tak perlu.
-- [ ] **772 [P1]** — Pertimbangkan hapus `.ejsbrc.json` bila tak dipakai (opsional).
-- [ ] **773 [P1]** — Verify `node_modules` bersih via `pnpm install` dari nol.
-- [ ] **774 [P1]** — Golang? Tidak — pilih jalan terminology.
-- [ ] **775 [P1]** — Bundler? Tidak perlu (EJS server + CSS direct).
-- [ ] **776 [P1]** — Hapus `socket.controller.ts`.
-- [ ] **777 [P1]** — Hapus interface `decoded-user.ts`, `i-request.ts`.
-- [ ] **778 [P1]** — Hapus `config/database.ts` connect/exit.
-- [ ] **779 [P1]** — Hapus `hash.helper.ts` & `str.helper.ts` bila tak dipakai.
-- [ ] **780 [P1]** — Hapus `response.helper` bila HTML-only? Pertahankan untuk health/main JSON.
+- [x] **766 [P1]** — Total deps runtime menyusut drastis (express, ejs, layouts, method-override, morgan, compression, helmet).
+- [x] **767 [P1]** — DevDeps menyusut (typescript, ts-node, nodemon, @types/*, biome, husky, lint-staged).
+- [x] **768 [P1]** — `package.json` name/version diperbarui relevan.
+- [x] **769 [P1]** — Keywords update (hapus mongodb/mongoose/socket.io).
+- [x] **770 [P1]** — Remove `main: index.js` stale.
+- [x] **771 [P1]** — Hapus `.npmrc` bila tak perlu.
+- [x] **772 [P1]** — Pertimbangkan hapus `.ejsbrc.json` bila tak dipakai (opsional).
+- [x] **773 [P1]** — Verify `node_modules` bersih via `pnpm install` dari nol.
+- [x] **774 [P1]** — Golang? Tidak — pilih jalan terminology.
+- [x] **775 [P1]** — Bundler? Tidak perlu (EJS server + CSS direct).
+- [x] **776 [P1]** — Hapus `socket.controller.ts`.
+- [x] **777 [P1]** — Hapus interface `decoded-user.ts`, `i-request.ts`.
+- [x] **778 [P1]** — Hapus `config/database.ts` connect/exit.
+- [x] **779 [P1]** — Hapus `hash.helper.ts` & `str.helper.ts` bila tak dipakai.
+- [x] **780 [P1]** — Hapus `response.helper` bila HTML-only? Pertahankan untuk health/main JSON.
 
 ### 5.2 Konsolidasi & Penyederhanaan — 801–830
 
-- [ ] **781 [P1]** — Satu storage service (`todo.service.ts`) membaca/menulis `data/todos.json`.
-- [ ] **782 [P1]** — Controller `todo` punya 6 handler (index, store, update, destroy, add-form, edit-form) — ringkas.
-- [ ] **783 [P1]** — Rute todo: `GET /`, `POST /`, `GET /add-todo`, `GET /edit/:id`, `PUT /:id`, `DELETE /:id` — RESTful.
-- [ ] **784 [P1]** — Nama field konsisten `name` (hapus `kegiatan`) — perbaiki semua view.
-- [ ] **785 [P1]** — `<%- body %>` layout tetap; partial di `views/partials`.
-- [ ] **786 [P1]** — Tidak ada duplikasi CSS antar add/edit — komponen bersama.
-- [ ] **787 [P1]** — Helper render di barrel (`helpers/index.ts`).
-- [ ] **788 [P1]** — Judul teks satu sumber helper `pageTitle`.
-- [ ] **789 [P1]** — Prompt error render: satu pattern view-helper (query flash).
-- [ ] **790 [P1]** — Tidak ada file 2 fungsi tak terpakai.
+- [x] **781 [P1]** — Satu storage service (`todo.service.ts`) membaca/menulis `data/todos.json`.
+- [x] **782 [P1]** — Controller `todo` punya 6 handler (index, store, update, destroy, add-form, edit-form) — ringkas.
+- [x] **783 [P1]** — Rute todo: `GET /`, `POST /`, `GET /add-todo`, `GET /edit/:id`, `PUT /:id`, `DELETE /:id` — RESTful.
+- [x] **784 [P1]** — Nama field konsisten `name` (hapus `kegiatan`) — perbaiki semua view.
+- [x] **785 [P1]** — `<%- body %>` layout tetap; partial di `views/partials`.
+- [x] **786 [P1]** — Tidak ada duplikasi CSS antar add/edit — komponen bersama.
+- [x] **787 [P1]** — Helper render di barrel (`helpers/index.ts`).
+- [x] **788 [P1]** — Judul teks satu sumber helper `pageTitle`.
+- [x] **789 [P1]** — Prompt error render: satu pattern view-helper (query flash).
+- [x] **790 [P1]** — Tidak ada file 2 fungsi tak terpakai.
 - [ ] **791 [P1]** — `app.ts` 20 baris tidy.
-- [ ] **792 [P1]** — Tidak ada `any` tersisa di TS.
-- [ ] **793 [P1]** — Type `Todo` interface lokal sederhana.
-- [ ] **794 [P1]** — Data layer atomic: tmpfile + rename.
-- [ ] **795 [P1]** — In-memory cache array + persist per mutasi — konsisten.
-- [ ] **796 [P1]** — Mapping id baru via `crypto.randomUUID()`.
-- [ ] **797 [P1]** — Timestamp disimpan di record (`createdAt`, `updatedAt`).
-- [ ] **798 [P1]** — Sort diserahkan ke service (default createdAt desc / manual).
-- [ ] **799 [P1]** — Filter (aktif/selesai) ke service optional.
-- [ ] **800 [P1]** — EJS escaping `<%= %>` — safe default.
-- [ ] **801 [P1]** — Konfigurasi single: `config/app.ts` (PORT, DATA_PATH, view settings).
-- [ ] **802 [P1]** — `index.ts` — listen + SIGINT/SIGTERM handler.
-- [ ] **803 [P1]** — Health check murni tanpa store (ringan).
-- [ ] **804 [P1]** — Logger: `logger.ts` 10 baris (info/warn/error + timestamp).
-- [ ] **805 [P1]** — Tipe render data `ViewData { title, layout, todos, filters? }`.
-- [ ] **806 [P1]** — Non-guard: tidak ada paket validasi JSON-schema — cukup manual.
+- [x] **792 [P1]** — Tidak ada `any` tersisa di TS.
+- [x] **793 [P1]** — Type `Todo` interface lokal sederhana.
+- [x] **794 [P1]** — Data layer atomic: tmpfile + rename.
+- [x] **795 [P1]** — In-memory cache array + persist per mutasi — konsisten.
+- [x] **796 [P1]** — Mapping id baru via `crypto.randomUUID()`.
+- [x] **797 [P1]** — Timestamp disimpan di record (`createdAt`, `updatedAt`).
+- [x] **798 [P1]** — Sort diserahkan ke service (default createdAt desc / manual).
+- [x] **799 [P1]** — Filter (aktif/selesai) ke service optional.
+- [x] **800 [P1]** — EJS escaping `<%= %>` — safe default.
+- [x] **801 [P1]** — Konfigurasi single: `config/app.ts` (PORT, DATA_PATH, view settings).
+- [x] **802 [P1]** — `index.ts` — listen + SIGINT/SIGTERM handler.
+- [x] **803 [P1]** — Health check murni tanpa store (ringan).
+- [x] **804 [P1]** — Logger: `logger.ts` 10 baris (info/warn/error + timestamp).
+- [x] **805 [P1]** — Tipe render data `ViewData { title, layout, todos, filters? }`.
+- [x] **806 [P1]** — Non-guard: tidak ada paket validasi JSON-schema — cukup manual.
 - [ ] **807 [P1]** — Fokus: variasikan PR kecil — sesuaikan riuh.
-- [ ] **808 [P1]** — Script konsisten: `dev`, `build`, `start`, `lint`, `format`, `test`.
-- [ ] **809 [P1]** — Dist ignore.
-- [ ] **810 [P1]** — Verifikasi `pnpm start` jalan dari dist.
+- [x] **808 [P1]** — Script konsisten: `dev`, `build`, `start`, `lint`, `format`, `test`.
+- [x] **809 [P1]** — Dist ignore.
+- [x] **810 [P1]** — Verifikasi `pnpm start` jalan dari dist.
 
 ### 5.3 Optimasi Alur Data — 831–860
 
-- [ ] **811 [P1]** — Baca file sekali saat startup, mutasi tulis sinkron kecil.
-- [ ] **812 [P1]** — Handle ENOENT: buat file default `[]`.
-- [ ] **813 [P1]** — Handle JSON corrupt: backup `.bak` + reseed.
-- [ ] **814 [P1]** — Max todos limit configurable (default 1000).
-- [ ] **815 [P1]** — ID tidak bocor ke URL panjang — UUID ok.
-- [ ] **816 [P1]** — Slug tidak perlu di struktur — id UUID.
+- [x] **811 [P1]** — Baca file sekali saat startup, mutasi tulis sinkron kecil.
+- [x] **812 [P1]** — Handle ENOENT: buat file default `[]`.
+- [x] **813 [P1]** — Handle JSON corrupt: backup `.bak` + reseed.
+- [x] **814 [P1]** — Max todos limit configurable (default 1000).
+- [x] **815 [P1]** — ID tidak bocor ke URL panjang — UUID ok.
+- [x] **816 [P1]** — Slug tidak perlu di struktur — id UUID.
 - [ ] **817 [P1]** — O(1) find by id via Map — untuk cepat hapus.
 - [ ] **818 [P1]** — Map untuk filter — item tetap array of object.
-- [ ] **819 [P1]** — Deep clone sebelum mutasi — avoid alias bug.
-- [ ] **820 [P1]** — Jangan tulis full array kalau tidak berubah — guard.
-- [ ] **821 [P1]** — Penulisan memakai os.tmpdir + rename — atomic.
-- [ ] **822 [P1]** — Flush di interval 5s (opsional) — keep simple per-mutasi.
+- [x] **819 [P1]** — Deep clone sebelum mutasi — avoid alias bug.
+- [x] **820 [P1]** — Jangan tulis full array kalau tidak berubah — guard.
+- [x] **821 [P1]** — Penulisan memakai os.tmpdir + rename — atomic.
+- [x] **822 [P1]** — Flush di interval 5s (opsional) — keep simple per-mutasi.
 - [ ] **823 [P1]** — Prevent race: mutasi serialized via microtask queue — P2.
 - [ ] **824 [P1]** — Cache render list saat filter tidak berubah (memory) — P2.
-- [ ] **825 [P1]** — Dapatkan stat count dari array (reduce) — murah.
-- [ ] **826 [P1]** — String compare ignore case di search — normalized.
-- [ ] **827 [P1]** — Trim di input → simpan clean.
-- [ ] **828 [P1]** — Batasi 1 kata 200 char — ringan.
-- [ ] **829 [P1]** — multiply by logic sederhana — no bloat.
+- [x] **825 [P1]** — Dapatkan stat count dari array (reduce) — murah.
+- [x] **826 [P1]** — String compare ignore case di search — normalized.
+- [x] **827 [P1]** — Trim di input → simpan clean.
+- [x] **828 [P1]** — Batasi 1 kata 200 char — ringan.
+- [x] **829 [P1]** — multiply by logic sederhana — no bloat.
 - [ ] **830 [P1]** — Saat dah large file 1MB? — pagination.
-- [ ] **831 [P1]** — Jangan gunakan fs sync di event loop? Untuk file kecil 100KB — aman.
-- [ ] **832 [P1]** — Build TS → CommonJS — jalan di Node langsung.
-- [ ] **833 [P1]** — No build step untuk CSS (manual token) — hemat.
-- [ ] **834 [P1]** — Jalankan `NODE_ENV=production` tanpa env var tambahan.
-- [ ] **835 [P1]** — Hanya 1 port bind.
-- [ ] **836 [P1]** — Retry, backoff? Tidak perlu (local).
-- [ ] **837 [P1]** — Health zurich tetap.
+- [x] **831 [P1]** — Jangan gunakan fs sync di event loop? Untuk file kecil 100KB — aman.
+- [x] **832 [P1]** — Build TS → CommonJS — jalan di Node langsung.
+- [x] **833 [P1]** — No build step untuk CSS (manual token) — hemat.
+- [x] **834 [P1]** — Jalankan `NODE_ENV=production` tanpa env var tambahan.
+- [x] **835 [P1]** — Hanya 1 port bind.
+- [x] **836 [P1]** — Retry, backoff? Tidak perlu (local).
+- [x] **837 [P1]** — Health zurich tetap.
 - [ ] **838 [P1]** — Upgrade test — pnpm update --latest lalu lock.
-- [ ] **839 [P1]** — Verifikasi tidak ada pnpm warn peer.
-- [ ] **840 [P1]** — Ringkasan: runtime brick kecil, kode bersih (target ~1.2k LOC).
+- [x] **839 [P1]** — Verifikasi tidak ada pnpm warn peer.
+- [x] **840 [P1]** — Ringkasan: runtime brick kecil, kode bersih (target ~1.2k LOC).
 
 ---
 
