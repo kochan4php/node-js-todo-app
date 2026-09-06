@@ -1,8 +1,8 @@
-import { randomUUID } from 'node:crypto';
+import mongoose from 'mongoose';
 import { MAX_TODOS } from '../../config/app.ts';
 import type { Priority, Todo } from '../../interfaces/todo.ts';
 import { logger } from '../../logger/index.ts';
-import { readTodos, writeTodos } from '../store/todo.store.ts';
+import { TodoModel, toTodo } from '../models/todo.model.ts';
 
 type CreatedTodo = {
     name: string;
@@ -10,73 +10,103 @@ type CreatedTodo = {
     due?: string | null;
 };
 
-export function getAll(): Todo[] {
-    const todos = readTodos();
-    return [...todos].sort((a, b) => {
-        if (a.completed !== b.completed) return a.completed ? 1 : -1;
-        return b.createdAt.localeCompare(a.createdAt);
-    });
+export type ImportItem = {
+    name: string;
+    completed: boolean;
+    priority?: Priority;
+    due?: string | null;
+    createdAt?: Date;
+    updatedAt?: Date;
+};
+
+function validId(id: string): boolean {
+    return mongoose.isValidObjectId(id);
 }
 
-export function getById(id: string): Todo | null {
-    return readTodos().find((todo) => todo.id === id) ?? null;
+export async function getAll(): Promise<Todo[]> {
+    const docs = await TodoModel.find().sort({ completed: 1, createdAt: -1 }).lean();
+    return docs.map((doc) => toTodo(doc as unknown as Parameters<typeof toTodo>[0]));
 }
 
-export function create(name: string, priority?: Priority, due?: string | null): Todo | null {
-    const todos = readTodos();
-    if (todos.length >= MAX_TODOS) return null;
-    const now = new Date().toISOString();
-    const todo: Todo = { id: randomUUID(), name, completed: false, createdAt: now, updatedAt: now, priority, due: due ?? null };
-    todos.push(todo);
-    writeTodos(todos); /* 723 — audit jalur */
-    logger.info(`Tambah ${todo.name}`);
-    return todo;
+export async function getById(id: string): Promise<Todo | null> {
+    if (!validId(id)) return null;
+    const doc = await TodoModel.findById(id).lean();
+    return doc ? toTodo(doc as unknown as Parameters<typeof toTodo>[0]) : null;
 }
 
-export function update(id: string, name: string, priority?: Priority, due?: string | null): Todo | null {
-    const todos = readTodos();
-    const index = todos.findIndex((todo) => todo.id === id);
-    if (index === -1) return null;
-    todos[index] = { ...todos[index], name, priority, due: due ?? null, updatedAt: new Date().toISOString() };
-    writeTodos(todos);
+async function insertOne(item: {
+    name: string;
+    completed: boolean;
+    priority?: Priority;
+    due?: string | null;
+    createdAt?: Date;
+}): Promise<Todo | null> {
+    const count = await TodoModel.countDocuments();
+    if (count >= MAX_TODOS) return null;
+    const doc = await TodoModel.create(item);
+    logger.info(`Tambah ${item.name}`);
+    return toTodo(doc);
+}
+
+export function create(name: string, priority?: Priority, due?: string | null): Promise<Todo | null> {
+    return insertOne({ name, completed: false, priority, due: due ?? null });
+}
+
+export function restore(saved: CreatedTodo & { completed: boolean; createdAt: string }): Promise<Todo | null> {
+    const createdAt = saved.createdAt ? new Date(saved.createdAt) : undefined;
+    return insertOne({ name: saved.name, completed: saved.completed, createdAt, priority: saved.priority, due: saved.due ?? null });
+}
+
+export async function update(id: string, name: string, priority?: Priority, due?: string | null): Promise<Todo | null> {
+    if (!validId(id)) return null;
+    const doc = await TodoModel.findById(id);
+    if (!doc) return null;
+    doc.name = name;
+    doc.priority = priority;
+    doc.due = due ?? null;
+    await doc.save();
     logger.info(`Ubah ${id}`);
-    return todos[index];
+    return toTodo(doc);
 }
 
-export function restore(saved: CreatedTodo & { completed: boolean; createdAt: string }): Todo | null {
-    const todos = readTodos();
-    if (todos.length >= MAX_TODOS) return null;
-    const now = new Date().toISOString();
-    const todo: Todo = {
-        id: randomUUID(),
-        name: saved.name,
-        completed: saved.completed,
-        createdAt: saved.createdAt || now,
-        updatedAt: now,
-        priority: saved.priority,
-        due: saved.due ?? null,
-    };
-    todos.push(todo);
-    writeTodos(todos);
-    logger.info(`Pulihkan ${saved.name}`);
-    return todo;
-}
-
-export function toggle(id: string): Todo | null {
-    const todos = readTodos();
-    const index = todos.findIndex((todo) => todo.id === id);
-    if (index === -1) return null;
-    todos[index] = { ...todos[index], completed: !todos[index].completed, updatedAt: new Date().toISOString() };
-    writeTodos(todos);
+export async function toggle(id: string): Promise<Todo | null> {
+    if (!validId(id)) return null;
+    const doc = await TodoModel.findById(id);
+    if (!doc) return null;
+    doc.completed = !doc.completed;
+    await doc.save();
     logger.info(`Selesaikan ${id}`);
-    return todos[index];
+    return toTodo(doc);
 }
 
-export function remove(id: string): boolean {
-    const todos = readTodos();
-    const filtered = todos.filter((todo) => todo.id !== id);
-    if (filtered.length === todos.length) return false;
-    writeTodos(filtered);
+export async function remove(id: string): Promise<boolean> {
+    if (!validId(id)) return false;
+    const { deletedCount } = await TodoModel.deleteOne({ _id: id });
+    if (deletedCount === 0) return false;
     logger.info(`Hapus ${id}`);
     return true;
+}
+
+/* 1030 — pemulihan penuh: ganti seluruh koleksi dari cadangan JSON. */
+export async function importTodos(items: ImportItem[]): Promise<number> {
+    await TodoModel.deleteMany({});
+    if (items.length) {
+        /* createdAt/updatedAt selalu eksplisit (fallback kini) agar nilai cadangan
+           dipertahankan; timestamps dinonaktifkan supaya tidak ditimpa. */
+        await TodoModel.insertMany(
+            items.map((item) => {
+                const now = new Date();
+                return {
+                    name: item.name,
+                    completed: item.completed,
+                    priority: item.priority,
+                    due: item.due ?? null,
+                    createdAt: item.createdAt ?? now,
+                    updatedAt: item.updatedAt ?? now,
+                };
+            }),
+            { timestamps: false },
+        );
+    }
+    return items.length;
 }

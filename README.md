@@ -1,7 +1,8 @@
 # Rencana
 
-Aplikasi todo 100% lokal — **Express.js 5 + TypeScript (ESM) + EJS**, data
-tersimpan di `data/todos.json` tanpa database, cache, atau akun.
+Aplikasi todo — **Express.js 5 + TypeScript (ESM) + EJS**, data tersentral di
+**MongoDB** lewat **Mongoose ODM** (skema tunggal `Todo`), tanpa file data
+lokal, tanpa cache, tanpa akun.
 
 ## Menjalankan
 
@@ -12,21 +13,24 @@ pnpm build      # kompilasi TS ke dist/
 pnpm start      # jalankan dari dist/ (produksi)
 ```
 
-Port default `3000`; atur lewat env `PORT`. Env opsional:
-`DATA_PATH` (lokasi file data), `TODOS_LIMIT` (batas maksimum rencana,
-default 1000), `SITE_URL` (domain absolut untuk canonical/sitemap).
+Butuh MongoDB yang berjalan (`mongod` lokal, Docker, atau Atlas). Port default
+`3000`; atur lewat env `PORT`. Env opsional:
+`MONGODB_URI` (koneksi, default `mongodb://127.0.0.1:27017/rencana`),
+`TODOS_LIMIT` (batas maksimum rencana, default 1000), `SITE_URL` (domain
+absolut untuk canonical/sitemap).
 
 ## Struktur
 
 ```
 src/
   app.ts                  perakitan middleware + rute
-  index.ts                listen + graceful shutdown
-  config/app.ts           konfigurasi env (PORT, DATA_PATH, SITE_URL, MAX_TODOS)
+  index.ts                koneksi MongoDB → listen + graceful shutdown
+  config/app.ts           konfigurasi env (PORT, MONGODB_URI, SITE_URL, MAX_TODOS)
+  db/connect.ts           bootstrap koneksi (keluar bila DB tak terjangkau)
   routes/                 router per domain (todo, seo, main, health, not-found)
   app/controllers/        lapisan tipis: parse request → call service → render
-  app/services/           logika bisnis + soal persistence
-  app/store/              read/write JSON (muat ke memori, simpan atomic)
+  app/services/           logika bisnis + semua akses MongoDB (ODM)
+  app/models/             skema Mongoose tunggal (Todo) + pemetaan dokumen
   app/helpers/            render (meta/canonical/asset version), date, respon API
   views/                  EJS (layouts, partials, halaman)
   logger/                 logger mini (info/warn/error + timestamp)
@@ -40,37 +44,38 @@ src/
 - Rute cadangan: `GET /api/export` (unduh JSON), `POST /api/import` (ganti data).
 - Variabel design: Geist/Geist Mono self-host, Bento neutral zinc/slate,
   satu aksen teal. Tema gelap persist di `localStorage`.
-- Storage: JSON dimuat sekali ke memori, mutasi ditulis atomic (tmp + rename);
-  file dibuat otomatis saat run pertama; korup dicadangkan ke `.bak`.
+- Storage: setiap mutasi adalah operasi Mongo via Mongoose (skema
+  memvalidasi nama 200 karakter, boolean `completed`, enum prioritas, dan
+  `due`); `createdAt`/`updatedAt` dikelola otomatis oleh `timestamps`.
+- Aplikasi **tidak pernah menulis data ke disk** — server hanya menaruh log.
 
 ## Cadangan data
 
-Data hanya `data/todos.json` di perangkatmu. Untuk memastikan aman:
+Semua data ada di koleksi MongoDB (basis data pada koneksi `MONGODB_URI`).
+Untuk memastikan aman:
 
 - **Unduh salinan** — tombol unduh di beranda atau `GET /api/export` menghasilkan
   berkas `todos.json` berisi seluruh rencana. Simpan di tempat aman.
 - **Pulihkan** — tombol impor di beranda (pilih berkas `.json`) atau
   `POST /api/import` mengganti seluruh data saat ini. Impor menolak format yang
   tidak valid atau melebihi batas (`MAX_TODOS`) tanpa mengubah data lama.
+- Pastikan basis data ikut di-cadangkan (backup/point-in-time dari penyedia
+  MongoDB); ekspor JSON adalah jaring pengaman tambahan yang bisa diimpor ulang.
 
 ## Deploy & skala
 
-Aplikasi murni lokal dan stateful terhadap file — cukup untuk satu pengguna atau
-satu keluarga di perangkat/pribadi-pribadi.
+State tinggal di MongoDB — server bebas *stateless*, cukup satu pengguna/keluarga
+atau banyak pengguna lewat penyedia DB terkelola.
 
 - **VPS/Railway/Fly**: jalankan `pnpm build && pnpm start`, set `PORT`,
-  `SITE_URL`, dan `DATA_PATH` ke volume persisten, dan arahkan
-  `GET /api/health-check` sebagai uptime check (mis. UptimeRobot/Cronitor).
-  `trust proxy` sudah diset untuk satu reverse proxy (Nginx/Caddy).
-- **Privasi**: tak ada akun, cookie, maupun database — seluruh data di
-  perangkat. Ini justru keunggulan; jangan pasarkan sebagai multi-user.
-- **Butuh multi-user?** Saat benar-benar diperlukan, ganti lapisan store dengan
-  DB (SQLite untuk jejak kecil, kemudian Postgres) tanpa menyentuh UI — semua
-  akses data lewat `src/app/store/todo.store.ts`. Jangan lakukan lebih awal
-  dari yang dibutuhkan (YAGNI); model JSON cukup sampai puluhan ribu rencana.
-
-Saat memilih multi-user, pertimbangkan sesi/auth di sisi aplikasi karena saat
-ini tidak ada (lihat Keamanan).
+  `MONGODB_URI` (mis. Atlas), dan `SITE_URL`; arahkan `GET /api/health-check`
+  sebagai uptime check (mis. UptimeRobot/Cronitor) — respons menyertakan status
+  koneksi DB (`data.db`). `trust proxy` sudah diset untuk satu reverse proxy
+  (Nginx/Caddy).
+- **Privasi**: tak ada akun atau cookie — namun data kini di basis data
+  terpusat, bukan di perangkat. Sesuaikan penawaran privasi dengan itu.
+- **Skala**: naikkan `TODOS_LIMIT` lewat env dan gunakan indeks Mongo yang
+  didefinisikan skema bila perlu; tak ada perubahan UI yang dibutuhkan.
 
 ## Keamanan
 
@@ -81,9 +86,11 @@ ini tidak ada (lihat Keamanan).
 - Tidak ada cookie/session — risiko CSRF tidak ada. Tidak ada secret di repo.
 - Input divalidasi: nama wajib string, di-trim, digabung spasi ganda, maks 200
   karakter; due dicek format `YYYY-MM-DD`; prioritas hanya low/medium/high.
+  Skema Mongoose mengulang batasan itu sebagai lapisan kedua dan menolak nilai
+  di luar enum prioritas.
 - Body parser limit 10kb; mutasi direspon `Cache-Control: no-store`.
-- `data/todos.json` (berisi data pribadi) tidak ikut git; cuma `public/` yang
-  dilayani static. Saat JSON korup, disalin ke `.bak` lalu mulai dari kosong.
+- Tidak ada file data di repo — aplikasi menulis hanya log; kredensial DB lewat
+  env `MONGODB_URI`, tidak pernah di commit.
 
 ## Quality gate
 
@@ -97,10 +104,12 @@ pnpm build         # tsc → dist/
 
 Suite `test/` memakai `node:test` bawaan (tanpa dependency tambahan) dan
 menjalankan Node 24 langsung untuk request TypeScript — mencakup unit
-(validator, service, store), integrasi HTTP (sever Express sungguhan via
-`fetch`), korupsi JSON, batas maksimum, XSS/escape, Unicode, dan smoke
-produksi. `pretest` menjalankan typecheck dulu; `test:coverage` gagal bila
-cakupan garis `src/` di bawah 80%.
+(validator, service, skema model), integrasi HTTP (server Express sungguhan via
+`fetch`), default & enum skema Mongoose, batas maksimum, XSS/escape, Unicode,
+dan smoke produksi. Tiap file tes memakai `mongodb-memory-server` (MongoDB di
+memori, tanpa instalasi server terpisah) lewat `<uri internal>`; `pretest`
+menjalankan typecheck dulu; `test:coverage` gagal bila cakupan garis `src/` di
+bawah 80%.
 
 Husky pre-commit menjalankan biome + lint-staged; pre-push menjalankan
 `pnpm test`. Commit memakai conventional (feat:/fix:/perf:). Rincian siklus

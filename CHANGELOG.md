@@ -2,6 +2,43 @@
 
 Catatan perubahan proyek — mengikuti format [Keep a Changelog](https://keepachangelog.com/id/ID/1.1.0/) & [SemVer](https://semver.org/lang/id/).
 
+## [0.3.0] — 2026-09-06
+
+Storage berpindah penuh dari file JSON lokal ke **MongoDB via Mongoose ODM**.
+Aplikasi tidak lagi menyentuh data di disk — saat di-deploy, data hidup 100% di
+basis data yang ditunjuk `MONGODB_URI`.
+
+### Added
+
+- Skema tunggal Mongoose `Todo` (`name` 200 karakter, `completed`, enum
+  `priority`, `due`, `createdAt`/`updatedAt` otomatis) di `src/app/models/`.
+- Bootstrap koneksi `src/db/connect.ts` di index: aplikasi menolak mulai bila
+  MongoDB tidak terjangkau, dan menutup koneksi saat sinyal terminasi.
+- `GET /api/health-check` kini melaporkan status koneksi DB (`data.db`).
+- Tes dengan `mongodb-memory-server` (MongoDB di memori per proses tes, tanpa
+  server terpasang lokal); CI meng-cache binary mongod + mengizinkan build
+  script via `pnpm-workspace.yaml`.
+
+### Changed
+
+- Service dan controller menjadi asinkron; semua akses data lewat model
+  Mongoose (`getAll` urut sebagai `createdAt` menurun, `MAX_TODOS` dihitung via
+  `countDocuments`); id berubah dari UUID string menjadi ObjectId hex (24
+  karakter) — dipetakan otomatis ke `id` di controller/view.
+- Ekspor/impor tetap memakai berkas `todos.json` sebagai format cadangan;
+  impor mengganti seluruh koleksi dan mempertahankan `createdAt`/`updatedAt`
+  dari cadangan.
+- `src/app/store/todo.store.ts` (read/write JSON + buffer + `.bak`) dihapus
+  beserta dua tes penyimpanan file-nya; diganti tes default & enum skema.
+- README/package.json diperbarui: `MONGODB_URI` (default
+  `mongodb://127.0.0.1:27017/rencana`), keyword `mongodb`/`mongoose`, versi 0.3.0.
+
+### Fixed
+
+- Dialog konfirmasi hapus kini tampil persis di tengah viewport di semua lebar
+  layar (shell grid melebar penuh + kartu disenterkan; dulu kartu 440px
+  mencemplung ke kiri karena shell menyusut selebar teks deskripsi).
+
 ## [0.2.0] — 2026-09-06
 
 Versi stabil pertama selesai dikerjakan seluruh seksi revisi: performa, SEO,

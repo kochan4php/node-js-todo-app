@@ -17,8 +17,8 @@ function flashOf(req: Request): string {
     return ['created', 'updated', 'deleted', 'toggled', 'invalid', 'full', 'restored'].includes(value) ? value : '';
 }
 
-function index(req: Request, res: Response) {
-    const todos = getAll();
+async function index(req: Request, res: Response) {
+    const todos = await getAll();
     return render(res, 'index', {
         title: 'Apa rencanamu hari ini?',
         layout: 'layouts/main',
@@ -43,7 +43,7 @@ function addForm(_: Request, res: Response) {
     });
 }
 
-function store(req: Request, res: Response) {
+async function store(req: Request, res: Response) {
     const name = sanitizeName(req.body.name);
     const priority = sanitizePriority(req.body.priority);
     const due = sanitizeDue(req.body.due);
@@ -62,7 +62,7 @@ function store(req: Request, res: Response) {
         });
     }
 
-    const todo = create(name, priority, due);
+    const todo = await create(name, priority, due);
     if (!todo) {
         return render(res, 'add-todo', {
             title: 'Tambah Rencana',
@@ -80,8 +80,8 @@ function store(req: Request, res: Response) {
     return res.redirect('/?flash=created');
 }
 
-function editForm(req: Request, res: Response) {
-    const todo = getById(String(req.params.id));
+async function editForm(req: Request, res: Response) {
+    const todo = await getById(String(req.params.id));
 
     if (!todo) return res.redirect('/?flash=invalid');
 
@@ -96,12 +96,12 @@ function editForm(req: Request, res: Response) {
     });
 }
 
-function update(req: Request, res: Response) {
+async function update(req: Request, res: Response) {
     const id = String(req.body.id ?? '');
     const name = sanitizeName(req.body.name);
     const priority = sanitizePriority(req.body.priority);
     const due = sanitizeDue(req.body.due);
-    const todo = getById(id);
+    const todo = await getById(id);
 
     if (!todo) return res.redirect('/?flash=invalid');
 
@@ -118,23 +118,23 @@ function update(req: Request, res: Response) {
         });
     }
 
-    updateTodo(id, name, priority, due);
+    await updateTodo(id, name, priority, due);
     return res.redirect('/?flash=updated');
 }
 
-function toggle(req: Request, res: Response) {
+async function toggle(req: Request, res: Response) {
     const id = String(req.params.id);
-    if (!toggleTodo(id)) return res.redirect('/?flash=invalid');
+    if (!(await toggleTodo(id))) return res.redirect('/?flash=invalid');
     return res.redirect('/?flash=toggled');
 }
 
-function destroy(req: Request, res: Response) {
-    if (!remove(String(req.body.id ?? ''))) return res.redirect('/?flash=invalid');
+async function destroy(req: Request, res: Response) {
+    if (!(await remove(String(req.body.id ?? '')))) return res.redirect('/?flash=invalid');
     return res.redirect('/?flash=deleted');
 }
 
-function restoreTodo(req: Request, res: Response) {
-    const todo = restore({
+async function restoreTodo(req: Request, res: Response) {
+    const todo = await restore({
         name: sanitizeName(req.body.name),
         completed: req.body.completed === 'true',
         createdAt: String(req.body.createdAt ?? ''),

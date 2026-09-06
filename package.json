@@ -1,7 +1,7 @@
 {
     "name": "node-js-todo-app",
-    "version": "0.2.0",
-    "description": "Aplikasi todo 100% lokal — Express.js + TypeScript + EJS, data tersimpan di file JSON tanpa database.",
+    "version": "0.3.0",
+    "description": "Aplikasi todo — Express.js 5 + TypeScript + EJS, data terpusat di MongoDB via Mongoose ODM.",
     "license": "Apache-2.0",
     "author": "Deo Subarno",
     "type": "module",
@@ -29,7 +29,8 @@
         "express",
         "typescript",
         "ejs",
-        "local-data",
+        "mongodb",
+        "mongoose",
         "bento-ui"
     ],
     "lint-staged": {
@@ -45,6 +46,7 @@
         "gsap": "^3.15.0",
         "helmet": "^8.3.0",
         "method-override": "^3.0.0",
+        "mongoose": "^9.9.5",
         "morgan": "^1.12.0"
     },
     "devDependencies": {
@@ -57,6 +59,7 @@
         "@types/node": "^26.4.1",
         "husky": "^9.1.7",
         "lint-staged": "^17.4.1",
+        "mongodb-memory-server": "^11.2.0",
         "typescript": "^7.0.2"
     }
 }

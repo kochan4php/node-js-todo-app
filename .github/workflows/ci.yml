@@ -25,6 +25,12 @@ jobs:
                   node-version: 24
                   cache: pnpm
 
+            - name: Cache binary MongoDB (mongodb-memory-server)
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/mongodb-binaries
+                  key: mongodb-binaries-${{ runner.os }}-v1
+
             - run: pnpm install --frozen-lockfile
 
             - run: pnpm lint

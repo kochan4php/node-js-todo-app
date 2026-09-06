@@ -1,7 +1,12 @@
 import { createServer } from 'node:http';
+import mongoose from 'mongoose';
 import init from './app.ts';
-import { PORT } from './config/app.ts';
+import { MONGODB_URI, PORT } from './config/app.ts';
+import { connectDb } from './db/connect.ts';
 import { logger } from './logger/index.ts';
+
+/* 100% MongoDB — tanpa koneksi, aplikasi tidak pernah mulai. */
+await connectDb(MONGODB_URI);
 
 const app = init();
 const server = createServer(app);
@@ -16,7 +21,9 @@ server.listen(PORT, () => {
 for (const signal of ['SIGINT', 'SIGTERM'] as const) {
     process.on(signal, () => {
         logger.info(`Menerima sinyal ${signal}, menutup server...`);
-        server.close(() => process.exit(0));
+        server.close(() => {
+            void mongoose.disconnect().finally(() => process.exit(0));
+        });
         setTimeout(() => process.exit(1), 5000).unref();
     });
 }
