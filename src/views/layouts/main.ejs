@@ -26,6 +26,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap">
 
+    <!-- 164 — latar kritikal inline: cegah flash putih pada mode gelap sebelum CSS dimuat -->
+    <style>
+        html {
+            background: #f8fafc;
+        }
+        html[data-theme="dark"] {
+            background: #0f0f12;
+        }
+    </style>
+
     <link rel="stylesheet" href="/css/style.css">
 </head>
 

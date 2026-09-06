@@ -1762,6 +1762,12 @@ strong {
     .header-add {
         padding-right: 0.8rem;
     }
+
+    /* 156 — hindari blur pada elemen sticky di layar kecil (biaya komposisi) */
+    .app-header-inner {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
 }
 
 /* --------------------------------------------------------------------------

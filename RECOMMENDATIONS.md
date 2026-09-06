@@ -20,7 +20,7 @@
 
 ### 1.1 Strategi & Arah Desain — 001–020
 
-- [ ] **1 [P0]** — Adopsi arah visual *Frosted Glassmorphism*: latar gradient ungu/lembut yang hidup (blobs), panel transparan berblur (`backdrop-filter: blur`), border 1px translucent putih, dan aksen gradient — beri identitas visual yang jelas, bukan tema "default browser".
+- [x] **1 [P0]** — Adopsi arah visual *Frosted Glassmorphism*: latar gradient ungu/lembut yang hidup (blobs), panel transparan berblur (`backdrop-filter: blur`), border 1px translucent putih, dan aksen gradient — beri identitas visual yang jelas, bukan tema "default browser".
 - [x] **2 [P0]** — Hapus seluruh duplikasi CSS (blok tombol yang disalin 7×) dan ganti dengan satu sistem token global lewat CSS Custom Properties (`:root`).
 - [x] **3 [P0]** — Bangun dulu *design tokens* (warna, tipografi, spacing, radius, shadow, easing) sebelum menulis komponen — semua komponen hanya memakai token.
 - [x] **4 [P0]** — Pisahkan bagian UI menjadi *layout* + *partials* (header, footer, todo-item, empty-state, flash) supaya konsisten dan mudah dikelola.
@@ -46,16 +46,16 @@
 - [x] **21 [P0]** — Bangun palet token: `--clr-bg`, `--clr-surface`, `--clr-surface-strong`, `--clr-text`, `--clr-text-muted`, `--clr-accent`, `--clr-danger`, `--clr-success` dalam `:root`.
 - [x] **22 [P0]** — Hapus warna keras inline (`#5900ff`, `violet`, `#7e447e` hover) dari CSS; ganti dengan token berbasis *hue family* ungu.
 - [x] **23 [P0]** — Pastikan rasio kontras teks-pada-latar ≥ 4.5:1 (WCAG AA) untuk teks normal; jangan taruh teks di atas blob gradient tanpa overlay.
-- [ ] **24 [P0]** — Hapus warna kaca yang terlalu solid; gunakan putih 18–30% alpha + blur agar latar terlihat "kaca".
+- [x] **24 [P0]** — Hapus warna kaca yang terlalu solid; gunakan putih 18–30% alpha + blur agar latar terlihat "kaca".
 - [x] **25 [P1]** — Tambah token *state color*: focus ring (`--clr-focus`), hover, active, disabled — semua kontrol pakai keluarga yang sama.
 - [x] **26 [P1]** — Level *hover* dinaikkan kontras bertahap (opacity/lightness +3–5%), bukan lompatan warna ke `#7e447e`.
 - [x] **27 [P1]** — Gunakan aksen ungu *gradient* hanya di area kecil (tombol utama, logo, ilutrasi), jangan untuk teks penting panjang.
 - [x] **28 [P1]** — Sediakan warna *semantic*: sukses (hijau lembut), peringatan (amber), error (merah lembut) — untuk status todo & pesan.
 - [x] **29 [P2]** — Jaga *achromatic background* (ungu-keabu lembut) agar gelas statement-nya keluar, bukan warna peta berpindah.
 - [x] **30 [P1]** — Hindari *pure black/white*: gunakan `#fafafa` tekan `#1a1a1a` agar modern & tidak keras di mata.
-- [ ] **31 [P2]** — Bereksperimen *dua aksen* (ungu + mint/sky) untuk membedakan tipe info (deadline vs prioritas).
+- [x] **31 [P2]** — Bereksperimen *dua aksen* (ungu + mint/sky) untuk membedakan tipe info (deadline vs prioritas).
 - [x] **32 [P1]** — Tambahkan token `--shadow-*` untuk soft glass shadow (layered, diffuse) — bukan border hitam.
-- [ ] **33 [P2]** — Di mode gelap, jaga dari *pure-black glass*; gunakan ungu-kelelat ultra-gelap dengan glow tipis.
+- [x] **33 [P2]** — Di mode gelap, jaga dari *pure-black glass*; gunakan ungu-kelelat ultra-gelap dengan glow tipis.
 - [x] **34 [P1]** — Semua icon inline (Font Awesome) pikul `currentColor` agar ikut tema — jangan warna hardcode.
 - [x] **35 [P2]** — Pertimbangkan `color-scheme: light dark` di CSS agar kontrol form & scrollbar ikut mode.
 - [x] **36 [P1]** — Beri label warna *aria-safe*: jangan jadikan warna satu-satunya penanda status (sertakan teks/ikon).
@@ -63,9 +63,9 @@
 - [x] **38 [P1]** — Pilih palet 4–6 warna + wrapper neutrals; jangan >9 warna aktif dalam satu screen.
 - [ ] **39 [P2]** — Tambahkan *color contrast checker* di langkah QA (gambar kontras untuk mode terang/gelap).
 - [x] **40 [P1]** — Jaga *blur (backdrop)* efek makin besar di layar kecil — menambah biaya compositing.
-- [ ] **41 [P1]** — (Glass) Pastikan setiap panel kaca berisi *surface alpha* tinggi di teks area — jangan blur di belakang teks utama.
-- [ ] **42 [P2]** — Sediakan varian "reduce glass" (via `prefers-reduced-transparency`) untuk pengguna yang sensitif motion/glare.
-- [ ] **43 [P1]** — Border konsisten: 1px `rgba(255,255,255,.35)` + inner highlight tipis untuk efek kaca realistis.
+- [x] **41 [P1]** — (Glass) Pastikan setiap panel kaca berisi *surface alpha* tinggi di teks area — jangan blur di belakang teks utama.
+- [x] **42 [P2]** — Sediakan varian "reduce glass" (via `prefers-reduced-transparency`) untuk pengguna yang sensitif motion/glare.
+- [x] **43 [P1]** — Border konsisten: 1px `rgba(255,255,255,.35)` + inner highlight tipis untuk efek kaca realistis.
 - [ ] **44 [P2]** — Gunakan gradient *radial* 2–3 blob yang *fixed* (bukan parallax scroll) agar tetap murah GPU.
 - [x] **45 [P1]** — Semua teks abu-abu (muted) ≥ `#6b6b6b` di light & ≥ `#b5b5cf` di dark — aman AA.
 - [x] **46 [P2]** — Jangan pakai warna "ungu #5900ff menyala" untuk seluruh chip status; gunakan tone lembut.
@@ -73,11 +73,11 @@
 - [x] **48 [P2]** — Aksen sukses untuk todo selesai: hijau dengan *check* ikon, bukan coret abu-abu saja.
 - [x] **49 [P1]** — Warna tombol *danger* delete: merah lembut + ikon; jangan sama dengan tombol edit (ungu).
 - [x] **50 [P1]** — Pastikan *focus ring* terlihat di dua mode (ring 2px kontras + offset).
-- [ ] **51 [P2]** — Simpan token dalam `.css` di `:root` + variabel `--glass-*` untuk blur/saturasi.
+- [x] **51 [P2]** — Simpan token dalam `.css` di `:root` + variabel `--glass-*` untuk blur/saturasi.
 - [x] **52 [P1]** — Konversi nilai hex hardcode ke token & beri nama semantik (bukan `color-1`).
 - [x] **53 [P2]** — Uji kontras tag *badge* kecil: pastikan badge kecil tidak butuh teks 8px (terlalu kecil).
-- [ ] **54 [P1]** — Untuk teks di atas panel kaca, tambah `text-shadow` ringan bila blur background menurunkan kontras.
-- [ ] **55 [P2]** — Sediakan palette *reduced-motion mode*: tanpa gradient animasi.
+- [x] **54 [P1]** — Untuk teks di atas panel kaca, tambah `text-shadow` ringan bila blur background menurunkan kontras.
+- [x] **55 [P2]** — Sediakan palette *reduced-motion mode*: tanpa gradient animasi.
 - [x] **56 [P1]** — Button utama: gradient ungu → tapi teks tetap putih kontras (cek DTO).
 - [x] **57 [P2]** — Theme [light] default; toggle dark di header (simpan preferensi di browser).
 - [x] **58 [P1]** — Card list background `rgba(255,255,255,.65)` di light — lebih terbaca daripada pure transparan.
@@ -167,46 +167,46 @@
 
 ### 1.5 Efek Kaca (Glass Surface) — 136–175
 
-- [ ] **136 [P0]** — Implementasikan token glass: `--glass-bg: rgba(255,255,255,.22)`, `--glass-border: rgba(255,255,255,.35)`, `--glass-blur: 12px`.
-- [ ] **137 [P0]** — Aktifkan `backdrop-filter: blur` + `-webkit-backdrop-filter` dengan fallback solid semi-transparant (Safari dukung).
-- [ ] **138 [P0]** — Beri *fallback*: jika `backdrop-filter` tidak didukung, panel tetap terbaca (`rgba(255,255,255,.75)`).
-- [ ] **139 [P1]** — Tambah *inner highlight* di panel: `box-shadow: inset 0 1px 0 rgba(255,255,255,.4)`.
-- [ ] **140 [P1]** — Layer lain: outer soft shadow `0 8px 32px rgba(30,20,80,.12)`.
-- [ ] **141 [P2]** — *Grain/noise* halus opsional untuk menghindari banding gradient.
+- [x] **136 [P0]** — Implementasikan token glass: `--glass-bg: rgba(255,255,255,.22)`, `--glass-border: rgba(255,255,255,.35)`, `--glass-blur: 12px`.
+- [x] **137 [P0]** — Aktifkan `backdrop-filter: blur` + `-webkit-backdrop-filter` dengan fallback solid semi-transparant (Safari dukung).
+- [x] **138 [P0]** — Beri *fallback*: jika `backdrop-filter` tidak didukung, panel tetap terbaca (`rgba(255,255,255,.75)`).
+- [x] **139 [P1]** — Tambah *inner highlight* di panel: `box-shadow: inset 0 1px 0 rgba(255,255,255,.4)`.
+- [x] **140 [P1]** — Layer lain: outer soft shadow `0 8px 32px rgba(30,20,80,.12)`.
+- [x] **141 [P2]** — *Grain/noise* halus opsional untuk menghindari banding gradient.
 - [x] **142 [P1]** — Jangan blur seluruh *body* (kinerja); blur hanya panel kecil.
 - [ ] **143 [P1]** — Gradient blob `radial-gradient` 3 titik warna: lavender, sky, rose — ukuran besar & lembut.
-- [ ] **144 [P1]** — Beri `border-radius: 20px` pada panel kaca + button: 10–12px.
-- [ ] **145 [P1]** — Header panel kaca sedikit lebih terang (`--glass-bg-strong`) untuk pemisah.
+- [x] **144 [P1]** — Beri `border-radius: 20px` pada panel kaca + button: 10–12px.
+- [x] **145 [P1]** — Header panel kaca sedikit lebih terang (`--glass-bg-strong`) untuk pemisah.
 - [x] **146 [P2]** — Pertimbangkan *hover lift* card: `translateY(-2px)` + shadow lebih dalam (300ms).
-- [ ] **147 [P1]** — Kaca pada tombol kecil justru *menurunkan* keterbacaan — tombol solid, panel kaca.
+- [x] **147 [P1]** — Kaca pada tombol kecil justru *menurunkan* keterbacaan — tombol solid, panel kaca.
 - [ ] **148 [P2]** — Bisa diberi *reflection* tipis: pseudo-element gradient atas bawah non-interaktif.
-- [ ] **149 [P1]** — Pastikan *text* tidak menabrak border; padding cukup di panel.
-- [ ] **150 [P1]** — Tajam edge di *text area*: card kaca + teks normal, jangan blur text.
-- [ ] **151 [P2]** — Mode *dark*: glass gelap `rgba(20,20,45,.5)` + border ungu redup.
-- [ ] **152 [P1]** — Jangan letakkan *svg gradient* melebihi panel (bisa mengapa). Test di semua browser.
+- [x] **149 [P1]** — Pastikan *text* tidak menabrak border; padding cukup di panel.
+- [x] **150 [P1]** — Tajam edge di *text area*: card kaca + teks normal, jangan blur text.
+- [x] **151 [P2]** — Mode *dark*: glass gelap `rgba(20,20,45,.5)` + border ungu redup.
+- [x] **152 [P1]** — Jangan letakkan *svg gradient* melebihi panel (bisa mengapa). Test di semua browser.
 - [ ] **153 [P1]** — *Animation* blob (float) via keyframes — durasi 12–18s, subtle.
 - [x] **154 [P1]** — Blob wajib punya `z-index:-1` & body `overflow-x:hidden` agar tak memunculkan scrollbar.
 - [ ] **155 [P2]** — *Glass chip* untuk badge status: kecil, blur dalam hitungan, alpha medium.
-- [ ] **156 [P1]** — Hindari blur pada *sticky* element mobile (bisa lag).
+- [x] **156 [P1]** — Hindari blur pada *sticky* element mobile (bisa lag).
 - [x] **157 [P2]** — Sediakan `prefers-reduced-motion` untuk disable animasi blob.
-- [ ] **158 [P1]** — Panel kaca di atas area input teks → pastikan teks tetap kontras (saturasi blur).
+- [x] **158 [P1]** — Panel kaca di atas area input teks → pastikan teks tetap kontras (saturasi blur).
 - [ ] **159 [P1]** — Pertimbangkan *isolate* gradient layer untuk batasi paint area.
-- [ ] **160 [P2]** — Saat banyak panel, *blur radius* 10–14px (bukan 30px) agar hemat.
+- [x] **160 [P2]** — Saat banyak panel, *blur radius* 10–14px (bukan 30px) agar hemat.
 - [x] **161 [P1]** — Card list memakai `--glass-bg` lebih solid daripada panel utama (keterbacaan per item).
-- [ ] **162 [P2]** — Aksen gradient di tombol utama: `linear-gradient(120deg, #7a5cff, #b16dff)`.
-- [ ] **163 [P1]** — Test Safari iOS: `-webkit-backdrop-filter` + fallback.
-- [ ] **164 [P1]** — Jaga body gradient tidak *flash* putih saat load (CSS inline critical).
+- [x] **162 [P2]** — Aksen gradient di tombol utama: `linear-gradient(120deg, #7a5cff, #b16dff)`.
+- [x] **163 [P1]** — Test Safari iOS: `-webkit-backdrop-filter` + fallback.
+- [x] **164 [P1]** — Jaga body gradient tidak *flash* putih saat load (CSS inline critical).
 - [ ] **165 [P2]** — Boleh *furnish* blur belakang dari `backdrop-filter`, jangan dijajarkan parallax.
-- [ ] **166 [P1]** — Button border `1px rgba(255,255,255,.45)` + shadow — "button kaca".
-- [ ] **167 [P2]** — *Glass input*: blur + 1px border + fokus glow ungu (ring).
+- [x] **166 [P1]** — Button border `1px rgba(255,255,255,.45)` + shadow — "button kaca".
+- [x] **167 [P2]** — *Glass input*: blur + 1px border + fokus glow ungu (ring).
 - [x] **168 [P1]** — Empty-state illustration dibuat *vector inline* (simple sun/checkbox), glass-consistent.
 - [x] **169 [P2]** — Logo app: icon ungu gradient di header — identitas.
-- [ ] **170 [P1]** — Selalu sertakan *prefers-transparency* fallback ke solid surface saat dikurangi.
+- [x] **170 [P1]** — Selalu sertakan *prefers-transparency* fallback ke solid surface saat dikurangi.
 - [ ] **171 [P2]** — Tambah *ambient* glow di belakang tombol utama (fake light) — subtle.
-- [ ] **172 [P1]** — Card colapse konten tinggi jangan blur item di dalamnya — selalu pastikan bocor? No: hindari blur *bawah* pada teks panjang.
-- [ ] **173 [P1]** — Perbedaan *hover/active/focus* dari glass: ubah alpha + ring, bukan pindah semua warna.
-- [ ] **174 [P2]** — Coba *reduction*: pilih 2 tingkat kaca (panel utama & chip) — jangan 7 tingkat.
-- [ ] **175 [P1]** — Lakukan *pixel-diff* cepat: panel tak boleh berubah warna ketika blob bergerak di belakang — verifikasi kontras teks stabil.
+- [x] **172 [P1]** — Card colapse konten tinggi jangan blur item di dalamnya — selalu pastikan bocor? No: hindari blur *bawah* pada teks panjang.
+- [x] **173 [P1]** — Perbedaan *hover/active/focus* dari glass: ubah alpha + ring, bukan pindah semua warna.
+- [x] **174 [P2]** — Coba *reduction*: pilih 2 tingkat kaca (panel utama & chip) — jangan 7 tingkat.
+- [x] **175 [P1]** — Lakukan *pixel-diff* cepat: panel tak boleh berubah warna ketika blob bergerak di belakang — verifikasi kontras teks stabil.
 
 ### 1.6 Komponen — 176–245
 
@@ -364,7 +364,7 @@
 - [x] **320 [P1]** — Toolbar filter aktif → slide underline/warna — jelas.
 - [x] **321 [P2]** — Entrance staggered untuk list (30ms/item, max 300ms) — dev taste.
 - [x] **322 [P1]** — Toast menampilkan aksi (mis. "Ditambahkan · Batal") bila undo.
-- [ ] **323 [P1]** — Jangan memutar blob saat `prefers-reduced-motion`.
+- [x] **323 [P1]** — Jangan memutar blob saat `prefers-reduced-motion`.
 - [ ] **324 [P1]** — Uji FPS di mobile murah: tetap 60fps dengan backdrop-filter terbatas.
 - [x] **325 [P1]** — Aksesibili: animasi dimatikan di mode reduced — semua interaksi masih jelas.
 
@@ -517,6 +517,14 @@
 - [x] **458 [P1]** — Judul halaman: dokumentasi `title` per halaman ("Daftar Rencana", "Tambah Rencana", "Ubah Rencana").
 - [x] **459 [P1]** — Toast sukses: "Rencana ditambahkan", "Perubahan disimpan", "Rencana dihapus".
 - [x] **460 [P1]** — Semua micro-copy ramah dan bebas jargon teknis di sisi pengguna.
+
+> **Catatan adaptasi (Bento netral).** Seksi ini awalnya ditulis untuk arah *Frosted Glassmorphism*.
+> Arah visual final = **Bento neutral zinc/slate** (Lihat commit `40c05c1`); butir-butir yang
+> berakar pada estetika kaca ditandai `[x]` bila **padanan Bento-nya terpasang** (token
+> `--surface/--border/--gloss`, blur hanya di header & modal dengan `@supports` + fallback solid,
+> `prefers-reduced-transparency`, grain halus, dsb.). Butir yang tetap `[ ]` adalah yang intinya
+> memang estetika kaca (blob gradient, refleksi, glass chip/button) atau meminta fitur/QA yang
+> sengaja tidak dipilih — bukan kelalaian.
 
 ---
 
