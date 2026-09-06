@@ -10,81 +10,112 @@
         </a>
     </div>
 
-    <section class="form-card" data-reveal>
-        <div class="form-shell">
-            <div class="form-core">
-                <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Rencana baru</p>
-                <h1 class="form-title">Apa yang ingin <em>kamu selesaikan?</em></h1>
-                <p class="form-hint text-sm text-muted">Tulis satu rencana — ringkas dan jelas. Tekan Enter untuk menambah, maksimal 200 karakter.</p>
+    <section class="form-grid">
+        <div class="form-cell" data-reveal>
+            <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Rencana baru</p>
+            <h1 class="form-title">Apa yang ingin <em>kamu selesaikan?</em></h1>
+            <p class="form-hint">Satu rencana per baris, ringkas dan jelas. Tekan Enter untuk menyimpan — maksimal 200 karakter.</p>
 
-                <form method="post" action="/" class="form">
-                    <div class="form-field <%= typeof error !== 'undefined' ? 'is-error' : '' %>">
-                        <label for="todo-name">Nama rencana</label>
-                        <input type="text"
-                               id="todo-name"
-                               name="name"
-                               value="<%= typeof old !== 'undefined' ? old : '' %>"
-                               placeholder="Mis. Beli susu sebelum jam 8"
-                               maxlength="200"
-                               autocomplete="off"
-                               required
-                               autofocus
-                               <%= typeof error !== 'undefined' ? 'aria-invalid="true" aria-describedby="todo-name-error"' : '' %>>
-                        <p class="field-counter" data-counter-for="todo-name" aria-hidden="true"></p>
-                        <% if (typeof error !== 'undefined') { %>
-                        <p class="form-error" id="todo-name-error" role="alert">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
-                            </svg>
-                            <%= error %>
-                        </p>
-                        <% } %>
+            <form method="post" action="/" class="form">
+                <div class="form-field <%= typeof error !== 'undefined' ? 'is-error' : '' %>">
+                    <label for="todo-name">Nama rencana</label>
+                    <input type="text"
+                           id="todo-name"
+                           name="name"
+                           value="<%= typeof old !== 'undefined' ? old : '' %>"
+                           placeholder="Mis. Beli susu sebelum jam 8"
+                           maxlength="200"
+                           autocomplete="off"
+                           required
+                           autofocus
+                           <%= typeof error !== 'undefined' ? 'aria-invalid="true" aria-describedby="todo-name-error"' : '' %>>
+                    <p class="field-counter" data-counter-for="todo-name" aria-hidden="true"></p>
+                    <% if (typeof error !== 'undefined') { %>
+                    <p class="form-error" id="todo-name-error" role="alert">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+                        </svg>
+                        <%= error %>
+                    </p>
+                    <% } %>
+                </div>
+
+                <%
+                    const p = typeof oldPriority !== 'undefined' ? oldPriority : undefined;
+                    const d = typeof oldDue !== 'undefined' ? oldDue : '';
+                %>
+                <div class="form-field">
+                    <span class="form-label" id="priority-label">Prioritas <span class="optional">(opsional)</span></span>
+                    <div class="pri-options" role="radiogroup" aria-labelledby="priority-label">
+                        <label class="pri-chip">
+                            <input type="radio" name="priority" value="" <%= (!p ? 'checked' : '') %>>
+                            <span>Tanpa</span>
+                        </label>
+                        <label class="pri-chip pri-low">
+                            <input type="radio" name="priority" value="low" <%= (p === 'low' ? 'checked' : '') %>>
+                            <span class="pri-dot" aria-hidden="true"></span>
+                            <span>Rendah</span>
+                        </label>
+                        <label class="pri-chip pri-medium">
+                            <input type="radio" name="priority" value="medium" <%= (p === 'medium' ? 'checked' : '') %>>
+                            <span class="pri-dot" aria-hidden="true"></span>
+                            <span>Sedang</span>
+                        </label>
+                        <label class="pri-chip pri-high">
+                            <input type="radio" name="priority" value="high" <%= (p === 'high' ? 'checked' : '') %>>
+                            <span class="pri-dot" aria-hidden="true"></span>
+                            <span>Tinggi</span>
+                        </label>
                     </div>
+                </div>
 
-                    <%
-                        const p = typeof oldPriority !== 'undefined' ? oldPriority : undefined;
-                        const d = typeof oldDue !== 'undefined' ? oldDue : '';
-                    %>
-                    <div class="form-field">
-                        <span class="form-label" id="priority-label">Prioritas <span class="optional">(opsional)</span></span>
-                        <div class="pri-options" role="radiogroup" aria-labelledby="priority-label">
-                            <label class="pri-chip">
-                                <input type="radio" name="priority" value="" <%= (!p ? 'checked' : '') %>>
-                                <span>Tanpa</span>
-                            </label>
-                            <label class="pri-chip pri-low">
-                                <input type="radio" name="priority" value="low" <%= (p === 'low' ? 'checked' : '') %>>
-                                <span>Rendah</span>
-                            </label>
-                            <label class="pri-chip pri-medium">
-                                <input type="radio" name="priority" value="medium" <%= (p === 'medium' ? 'checked' : '') %>>
-                                <span>Sedang</span>
-                            </label>
-                            <label class="pri-chip pri-high">
-                                <input type="radio" name="priority" value="high" <%= (p === 'high' ? 'checked' : '') %>>
-                                <span>Tinggi</span>
-                            </label>
+                <div class="form-field">
+                    <label for="todo-due">Jatuh tempo <span class="optional">(opsional)</span></label>
+                    <input type="date" id="todo-due" name="due" value="<%= d %>">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-cta">
+                        <span class="btn-label">Tambah Rencana</span>
+                        <span class="btn-ico" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                <path d="M12 5v14M5 12h14" />
+                            </svg>
+                        </span>
+                    </button>
+                    <a class="btn btn-ghost" href="/">Batal</a>
+                </div>
+            </form>
+        </div>
+
+        <aside class="rail" data-reveal style="--d: 0.12s" aria-hidden="true">
+            <div class="rail-core">
+                <p class="ledger-eyebrow"><span class="live-dot" aria-hidden="true"></span>Pratinjau</p>
+
+                <article class="todo-item preview-item" data-preview>
+                    <span class="preview-check" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5.5 12.8l4 4 9-9" />
+                        </svg>
+                    </span>
+                    <div class="todo-body">
+                        <p class="todo-name is-placeholder" data-preview-name>Nama rencana akan tampil di sini.</p>
+                        <div class="todo-tags">
+                            <span class="badge badge-priority" data-preview-priority hidden></span>
+                            <span class="badge badge-due" data-preview-due hidden></span>
                         </div>
                     </div>
+                </article>
 
-                    <div class="form-field">
-                        <label for="todo-due">Jatuh tempo <span class="optional">(opsional)</span></label>
-                        <input type="date" id="todo-due" name="due" value="<%= d %>">
-                    </div>
+                <div class="rail-note">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+                    </svg>
+                    <span>Tersimpan di perangkatmu, tanpa akun.</span>
+                </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-cta">
-                            <span class="btn-label">Tambah Rencana</span>
-                            <span class="btn-ico" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                                    <path d="M12 5v14M5 12h14" />
-                                </svg>
-                            </span>
-                        </button>
-                        <a class="btn btn-ghost" href="/">Batal</a>
-                    </div>
-                </form>
+                <p class="rail-caption"><kbd>Enter</kbd> siap menyimpan ketika nama terisi.</p>
             </div>
-        </div>
+        </aside>
     </section>
 </main>

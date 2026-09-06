@@ -90,6 +90,7 @@ function editForm(req: Request, res: Response) {
         description: 'Ubah nama, prioritas, dan tenggat rencana yang sudah kamu catat.',
         layout: 'layouts/main',
         todo,
+        fmtDue: dueInfo,
         today: todayLong(),
         maxTodos: MAX_TODOS,
     });
@@ -110,6 +111,7 @@ function update(req: Request, res: Response) {
             description: 'Ubah nama, prioritas, dan tenggat rencana yang sudah kamu catat.',
             layout: 'layouts/main',
             todo,
+            fmtDue: dueInfo,
             today: todayLong(),
             maxTodos: MAX_TODOS,
             error: 'Rencana tidak boleh kosong.',

@@ -545,6 +545,79 @@
     });
 
     /* ------------------------------------------------------------------
+       Pratinjau langsung halaman form — nama, prioritas, jatuh tempo
+       muncul di rel "Pratinjau" sebagaimana tampil di daftar.
+       Tanpa JS: rel hanya statis (dekoratif), form tetap berfungsi penuh.
+    ------------------------------------------------------------------ */
+    (() => {
+        const root = document.querySelector('[data-preview]');
+        const nameInput = document.getElementById('todo-name');
+        const dueInput = document.getElementById('todo-due');
+        const priInputs = document.querySelectorAll('input[name="priority"]');
+        if (!root || !nameInput || !dueInput || !priInputs.length) return;
+
+        const nameEl = root.querySelector('[data-preview-name]');
+        const priEl = root.querySelector('[data-preview-priority]');
+        const dueEl = root.querySelector('[data-preview-due]');
+        if (!nameEl || !priEl || !dueEl) return;
+
+        const NAME_PLACEHOLDER = 'Nama rencana akan tampil di sini.';
+        const PRIORITY_LABEL = { low: 'Rendah', medium: 'Sedang', high: 'Tinggi' };
+
+        const renderName = () => {
+            const v = nameInput.value.trim();
+            nameEl.textContent = v || NAME_PLACEHOLDER;
+            nameEl.classList.toggle('is-placeholder', !v);
+        };
+
+        const renderPriority = () => {
+            const v = String(document.querySelector('input[name="priority"]:checked')?.value ?? '');
+            if (!v) {
+                priEl.hidden = true;
+                return;
+            }
+            priEl.hidden = false;
+            priEl.textContent = PRIORITY_LABEL[v] || v;
+            priEl.className = `badge badge-priority badge-priority-${v}`;
+        };
+
+        const formatDue = (iso) => {
+            const due = new Date(`${iso}T00:00:00`);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const diff = Math.round((due.getTime() - today.getTime()) / 86_400_000);
+            if (diff === 0) return { label: 'Hari ini', state: 'is-today' };
+            if (diff === 1) return { label: 'Besok', state: '' };
+            if (diff < 0) return { label: `Terlewat ${-diff} hari`, state: 'is-overdue' };
+            return {
+                label: new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short' }).format(due),
+                state: '',
+            };
+        };
+
+        const renderDue = () => {
+            if (!dueInput.value) {
+                dueEl.hidden = true;
+                return;
+            }
+            dueEl.hidden = false;
+            const info = formatDue(dueInput.value);
+            dueEl.textContent = info.label;
+            dueEl.className = info.state ? `badge badge-due ${info.state}` : 'badge badge-due';
+        };
+
+        nameInput.addEventListener('input', renderName);
+        dueInput.addEventListener('change', renderDue);
+        priInputs.forEach((input) => {
+            input.addEventListener('change', renderPriority);
+        });
+
+        renderName();
+        renderPriority();
+        renderDue();
+    })();
+
+    /* ------------------------------------------------------------------
        Posisi scroll dipulihkan saat kembali dari edit (271)
     ------------------------------------------------------------------ */
     (() => {
