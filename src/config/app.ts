@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 
-export const PORT = Number(process.env.PORT) || 3000;
+export const PORT = Number(process.env.PORT) || 3333;
 export const DATA_FILE = process.env.DATA_PATH || resolve(import.meta.dirname, '../../data/todos.json');
 export const MAX_TODOS = Number(process.env.TODOS_LIMIT) || 1000; /* 814 — limit configurable */
 
