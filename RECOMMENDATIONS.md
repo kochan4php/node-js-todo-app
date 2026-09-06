@@ -130,11 +130,11 @@
 - [x] **102 [P1]** — Pastikan *no-flash* font (font loading via `<link>` + swap).
 - [ ] **103 [P2]** — Untuk small caps / detail kecil: gunakan `text-transform: none` agar mudah dibaca.
 - [x] **104 [P1]** — Penyambung kata "What's plan today ?" → "Apa rencanamu hari ini?" (bahasa & spasi sebelum tanda baca).
-- [ ] **105 [P2]** — Sediakan *text utilities* (`.text-muted`, `.text-danger`, `.text-sm`) supaya markup bersih.
+- [x] **105 [P2]** — Sediakan *text utilities* (`.text-muted`, `.text-danger`, `.text-sm`) supaya markup bersih.
 
 ### 1.4 Spacing, Layout, & Grid — 106–135
 
-- [ ] **106 [P0]** — Bangun *spacing scale* token: `--space-1..8` (4,8,12,16,24,32,48,64px).
+- [x] **106 [P0]** — Bangun *spacing scale* token: `--space-1..8` (4,8,12,16,24,32,48,64px).
 - [x] **107 [P0]** — Empat *major surface*: app shell (container), card (panel utama), list-item, form — semua pakai scale yang sama.
 - [x] **108 [P0]** — Hapus `margin-left/right` inline & tombol-jumbo di `.add-todo-main`; gunakan flex/grid dengan gap.
 - [x] **109 [P1]** — Warnai *container* menjadi *centered column* max-width 640px, `padding 24px`.
