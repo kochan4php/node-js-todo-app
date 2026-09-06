@@ -345,7 +345,7 @@
 - [x] **301 [P1]** — Jangan animasi *layout-affecting* (width/height/margin) — biar murah.
 - [x] **302 [P1]** — Animasi hanya via `transform` & `opacity`.
 - [ ] **303 [P1]** — `will-change: transform` hanya pada elemen yang benar-benar dianimasikan.
-- [ ] **304 [P1]** — Hover mobile: tidak perlu efek hover (sentuh) — jaga touch feedback (active).
+- [x] **304 [P1]** — Hover mobile: tidak perlu efek hover (sentuh) — jaga touch feedback (active).
 - [x] **305 [P1]** — Transisi tombol ikut tema (background-* color saja).
 - [x] **306 [P2]** — Scroll smooth (mild) — optional, hindari layout jitter.
 - [x] **307 [P1]** — Fade-in halaman antar route (server → CSS) — simple.
@@ -454,7 +454,7 @@
 - [x] **404 [P1]** — Toggle selesai mengubah urutan default — tidak mengganti posisi mouse (stabilitas).
 - [x] **405 [P1]** — Identifier list item `data-id` untuk JS.
 - [x] **406 [P1]** — Dengan local data, refresh = persistence otomatis (JSON file).
-- [ ] **407 [P1]** — Format waktu "baru saja / 2m lalu" opsional.
+- [x] **407 [P1]** — Format waktu "baru saja / 2m lalu" opsional.
 - [x] **408 [P1]** — Semua action icon ber-icon konsisten (pen, trash, check).
 - [x] **409 [P2]** — Undo hapus (restore terakhir) — P2 (simpan item terhapus 5s di memori).
 - [x] **410 [P1]** — Duplikat nama tidak dilarang, tapi info "sudah ada?" optional.

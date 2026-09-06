@@ -1793,3 +1793,19 @@ strong {
         scroll-behavior: auto !important;
     }
 }
+
+/* Hover "lengket" hanya untuk pointer presisi (304); layar sentuh cukup :active */
+@media (hover: none), (pointer: coarse) {
+    .todo-item:hover,
+    .icon-btn:hover,
+    .header-add:hover,
+    .theme-pill:hover,
+    .pri-chip:hover,
+    .scroll-top:hover {
+        transform: none;
+    }
+
+    .icon-btn[href]:hover svg {
+        transform: none;
+    }
+}
