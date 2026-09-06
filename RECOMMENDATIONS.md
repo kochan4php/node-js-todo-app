@@ -640,116 +640,116 @@
 
 ### 3.1 Aset & Font — 566–600
 
-- [ ] **556 [P0]** — Hapus `@import` font dari CSS; gunakan `<link rel=preconnect>` + `<link>` di `<head>` dengan `display=swap`.
-- [ ] **557 [P0]** — Ganti Font Awesome CDN `<script>` (render-blocking ~90KB) dengan **set ikon inline SVG minimal** (plus, pen, trash, check, search) — hemat request & kompatibel offline.
-- [ ] **558 [P1]** — Subset font (Latin) — kurangi ukuran woff2.
-- [ ] **559 [P1]** — Self-host font (konversi woff2) — tanpa CDN eksternal, cache terjaga.
-- [ ] **560 [P1]** — Preload font critical (`<link rel=preload as=fetch type=font/woff2 crossorigin>`).
-- [ ] **561 [P1]** — Favicon pakai SVG inline / data URI kecil — hemat request.
-- [ ] **562 [P1]** — Hapus `style.css.map` (tidak dipakai, merujuk scss yang hilang).
+- [x] **556 [P0]** — Hapus `@import` font dari CSS; gunakan `<link rel=preconnect>` + `<link>` di `<head>` dengan `display=swap`.
+- [x] **557 [P0]** — Ganti Font Awesome CDN `<script>` (render-blocking ~90KB) dengan **set ikon inline SVG minimal** (plus, pen, trash, check, search) — hemat request & kompatibel offline.
+- [x] **558 [P1]** — Subset font (Latin) — kurangi ukuran woff2.
+- [x] **559 [P1]** — Self-host font (konversi woff2) — tanpa CDN eksternal, cache terjaga.
+- [x] **560 [P1]** — Preload font critical (`<link rel=preload as=fetch type=font/woff2 crossorigin>`).
+- [x] **561 [P1]** — Favicon pakai SVG inline / data URI kecil — hemat request.
+- [x] **562 [P1]** — Hapus `style.css.map` (tidak dipakai, merujuk scss yang hilang).
 - [ ] **563 [P1]** — Minify CSS produksi; bila mau, perkenalkan build kecil (esbuild/tsup) — opsional.
-- [ ] **564 [P1]** — Ukuran ikon inline SVG < 5KB total — jauh lebih kecil dari FontAwesome.
-- [ ] **565 [P1]** — Compression: gzip atau brotli untuk HTML/CSS/JS (via `compression`).
+- [x] **564 [P1]** — Ukuran ikon inline SVG < 5KB total — jauh lebih kecil dari FontAwesome.
+- [x] **565 [P1]** — Compression: gzip atau brotli untuk HTML/CSS/JS (via `compression`).
 - [ ] **566 [P1]** — Cache static assets: `Cache-Control: immutable` untuk css/js hash.
-- [ ] **567 [P1]** — `ETag` + in-memory cache ringan untuk render — P2.
+- [x] **567 [P1]** — `ETag` + in-memory cache ringan untuk render — P2.
 - [ ] **568 [P1]** — Avoid render-blocking: CSS critical inline (≤4KB) opsional.
-- [ ] **569 [P1]** — Load script `defer` di akhir body — tidak memblok parsing.
+- [x] **569 [P1]** — Load script `defer` di akhir body — tidak memblok parsing.
 - [ ] **570 [P1]** — Tidak ada library JS eksternal untuk interaksi vanilla.
-- [ ] **571 [P1]** — `loading="lazy"` untuk gambar (favorit_app) bila ada.
-- [ ] **572 [P1]** — Preload LCP asset (hero background CSS) — opsional.
-- [ ] **573 [P1]** — Hapus kerugian koneksi eksternal bila font di-selfhost.
+- [x] **571 [P1]** — `loading="lazy"` untuk gambar (favorit_app) bila ada.
+- [x] **572 [P1]** — Preload LCP asset (hero background CSS) — opsional.
+- [x] **573 [P1]** — Hapus kerugian koneksi eksternal bila font di-selfhost.
 - [ ] **574 [P1]** — Pastikan website weight < 100KB HTML+CSS+JS (target).
-- [ ] **575 [P1]** — SVG sprite untuk semua ikon (single file) — minimal request.
-- [ ] **576 [P1]** — Gunakan `aspect-ratio` untuk elemen medium — CLS zero.
-- [ ] **577 [P1]** — Sertakan `width`/`height` pada img/logo bila ada.
-- [ ] **578 [P1]** — Avoid `@import` di CSS (sudah) — transfer ke link.
+- [x] **575 [P1]** — SVG sprite untuk semua ikon (single file) — minimal request.
+- [x] **576 [P1]** — Gunakan `aspect-ratio` untuk elemen medium — CLS zero.
+- [x] **577 [P1]** — Sertakan `width`/`height` pada img/logo bila ada.
+- [x] **578 [P1]** — Avoid `@import` di CSS (sudah) — transfer ke link.
 - [ ] **579 [P1]** — Blog/konten: gambar responsive `srcset` — tidak relevan sekarang (P2).
-- [ ] **580 [P1]** — Inline rangka SVG logo di HTML — intuisi brand tanpa request.
-- [ ] **581 [P1]** — `font-display: swap` di CSS @font-face self-host.
+- [x] **580 [P1]** — Inline rangka SVG logo di HTML — intuisi brand tanpa request.
+- [x] **581 [P1]** — `font-display: swap` di CSS @font-face self-host.
 - [ ] **582 [P1]** — Trim semua whitespace di HTML output — ukuran kecil.
 - [ ] **583 [P1]** — CSS rewrite: token + komponen = CSS ~8–12KB (havoc gzip 3KB).
 - [ ] **584 [P1]** — Hapus komentar besar di CSS produksi.
-- [ ] **585 [P1]** — Blob gradient CSS: murni CSS (tanpa gambar) — zero request.
-- [ ] **586 [P1]** — Verify no mixed content (http vs https).
+- [x] **585 [P1]** — Blob gradient CSS: murni CSS (tanpa gambar) — zero request.
+- [x] **586 [P1]** — Verify no mixed content (http vs https).
 - [ ] **587 [P2]** — HTTP/3 / QUIC bila infrastruktur mendukung.
 - [ ] **588 [P1]** — Test pada 3G (250ms RTT) — tetap cepat karena SSR.
 - [ ] **589 [P1]** — Perf budget rainy day: gambar 0, font 2 (self-host), CSS 1, JS 1.
-- [ ] **590 [P1]** — Pertimbangkan icon font local (tidak; SVG sudah).
+- [x] **590 [P1]** — Pertimbangkan icon font local (tidak; SVG sudah).
 
 ### 3.2 Server & Middleware — 601–635
 
-- [ ] **591 [P0]** — Hapus middleware tak terpakai (cors, cookieParser, rateLimiter, socket) — penghemat inovasi kecil tapi bersih.
-- [ ] **592 [P1]** — Urutan middleware: helmet → compression → static → urlencoded/json → routes.
-- [ ] **593 [P1]** — Python? ADALAH: `express.static` cache `maxAge: '7d'` untuk aset.
-- [ ] **594 [P1]** — `morgan` di prod: kombinasikan `:status` short dengan sampling — atau ganti kustom tipis log.
-- [ ] **595 [P1]** — Graceful shutdown: SIGTERM → close server & simpan data JSON (flush).
-- [ ] **596 [P1]** — Handle concurrent request terhadap file JSON: single-file atomic write (tmp + rename) — hindari corrupt.
+- [x] **591 [P0]** — Hapus middleware tak terpakai (cors, cookieParser, rateLimiter, socket) — penghemat inovasi kecil tapi bersih.
+- [x] **592 [P1]** — Urutan middleware: helmet → compression → static → urlencoded/json → routes.
+- [x] **593 [P1]** — Python? ADALAH: `express.static` cache `maxAge: '7d'` untuk aset.
+- [x] **594 [P1]** — `morgan` di prod: kombinasikan `:status` short dengan sampling — atau ganti kustom tipis log.
+- [x] **595 [P1]** — Graceful shutdown: SIGTERM → close server & simpan data JSON (flush).
+- [x] **596 [P1]** — Handle concurrent request terhadap file JSON: single-file atomic write (tmp + rename) — hindari corrupt.
 - [ ] **597 [P1]** — Debounced save (opsional 100ms) bila banyak mutasi cepat.
-- [ ] **598 [P1]** — JSON storage memakai `writeFileSync` atomic untuk file kecil — cukup (simpel).
+- [x] **598 [P1]** — JSON storage memakai `writeFileSync` atomic untuk file kecil — cukup (simpel).
 - [ ] **599 [P1]** — Rate limit hanya pada mutasi bila perlu (local app tidak wajib).
-- [ ] **600 [P1]** — Koneksi DB — tidak ada lagi (local).
-- [ ] **601 [P1]** — Rendering EJS cache on di prod (`app.set('view cache', true)`).
-- [ ] **602 [P1]** — Trust proxy bila di balik reverse proxy (untuk IP log akurat).
-- [ ] **603 [P1]** — CORS tak diperlukan (sama origin) — hapus asetnya.
-- [ ] **604 [P1]** — `helmet` menyediakan security headers — tetap pas.
-- [ ] **605 [P1]** — Body parser limit `express.json({ limit: '10kb' })` — kecil.
-- [ ] **606 [P1]** — Directory ini tidak mengekspos `package.json`/`data/` melalui static.
-- [ ] **607 [P1]** — Produksi: `NODE_ENV=production` → view cache + logger timing.
-- [ ] **608 [P1]** — Static css versi `?v=hash` untuk cache buka.
-- [ ] **609 [P1]** — Paksa `X-Content-Type-Options` (nosniff) via helmet.
-- [ ] **610 [P1]** — Avoid `sync` di hot path (kecuali writer JSON kecil aman).
-- [ ] **611 [P1]** — Data file tidak diblokir untuk 2 simulasi tulis — lock sederhana bila perlu.
+- [x] **600 [P1]** — Koneksi DB — tidak ada lagi (local).
+- [x] **601 [P1]** — Rendering EJS cache on di prod (`app.set('view cache', true)`).
+- [x] **602 [P1]** — Trust proxy bila di balik reverse proxy (untuk IP log akurat).
+- [x] **603 [P1]** — CORS tak diperlukan (sama origin) — hapus asetnya.
+- [x] **604 [P1]** — `helmet` menyediakan security headers — tetap pas.
+- [x] **605 [P1]** — Body parser limit `express.json({ limit: '10kb' })` — kecil.
+- [x] **606 [P1]** — Directory ini tidak mengekspos `package.json`/`data/` melalui static.
+- [x] **607 [P1]** — Produksi: `NODE_ENV=production` → view cache + logger timing.
+- [x] **608 [P1]** — Static css versi `?v=hash` untuk cache buka.
+- [x] **609 [P1]** — Paksa `X-Content-Type-Options` (nosniff) via helmet.
+- [x] **610 [P1]** — Avoid `sync` di hot path (kecuali writer JSON kecil aman).
+- [x] **611 [P1]** — Data file tidak diblokir untuk 2 simulasi tulis — lock sederhana bila perlu.
 - [ ] **612 [P1]** — DateTime: jangan format di server tiap request; cache string (opsional).
 - [ ] **613 [P1]** — Index page: query list cost kecil; pagination bila >200 item (P1).
-- [ ] **614 [P1]** — Search filter client-side — tanpa round-trip.
-- [ ] **615 [P2]** — Mount compression hanya di route; jangan di static (sudah cache).
-- [ ] **616 [P1]** — Log morgan format concat; hapus di prod bila tak perlu.
-- [ ] **617 [P1]** — Hindari `console.log` besar di request — logger ringan.
-- [ ] **618 [P1]** — Db disk: `data/todos.json` tidak ikut git (.gitignore).
-- [ ] **619 [P1]** — Startup: load JSON → JS object di memori; simpan ulang per mutasi.
+- [x] **614 [P1]** — Search filter client-side — tanpa round-trip.
+- [x] **615 [P2]** — Mount compression hanya di route; jangan di static (sudah cache).
+- [x] **616 [P1]** — Log morgan format concat; hapus di prod bila tak perlu.
+- [x] **617 [P1]** — Hindari `console.log` besar di request — logger ringan.
+- [x] **618 [P1]** — Db disk: `data/todos.json` tidak ikut git (.gitignore).
+- [x] **619 [P1]** — Startup: load JSON → JS object di memori; simpan ulang per mutasi.
 - [ ] **620 [P1]** — Memoisasi render partial? — mikro, skip.
-- [ ] **621 [P1]** — Server timeouts: `server.requestTimeout` reasonable.
-- [ ] **622 [P1]** — `keepAliveTimeout` default Node (5s) — fine.
+- [x] **621 [P1]** — Server timeouts: `server.requestTimeout` reasonable.
+- [x] **622 [P1]** — `keepAliveTimeout` default Node (5s) — fine.
 - [ ] **623 [P1]** — Metrics: tanpa service (P2 bisa /metrics).
-- [ ] **624 [P1]** — Health check tanpa DB — ringan.
-- [ ] **625 [P1]** — Build: `tsc` already; beri `sourceMap=false` di prod bila perlu.
+- [x] **624 [P1]** — Health check tanpa DB — ringan.
+- [x] **625 [P1]** — Build: `tsc` already; beri `sourceMap=false` di prod bila perlu.
 
 ### 3.3 Web Vitals & Rendering — 636–670
 
-- [ ] **626 [P1]** — LCP target: elemen pertama (title/list) cepat — SSR.
-- [ ] **627 [P1]** — FID/INP: tidak ada JS blocking besar — kecil.
-- [ ] **628 [P1]** — CLS: ukuran elemen reservasi → layout stabil.
-- [ ] **629 [P1]** — TTFB < 200ms local.
-- [ ] **630 [P1]** — Avoid `layout shift` saat font swap (font-size-adjust / preload).
+- [x] **626 [P1]** — LCP target: elemen pertama (title/list) cepat — SSR.
+- [x] **627 [P1]** — FID/INP: tidak ada JS blocking besar — kecil.
+- [x] **628 [P1]** — CLS: ukuran elemen reservasi → layout stabil.
+- [x] **629 [P1]** — TTFB < 200ms local.
+- [x] **630 [P1]** — Avoid `layout shift` saat font swap (font-size-adjust / preload).
 - [ ] **631 [P1]** — CSS min 1 request, JS 1 request (defer) — budget.
-- [ ] **632 [P1]** — Interaktivitas pertama cepat — tanpa JS framework.
-- [ ] **633 [P1]** — Progressive enhancement: tanpa JS form tetap jalan (server render).
-- [ ] **634 [P1]** — PNG logo: ganti SVG inline (opsional, kecil).
-- [ ] **635 [P1]** — `will-change` hati-hati — hanya animasi intens.
-- [ ] **636 [P1]** — Animasi 60fps — backdrop-filter compose GPU.
+- [x] **632 [P1]** — Interaktivitas pertama cepat — tanpa JS framework.
+- [x] **633 [P1]** — Progressive enhancement: tanpa JS form tetap jalan (server render).
+- [x] **634 [P1]** — PNG logo: ganti SVG inline (opsional, kecil).
+- [x] **635 [P1]** — `will-change` hati-hati — hanya animasi intens.
+- [x] **636 [P1]** — Animasi 60fps — backdrop-filter compose GPU.
 - [ ] **637 [P1]** — Test di Slow 4G — halaman 1 detik.
-- [ ] **638 [P1]** — Blocking script Font Awesome — ganti SVG (P0).
-- [ ] **639 [P1]** — No `document.write` — tidak ada.
-- [ ] **640 [P1]** — Mempertahankan HTML static (SSR) untuk semua konten.
+- [x] **638 [P1]** — Blocking script Font Awesome — ganti SVG (P0).
+- [x] **639 [P1]** — No `document.write` — tidak ada.
+- [x] **640 [P1]** — Mempertahankan HTML static (SSR) untuk semua konten.
 - [ ] **641 [P1]** — Kecil kode JS: 1 file ~3KB vanilla.
-- [ ] **642 [P1]** — Gzip HTML bawaan via compression.
-- [ ] **643 [P1]** — Preconnect ke fonts.gstatic.com bila pakai Google Fonts.
+- [x] **642 [P1]** — Gzip HTML bawaan via compression.
+- [x] **643 [P1]** — Preconnect ke fonts.gstatic.com bila pakai Google Fonts.
 - [ ] **644 [P1]** — Paksa cache-friendly headers di Nginx/PM2 bila ada.
-- [ ] **645 [P1]** — Pastikan CORS tidak diblok throw di prod (tidak dipakai).
+- [x] **645 [P1]** — Pastikan CORS tidak diblok throw di prod (tidak dipakai).
 - [ ] **646 [P1]** — PWA offline (P2) — service worker 20 baris.
 - [ ] **647 [P1]** — Lighthouse Performance target ≥ 95.
 - [ ] **648 [P1]** — Bundle analysis? Tiny — skip.
-- [ ] **649 [P1]** — Startup cepat — tidak ada init DB.
-- [ ] **650 [P1]** — Memory: JSON kecil — stabil.
-- [ ] **651 [P1]** — CPU: blur animasi ringan di desktop; mobile blur kecil.
+- [x] **649 [P1]** — Startup cepat — tidak ada init DB.
+- [x] **650 [P1]** — Memory: JSON kecil — stabil.
+- [x] **651 [P1]** — CPU: blur animasi ringan di desktop; mobile blur kecil.
 - [ ] **652 [P1]** — Avoid excessive DOM (list < 500 item) — pagination.
-- [ ] **653 [P1]** — Event handlers minimal (delegasi vanila).
-- [ ] **654 [P1]** — Toast & modal — bukti tidak reflow besar.
-- [ ] **655 [P1]** — Contrast disable blur saat reduced.
-- [ ] **656 [P1]** — Data persistensi sync per mutasi — kecil antar.
-- [ ] **657 [P1]** — Semua animasi `transform/opacity` — murah.
+- [x] **653 [P1]** — Event handlers minimal (delegasi vanila).
+- [x] **654 [P1]** — Toast & modal — bukti tidak reflow besar.
+- [x] **655 [P1]** — Contrast disable blur saat reduced.
+- [x] **656 [P1]** — Data persistensi sync per mutasi — kecil antar.
+- [x] **657 [P1]** — Semua animasi `transform/opacity` — murah.
 - [ ] **658 [P1]** — Tidak memakai library animasi eksternal.
-- [ ] **659 [P1]** — Aset cache lama 7d + HTML no-cache — pola sehat.
+- [x] **659 [P1]** — Aset cache lama 7d + HTML no-cache — pola sehat.
 - [ ] **660 [P1]** — Jalankan audit bulanan (Lighthouse CI optional).
 
 ---

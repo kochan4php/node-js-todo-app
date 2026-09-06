@@ -17,14 +17,19 @@ function ensureDefaults(todos: Todo[]): Todo[] {
     }));
 }
 
+/* 619 — muat JSON sekali ke memori; simpan ulang per mutasi (atomic, 596/598). */
+let buffer: Todo[] | null = null;
+
 export function readTodos(): Todo[] {
+    if (buffer) return buffer;
     try {
         const parsed: unknown = JSON.parse(readFileSync(DATA_FILE, 'utf8'));
-        return Array.isArray(parsed) ? ensureDefaults(parsed as Todo[]) : [];
+        buffer = Array.isArray(parsed) ? ensureDefaults(parsed as Todo[]) : [];
     } catch (error) {
         logger.warn(`Gagal membaca data, mulai dari kosong: ${(error as Error).message}`);
-        return [];
+        buffer = [];
     }
+    return buffer;
 }
 
 export function writeTodos(todos: Todo[]): void {
@@ -32,4 +37,5 @@ export function writeTodos(todos: Todo[]): void {
     const tempFile = `${DATA_FILE}.tmp`;
     writeFileSync(tempFile, JSON.stringify(todos, null, 2), 'utf8');
     renameSync(tempFile, DATA_FILE);
+    buffer = todos;
 }

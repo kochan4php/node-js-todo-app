@@ -5,6 +5,29 @@
             diffusi shadow berwarna dasar, gerak cubic-bezier (0.16,1,0.3,1)
    ========================================================================== */
 
+/* Font self-host (559, 573) — latin hanya, variable, swap, tanpa CDN eksternal. */
+@font-face {
+    font-family: "Geist";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("/fonts/geist-latin-wght-normal.woff2") format("woff2");
+    unicode-range:
+        U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+        U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: "Geist Mono";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("/fonts/geist-mono-latin-wght-normal.woff2") format("woff2");
+    unicode-range:
+        U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+        U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* --------------------------------------------------------------------------
    1. TOKENS
    -------------------------------------------------------------------------- */
@@ -51,7 +74,6 @@
     --r-xl: clamp(1.4rem, 3vw, 2rem);
     --r-lg: clamp(1rem, 2vw, 1.25rem);
     --content-w: min(1180px, 100% - clamp(32px, 8vw, 96px) - env(safe-area-inset-left) - env(safe-area-inset-right));
-    --content-w-narrow: min(560px, 100% - clamp(32px, 8vw, 96px) - env(safe-area-inset-left) - env(safe-area-inset-right));
 
     /* Skala jarak (106) — 4,8,12,16,24,32,48,64 px */
     --space-1: 0.25rem;
@@ -204,10 +226,6 @@ svg {
     margin-inline: auto;
     flex: 1;
     padding: clamp(1.75rem, 5vw, 3rem) 0 clamp(2.5rem, 8vw, 4.5rem);
-}
-
-.content-narrow {
-    width: var(--content-w-narrow);
 }
 
 .is-hidden,

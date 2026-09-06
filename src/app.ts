@@ -19,15 +19,18 @@ const init = (): Application => {
     app.set('views', resolve(import.meta.dirname, '../src/views'));
     app.set('view engine', 'ejs');
     app.set('view cache', process.env.NODE_ENV === 'production');
+    app.set('trust proxy', 1); /* 602 — di belakang satu reverse proxy */
 
+    /* Urutan (592): helmet → compression → static → parser body → rute. */
     app.use(helmet());
     app.use(compression());
-    app.use(morgan('dev'));
+    app.use(express.static(resolve(import.meta.dirname, '../public'), { maxAge: '7d', etag: true }));
     app.use(express.json({ limit: '10kb' }));
     app.use(express.urlencoded({ extended: true, limit: '10kb' }));
-    app.use(express.static(resolve(import.meta.dirname, '../public'), { maxAge: '7d', etag: true }));
     app.use(expressLayouts);
     app.use(methodOverride('_method'));
+    /* 594 — di produksi log cukup short (status ringkas), dev cukup dev. */
+    app.use(morgan(process.env.NODE_ENV === 'production' ? 'short' : 'dev'));
 
     /* 500 — mutasi tidak boleh di-cache oleh intermediate; GET HTML revalidasi (537). */
     app.use((req, res, next: NextFunction) => {

@@ -6,6 +6,9 @@ import { logger } from './logger/index.ts';
 const app = init();
 const server = createServer(app);
 
+server.requestTimeout = 30_000; /* 621 — timeout reasonable per request */
+server.headersTimeout = 31_000;
+
 server.listen(PORT, () => {
     logger.info(`Server berjalan di http://localhost:${PORT}`);
 });
