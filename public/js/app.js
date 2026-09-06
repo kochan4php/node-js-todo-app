@@ -132,7 +132,13 @@
             toast.insertBefore(btn, toast.querySelector('.toast-close'));
         }
         toastStack.appendChild(toast);
-        while (toastStack.children.length > 3) dismissToast(toastStack.children[0]);
+        /* Maksimal 3 toast sejalan: lepaskan yang tertua SEKARANG (dismissToast
+           menunggu animationend → loop-nya tak pernah berhenti). */
+        while (toastStack.children.length > 3) {
+            const oldest = toastStack.children[0];
+            oldest.dataset.leave = '1';
+            toastStack.removeChild(oldest);
+        }
         wireToast(toast);
         window.setTimeout(() => dismissToast(toast), ttl);
     }
