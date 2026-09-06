@@ -7,8 +7,8 @@ Project changelog — follows [Keep a Changelog](https://keepachangelog.com/en/1
 ### Changed
 
 - Database renamed to fully English: default `MONGODB_URI` is now
-  `mongodb://127.0.0.1:27017/planner` (was `…/rencana`); test database
-  `planner-test`. Schema field names, collection, and enums were already
+  `mongodb://127.0.0.1:27017/plans` (was `…/rencana`); test database
+  `plans-test`. Schema field names, collection, and enums were already
   English (`name`, `completed`, `priority`, `due`, `createdAt`/`updatedAt`,
   collection `todos`, priorities `low`/`medium`/`high`).
   Note: an existing local `rencana` database is not migrated automatically —
