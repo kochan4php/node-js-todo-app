@@ -795,6 +795,51 @@ strong {
     height: 0.8rem;
 }
 
+.sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: none;
+}
+
+.sort-label {
+    font-family: var(--f-mono);
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+.sort-wrap select {
+    appearance: none;
+    -webkit-appearance: none;
+    min-height: 44px;
+    padding: 0 2.3rem 0 0.95rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background-color: var(--surface);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    background-size: 1rem;
+    font-family: var(--f-sans);
+    font-size: 0.85rem;
+    font-weight: 550;
+    color: var(--ink-soft);
+    cursor: pointer;
+    outline: none;
+    transition:
+        border-color 0.3s var(--ease),
+        box-shadow 0.3s var(--ease),
+        background-color 0.3s var(--ease);
+}
+
+.sort-wrap select:focus-visible {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
 .filters {
     display: flex;
     flex-wrap: wrap;
@@ -960,6 +1005,67 @@ strong {
     font-weight: 500;
     letter-spacing: 0.02em;
     color: var(--ink-mute);
+}
+
+.todo-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.42rem;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.6rem;
+    padding: 0.22rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: var(--f-mono);
+    font-size: 0.62rem;
+    font-weight: 550;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    background: var(--surface);
+}
+
+.badge-priority-low {
+    color: var(--ink-mute);
+}
+
+.badge-priority-medium {
+    border-color: rgba(161, 98, 7, 0.35);
+    color: var(--warn);
+    background: rgba(161, 98, 7, 0.08);
+}
+
+.badge-priority-high {
+    border-color: rgba(190, 18, 60, 0.35);
+    color: var(--danger);
+    background: var(--danger-soft);
+}
+
+.badge-due {
+    color: var(--ink-soft);
+}
+
+.badge-due.is-today {
+    border-color: rgba(161, 98, 7, 0.35);
+    color: var(--warn);
+    background: rgba(161, 98, 7, 0.08);
+}
+
+.badge-due.is-overdue {
+    border-color: rgba(190, 18, 60, 0.35);
+    color: var(--danger);
+    background: var(--danger-soft);
+}
+
+.todo-item.is-done .badge {
+    color: var(--ink-mute);
+    background: transparent;
+    border-color: var(--border);
 }
 
 .todo-actions {
@@ -1156,14 +1262,71 @@ strong {
     gap: 0.5rem;
 }
 
-.form-field label {
+.form-field label,
+.form-label {
     font-size: 0.72rem;
     font-weight: 550;
     color: var(--ink-soft);
 }
 
+.optional {
+    font-weight: 500;
+    color: var(--ink-mute);
+}
+
+.pri-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.pri-chip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.55rem 0.95rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 550;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition:
+        background-color 0.25s var(--ease),
+        color 0.25s var(--ease),
+        border-color 0.25s var(--ease),
+        transform 0.3s var(--ease);
+}
+
+.pri-chip input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pri-chip:has(input:checked) {
+    background: var(--ink);
+    border-color: transparent;
+    color: var(--surface);
+}
+
+.pri-chip:has(input:focus-visible) {
+    box-shadow: 0 0 0 3px var(--focus);
+}
+
+.pri-chip:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+}
+
+.pri-chip:active {
+    transform: scale(0.97);
+}
+
 .form-field input {
     width: 100%;
+    min-height: 48px;
     padding: 0.85rem 1rem;
     border: 1px solid var(--border-strong);
     border-radius: var(--r-lg);
@@ -1376,6 +1539,22 @@ strong {
     height: 0.85rem;
 }
 
+.toast-action {
+    flex: none;
+    padding: 0.5rem 0;
+    border: 0;
+    background: transparent;
+    font-size: 0.85rem;
+    font-weight: 650;
+    color: var(--accent);
+    cursor: pointer;
+    transition: color 0.2s var(--ease);
+}
+
+.toast-action:hover {
+    color: var(--accent-strong);
+}
+
 /* --------------------------------------------------------------------------
    16. 404
    -------------------------------------------------------------------------- */
@@ -1426,6 +1605,45 @@ strong {
     font-size: 0.8rem;
     font-weight: 500;
     color: var(--ink-mute);
+}
+
+/* --------------------------------------------------------------------------
+   17b. SCROLL TOP
+   -------------------------------------------------------------------------- */
+.scroll-top {
+    position: fixed;
+    right: clamp(1rem, 3vw, 1.5rem);
+    bottom: clamp(1rem, 3vw, 1.5rem);
+    z-index: var(--z-header);
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--ink-soft);
+    box-shadow: var(--shadow-lift), var(--gloss);
+    cursor: pointer;
+    transition:
+        background-color 0.25s var(--ease),
+        color 0.25s var(--ease),
+        transform 0.3s var(--ease);
+}
+
+.scroll-top:hover {
+    background: var(--ink);
+    color: var(--surface);
+    transform: translateY(-2px);
+}
+
+.scroll-top:active {
+    transform: scale(0.94);
+}
+
+.scroll-top svg {
+    width: 1.1rem;
+    height: 1.1rem;
 }
 
 /* --------------------------------------------------------------------------

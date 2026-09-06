@@ -1,11 +1,35 @@
 import type { Request, Response } from 'express';
-import { createdShort, todayLong } from '../helpers/date.ts';
+import type { Priority } from '../../interfaces/todo.ts';
+import { createdShort, dueInfo, todayLong } from '../helpers/date.ts';
 import { render } from '../helpers/render.ts';
-import { create, getAll, getById, MAX_TODOS, remove, toggle as toggleTodo, update as updateTodo } from '../services/todo.service.ts';
+import {
+    create,
+    getAll,
+    getById,
+    MAX_TODOS,
+    remove,
+    restore,
+    toggle as toggleTodo,
+    update as updateTodo,
+} from '../services/todo.service.ts';
+
+const PRIORITIES: readonly Priority[] = ['low', 'medium', 'high'];
 
 function sanitize(value: unknown): string {
     if (typeof value !== 'string') return '';
     return value.trim().replace(/\s+/g, ' ').slice(0, 200);
+}
+
+function sanitizePriority(value: unknown): Priority | undefined {
+    return typeof value === 'string' && (PRIORITIES as readonly string[]).includes(value) ? (value as Priority) : undefined;
+}
+
+function sanitizeDue(value: unknown): string | null {
+    if (typeof value !== 'string' || !value) return null;
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
+    if (!match) return null;
+    const date = new Date(`${match[1]}-${match[2]}-${match[3]}T00:00:00`);
+    return Number.isNaN(date.getTime()) ? null : value.trim();
 }
 
 function statsOf(todos: Awaited<ReturnType<typeof getAll>>) {
@@ -17,7 +41,7 @@ function statsOf(todos: Awaited<ReturnType<typeof getAll>>) {
 
 function flashOf(req: Request): string {
     const value = String(req.query.flash ?? '');
-    return ['created', 'updated', 'deleted', 'toggled', 'invalid', 'full'].includes(value) ? value : '';
+    return ['created', 'updated', 'deleted', 'toggled', 'invalid', 'full', 'restored'].includes(value) ? value : '';
 }
 
 function index(req: Request, res: Response) {
@@ -28,6 +52,7 @@ function index(req: Request, res: Response) {
         todos,
         stats: statsOf(todos),
         fmtShort: createdShort,
+        fmtDue: dueInfo,
         today: todayLong(),
         flash: flashOf(req),
         maxTodos: MAX_TODOS,
@@ -45,6 +70,8 @@ function addForm(_: Request, res: Response) {
 
 function store(req: Request, res: Response) {
     const name = sanitize(req.body.name);
+    const priority = sanitizePriority(req.body.priority);
+    const due = sanitizeDue(req.body.due);
 
     if (!name) {
         return render(res, 'add-todo', {
@@ -54,10 +81,12 @@ function store(req: Request, res: Response) {
             maxTodos: MAX_TODOS,
             error: 'Rencana tidak boleh kosong.',
             old: name,
+            oldPriority: priority,
+            oldDue: due,
         });
     }
 
-    const todo = create(name);
+    const todo = create(name, priority, due);
     if (!todo) {
         return render(res, 'add-todo', {
             title: 'Tambah Rencana',
@@ -66,6 +95,8 @@ function store(req: Request, res: Response) {
             maxTodos: MAX_TODOS,
             error: `Batas ${MAX_TODOS} rencana tercapai. Hapus sebagian dulu untuk menambah.`,
             old: name,
+            oldPriority: priority,
+            oldDue: due,
         });
     }
 
@@ -89,6 +120,8 @@ function editForm(req: Request, res: Response) {
 function update(req: Request, res: Response) {
     const id = String(req.body.id ?? '');
     const name = sanitize(req.body.name);
+    const priority = sanitizePriority(req.body.priority);
+    const due = sanitizeDue(req.body.due);
     const todo = getById(id);
 
     if (!todo) return res.redirect('/?flash=invalid');
@@ -104,7 +137,7 @@ function update(req: Request, res: Response) {
         });
     }
 
-    updateTodo(id, name);
+    updateTodo(id, name, priority, due);
     return res.redirect('/?flash=updated');
 }
 
@@ -119,4 +152,21 @@ function destroy(req: Request, res: Response) {
     return res.redirect('/?flash=deleted');
 }
 
-export default { index, addForm, store, editForm, update, toggle, destroy };
+function restoreTodo(req: Request, res: Response) {
+    const todo = restore({
+        name: sanitize(req.body.name),
+        completed: req.body.completed === 'true',
+        createdAt: String(req.body.createdAt ?? ''),
+        priority: sanitizePriority(req.body.priority),
+        due: sanitizeDue(req.body.due),
+    });
+
+    if (!todo) return res.redirect('/?flash=full');
+
+    if (req.accepts(['html', 'json']) === 'json') {
+        return res.json({ ok: true, todo });
+    }
+    return res.redirect('/?flash=restored');
+}
+
+export default { index, addForm, store, editForm, update, toggle, destroy, restoreTodo };

@@ -77,6 +77,14 @@
                             </svg>
                         </button>
                     </div>
+                    <label class="sort-wrap">
+                        <span class="sort-label" id="sort-label">Urutan</span>
+                        <select id="todo-sort" aria-labelledby="sort-label">
+                            <option value="newest" selected>Terbaru</option>
+                            <option value="az">A–Z</option>
+                            <option value="za">Z–A</option>
+                        </select>
+                    </label>
                     <div class="filters" role="group" aria-label="Filter status">
                         <button type="button" class="filter-chip is-active" data-filter="all" aria-pressed="true">Semua <span class="filter-count"><%= stats.total %></span></button>
                         <button type="button" class="filter-chip" data-filter="active" aria-pressed="false">Aktif <span class="filter-count"><%= stats.active %></span></button>

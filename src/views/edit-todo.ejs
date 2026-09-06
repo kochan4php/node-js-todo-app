@@ -40,6 +40,33 @@
                         <% } %>
                     </div>
 
+                    <div class="form-field">
+                        <span class="form-label" id="priority-label">Prioritas <span class="optional">(opsional)</span></span>
+                        <div class="pri-options" role="radiogroup" aria-labelledby="priority-label">
+                            <label class="pri-chip">
+                                <input type="radio" name="priority" value="" <%= (!todo.priority ? 'checked' : '') %>>
+                                <span>Tanpa</span>
+                            </label>
+                            <label class="pri-chip pri-low">
+                                <input type="radio" name="priority" value="low" <%= (todo.priority === 'low' ? 'checked' : '') %>>
+                                <span>Rendah</span>
+                            </label>
+                            <label class="pri-chip pri-medium">
+                                <input type="radio" name="priority" value="medium" <%= (todo.priority === 'medium' ? 'checked' : '') %>>
+                                <span>Sedang</span>
+                            </label>
+                            <label class="pri-chip pri-high">
+                                <input type="radio" name="priority" value="high" <%= (todo.priority === 'high' ? 'checked' : '') %>>
+                                <span>Tinggi</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="todo-due">Jatuh tempo <span class="optional">(opsional)</span></label>
+                        <input type="date" id="todo-due" name="due" value="<%= todo.due || '' %>">
+                    </div>
+
                     <div class="form-actions">
                         <button type="submit" class="btn btn-cta">
                             <span class="btn-label">Simpan Perubahan</span>

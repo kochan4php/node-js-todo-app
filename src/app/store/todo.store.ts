@@ -12,6 +12,8 @@ function ensureDefaults(todos: Todo[]): Todo[] {
         completed: todo.completed ?? false,
         createdAt: todo.createdAt || now,
         updatedAt: todo.updatedAt || now,
+        priority: todo.priority,
+        due: todo.due ?? null,
     }));
 }
 

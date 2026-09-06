@@ -109,7 +109,7 @@
         window.setTimeout(() => dismissToast(toast), 4000);
     }
 
-    function showToast(text, type = 'success', ttl = 4000) {
+    function showToast(text, type = 'success', ttl = 4000, action) {
         if (!toastStack) return;
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
@@ -119,6 +119,17 @@
             <span class="toast-text"></span>
             <button type="button" class="toast-close" aria-label="Tutup pemberitahuan">${ICON_CROSS}</button>`;
         toast.querySelector('.toast-text').textContent = text;
+        if (action) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'toast-action';
+            btn.textContent = action.label;
+            btn.addEventListener('click', () => {
+                dismissToast(toast);
+                action.onClick();
+            });
+            toast.insertBefore(btn, toast.querySelector('.toast-close'));
+        }
         toastStack.appendChild(toast);
         wireToast(toast);
         window.setTimeout(() => dismissToast(toast), ttl);
@@ -174,11 +185,22 @@
         confirmOk.addEventListener('click', () => {
             const form = pendingForm;
             const item = form ? form.closest('.todo-item') : null;
+            const saved = item
+                ? {
+                      name: item.querySelector('.todo-name').textContent,
+                      completed: item.classList.contains('is-done'),
+                      createdAt: new Date().toISOString(),
+                      priority: item.dataset.priority || '',
+                      due: item.dataset.due || '',
+                      node: item,
+                  }
+                : null;
             closeConfirmModal();
             if (!form) return;
 
-            /* Hapus asinkron: tanpa reload, item mengecil lalu hilang (P1 266)
-               Gagal atau list menjadi kosong → reload penuh (render empty-state). */
+            /* Hapus asinkron: tanpa reload, item mengecil lalu hilang (266).
+               Ditawarkan "Batalkan" (undo, 409) selama 7 detik.
+               Gagal atau list menjadi kosong → reload penuh. */
             fetch(form.getAttribute('action'), {
                 method: 'POST',
                 body: new FormData(form),
@@ -187,6 +209,20 @@
             })
                 .then((response) => {
                     if (!response.ok) throw new Error(response.statusText);
+                    const leave = () => {
+                        item.remove();
+                        if (!document.querySelectorAll('.todo-item').length) {
+                            location.reload();
+                            return;
+                        }
+                        refreshStats();
+                        showToast(
+                            'Rencana dihapus.',
+                            'success',
+                            7000,
+                            saved ? { label: 'Batalkan', onClick: () => undoDelete(saved) } : undefined,
+                        );
+                    };
                     if (item && window.gsap && !prefersReduced) {
                         return new Promise((resolve) => {
                             gsap.to(item, {
@@ -195,24 +231,66 @@
                                 duration: 0.4,
                                 ease: 'power2.in',
                                 onComplete: () => {
-                                    item.remove();
+                                    leave();
                                     resolve();
                                 },
                             });
                         });
                     }
-                    if (item) item.remove();
-                    if (!document.querySelectorAll('.todo-item').length) {
-                        location.reload();
-                        return;
-                    }
-                    refreshStats();
-                    showToast('Rencana dihapus.');
+                    leave();
                 })
                 .catch(() => {
                     location.reload();
                 });
         });
+
+        function undoDelete(saved) {
+            const body = new URLSearchParams();
+            body.set('name', saved.name);
+            body.set('completed', String(saved.completed));
+            body.set('createdAt', saved.createdAt);
+            body.set('priority', saved.priority || '');
+            body.set('due', saved.due || '');
+
+            fetch('/restore', {
+                method: 'POST',
+                body,
+                headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
+            })
+                .then((response) => (response.ok ? response.json() : Promise.reject(new Error(response.statusText))))
+                .then((payload) => {
+                    if (!payload.ok || !payload.todo) throw new Error('restore gagal');
+                    const todo = payload.todo;
+                    const node = saved.node;
+                    const list = document.getElementById('todo-list');
+                    if (!list || !node) return;
+
+                    node.dataset.id = todo.id;
+                    node.dataset.priority = todo.priority || '';
+                    node.dataset.due = todo.due || '';
+                    const toggleForm = node.querySelector('.toggle-form');
+                    toggleForm.setAttribute('action', `/toggle/${todo.id}`);
+                    const editLink = node.querySelector('a[href^="/edit-todo/"]');
+                    editLink.setAttribute('href', `/edit-todo/${todo.id}`);
+                    editLink.setAttribute('aria-label', `Ubah rencana: ${todo.name}`);
+                    const deleteForm = node.querySelector('.delete-form');
+                    deleteForm.querySelector('input[name="id"]').value = todo.id;
+                    node.classList.toggle('is-done', todo.completed);
+
+                    list.insertBefore(node, list.querySelector('#empty-filtered'));
+                    if (window.gsap && !prefersReduced) {
+                        gsap.fromTo(node, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out' });
+                    } else {
+                        node.hidden = false;
+                    }
+                    refreshStats();
+                    showToast('Rencana dikembalikan.');
+                })
+                .catch(() => {
+                    location.reload();
+                });
+        }
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') closeConfirmModal();
@@ -443,4 +521,72 @@
             button.classList.add('is-loading');
         });
     });
+
+    /* ------------------------------------------------------------------
+       Urutkan list (client): Terbaru / A–Z / Z–A — selesai tetap di bawah
+    ------------------------------------------------------------------ */
+    const sortSelect = document.getElementById('todo-sort');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', () => {
+            const list = document.getElementById('todo-list');
+            if (!list) return;
+            const mode = sortSelect.value;
+            const nodes = [...list.querySelectorAll('.todo-item')];
+            nodes.sort((a, b) => {
+                const aDone = a.classList.contains('is-done') ? 1 : 0;
+                const bDone = b.classList.contains('is-done') ? 1 : 0;
+                if (aDone !== bDone) return aDone - bDone;
+                const aName = a.querySelector('.todo-name').textContent;
+                const bName = b.querySelector('.todo-name').textContent;
+                if (mode === 'az') return aName.localeCompare(bName, 'id');
+                if (mode === 'za') return bName.localeCompare(aName, 'id');
+                return 0;
+            });
+            nodes.forEach((node) => {
+                list.appendChild(node);
+            });
+        });
+    }
+
+    /* ------------------------------------------------------------------
+       Pintasan keyboard (221): "/" cari, "n" buat rencana baru
+    ------------------------------------------------------------------ */
+    document.addEventListener('keydown', (event) => {
+        if (event.metaKey || event.ctrlKey || event.altKey) return;
+        const target = event.target;
+        const typing =
+            target &&
+            (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable);
+        if (typing || !searchInput) return;
+        if (event.key === '/') {
+            event.preventDefault();
+            searchInput.focus();
+        } else if (event.key.toLowerCase() === 'n') {
+            event.preventDefault();
+            location.assign('/add-todo');
+        }
+    });
+
+    /* ------------------------------------------------------------------
+       Tarik ke atas (201): muncul setelah scroll jauh (rAF, tanpa jitter)
+    ------------------------------------------------------------------ */
+    const scrollTop = document.getElementById('scroll-top');
+    if (scrollTop) {
+        const onScroll = () => {
+            scrollTop.hidden = window.scrollY < 600;
+        };
+        onScroll();
+        let frame = 0;
+        window.addEventListener(
+            'scroll',
+            () => {
+                cancelAnimationFrame(frame);
+                frame = requestAnimationFrame(onScroll);
+            },
+            { passive: true },
+        );
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+        });
+    }
 })();

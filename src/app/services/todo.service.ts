@@ -1,8 +1,14 @@
 import { randomUUID } from 'node:crypto';
-import type { Todo } from '../../interfaces/todo.ts';
+import type { Priority, Todo } from '../../interfaces/todo.ts';
 import { readTodos, writeTodos } from '../store/todo.store.ts';
 
 export const MAX_TODOS = 1000;
+
+type CreatedTodo = {
+    name: string;
+    priority?: Priority;
+    due?: string | null;
+};
 
 export function getAll(): Todo[] {
     const todos = readTodos();
@@ -16,23 +22,41 @@ export function getById(id: string): Todo | null {
     return readTodos().find((todo) => todo.id === id) ?? null;
 }
 
-export function create(name: string): Todo | null {
+export function create(name: string, priority?: Priority, due?: string | null): Todo | null {
     const todos = readTodos();
     if (todos.length >= MAX_TODOS) return null;
     const now = new Date().toISOString();
-    const todo: Todo = { id: randomUUID(), name, completed: false, createdAt: now, updatedAt: now };
+    const todo: Todo = { id: randomUUID(), name, completed: false, createdAt: now, updatedAt: now, priority, due: due ?? null };
     todos.push(todo);
     writeTodos(todos);
     return todo;
 }
 
-export function update(id: string, name: string): Todo | null {
+export function update(id: string, name: string, priority?: Priority, due?: string | null): Todo | null {
     const todos = readTodos();
     const index = todos.findIndex((todo) => todo.id === id);
     if (index === -1) return null;
-    todos[index] = { ...todos[index], name, updatedAt: new Date().toISOString() };
+    todos[index] = { ...todos[index], name, priority, due: due ?? null, updatedAt: new Date().toISOString() };
     writeTodos(todos);
     return todos[index];
+}
+
+export function restore(saved: CreatedTodo & { completed: boolean; createdAt: string }): Todo | null {
+    const todos = readTodos();
+    if (todos.length >= MAX_TODOS) return null;
+    const now = new Date().toISOString();
+    const todo: Todo = {
+        id: randomUUID(),
+        name: saved.name,
+        completed: saved.completed,
+        createdAt: saved.createdAt || now,
+        updatedAt: now,
+        priority: saved.priority,
+        due: saved.due ?? null,
+    };
+    todos.push(todo);
+    writeTodos(todos);
+    return todo;
 }
 
 export function toggle(id: string): Todo | null {

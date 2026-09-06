@@ -38,6 +38,37 @@
                         <% } %>
                     </div>
 
+                    <%
+                        const p = typeof oldPriority !== 'undefined' ? oldPriority : undefined;
+                        const d = typeof oldDue !== 'undefined' ? oldDue : '';
+                    %>
+                    <div class="form-field">
+                        <span class="form-label" id="priority-label">Prioritas <span class="optional">(opsional)</span></span>
+                        <div class="pri-options" role="radiogroup" aria-labelledby="priority-label">
+                            <label class="pri-chip">
+                                <input type="radio" name="priority" value="" <%= (!p ? 'checked' : '') %>>
+                                <span>Tanpa</span>
+                            </label>
+                            <label class="pri-chip pri-low">
+                                <input type="radio" name="priority" value="low" <%= (p === 'low' ? 'checked' : '') %>>
+                                <span>Rendah</span>
+                            </label>
+                            <label class="pri-chip pri-medium">
+                                <input type="radio" name="priority" value="medium" <%= (p === 'medium' ? 'checked' : '') %>>
+                                <span>Sedang</span>
+                            </label>
+                            <label class="pri-chip pri-high">
+                                <input type="radio" name="priority" value="high" <%= (p === 'high' ? 'checked' : '') %>>
+                                <span>Tinggi</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="todo-due">Jatuh tempo <span class="optional">(opsional)</span></label>
+                        <input type="date" id="todo-due" name="due" value="<%= d %>">
+                    </div>
+
                     <div class="form-actions">
                         <button type="submit" class="btn btn-cta">
                             <span class="btn-label">Tambah Rencana</span>
