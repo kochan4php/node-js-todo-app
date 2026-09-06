@@ -2,26 +2,73 @@
     const theme = document.documentElement;
 
     /* ------------------------------------------------------------------
-       Masker reveal — IntersectionObserver (tanpa listener scroll)
+       Entri GSAP — intro masthead + reveal data-reveal via IntersectionObserver.
+       Tanpa GSAP atau prefers-reduced-motion: elemen tetap terlihat (default).
     ------------------------------------------------------------------ */
-    const revealEls = document.querySelectorAll('[data-reveal]');
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        revealEls.forEach((el) => {
-            el.classList.add('is-in');
-        });
-    } else {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function introMasthead() {
+        const children = document.querySelectorAll('.masthead-copy > *');
+        if (!children.length) return;
+        gsap.fromTo(
+            children,
+            { autoAlpha: 0, y: 28 },
+            { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.09, ease: 'power3.out', delay: 0.05 },
+        );
+    }
+
+    function runReveals() {
+        const els = document.querySelectorAll('[data-reveal]');
+        if (!els.length) return;
+
         const revealObserver = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (!entry.isIntersecting) return;
-                    entry.target.classList.add('is-in');
-                    revealObserver.unobserve(entry.target);
+                    const el = entry.target;
+                    gsap.fromTo(
+                        el,
+                        { autoAlpha: 0, y: 26 },
+                        {
+                            autoAlpha: 1,
+                            y: 0,
+                            duration: 0.7,
+                            delay: parseFloat(getComputedStyle(el).getPropertyValue('--d')) || 0,
+                            ease: 'power3.out',
+                        },
+                    );
+                    revealObserver.unobserve(el);
                 });
             },
             { threshold: 0.1, rootMargin: '0px 0px -6% 0px' },
         );
-        revealEls.forEach((el) => {
+        els.forEach((el) => {
             revealObserver.observe(el);
+        });
+    }
+
+    if (!window.gsap || prefersReduced) {
+        /* mode senyap tanpa GSAP / gerak dikurangi — biarkan CSS & DOM polos */
+    } else {
+        introMasthead();
+        runReveals();
+    }
+
+    if (window.gsap && !prefersReduced) {
+        /* Hitungan stat ledger — angka mono naik pelan */
+        document.querySelectorAll('.ledger-num strong').forEach((el) => {
+            const target = Math.max(0, parseInt(el.textContent, 10));
+            if (!target) return;
+            const state = { value: 0 };
+            el.textContent = '0';
+            gsap.to(state, {
+                value: target,
+                duration: 1.1,
+                ease: 'power2.out',
+                onUpdate: () => {
+                    el.textContent = String(Math.round(state.value));
+                },
+            });
         });
     }
 

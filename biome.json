@@ -7,7 +7,7 @@
     },
     "files": {
         "ignoreUnknown": true,
-        "includes": ["**", "!**/RECOMMENDATIONS.md", "!**/data"]
+        "includes": ["**", "!**/RECOMMENDATIONS.md", "!**/data", "!public/vendor"]
     },
     "formatter": {
         "enabled": true,

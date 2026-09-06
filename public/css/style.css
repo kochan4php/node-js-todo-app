@@ -1380,22 +1380,8 @@ strong {
 }
 
 /* --------------------------------------------------------------------------
-   18. MASKER REVEAL (entrance) — audio, transform+opacity saja
+   18. (ANIMASI MASUK DITANGANI GSAP — public/js/app.js)
    -------------------------------------------------------------------------- */
-.js [data-reveal] {
-    opacity: 0;
-    transform: translateY(18px);
-    transition:
-        opacity 0.7s var(--ease),
-        transform 0.8s var(--ease);
-    transition-delay: var(--d, 0s);
-    will-change: transform, opacity;
-}
-
-.js [data-reveal].is-in {
-    opacity: 1;
-    transform: none;
-}
 
 /* --------------------------------------------------------------------------
    19. ANIMASI KUNCI
@@ -1484,11 +1470,5 @@ strong {
         transition-duration: 0.01ms !important;
         /* biome-ignore lint/complexity/noImportantStyles: timpa semua mode gerak (scroll) */
         scroll-behavior: auto !important;
-    }
-
-    .js [data-reveal] {
-        opacity: 1;
-        transform: none;
-        transition: none;
     }
 }
