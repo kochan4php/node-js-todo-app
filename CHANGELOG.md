@@ -2,6 +2,18 @@
 
 Project changelog — follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) & [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Database renamed to fully English: default `MONGODB_URI` is now
+  `mongodb://127.0.0.1:27017/todos` (was `…/rencana`); test database
+  `todos-test`. Schema field names, collection, and enums were already
+  English (`name`, `completed`, `priority`, `due`, `createdAt`/`updatedAt`,
+  collection `todos`, priorities `low`/`medium`/`high`).
+  Note: an existing local `rencana` database is not migrated automatically —
+  rename it or start fresh.
+
 ## [0.3.0] — 2026-09-06
 
 Storage moved fully from local JSON files to **MongoDB via Mongoose ODM**.

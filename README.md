@@ -15,7 +15,7 @@ pnpm start      # run from dist/ (production)
 
 You need a running MongoDB (`mongod` locally, Docker, or Atlas). Default port
 `3000`; set via env `PORT`. Optional env vars:
-`MONGODB_URI` (connection, default `mongodb://127.0.0.1:27017/rencana`),
+`MONGODB_URI` (connection, default `mongodb://127.0.0.1:27017/todos`),
 `TODOS_LIMIT` (max number of todos, default 1000), `SITE_URL` (absolute
 domain for canonical/sitemap).
 
