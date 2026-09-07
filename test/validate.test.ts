@@ -7,6 +7,8 @@ import {
     sanitizeName,
     sanitizeNotes,
     sanitizePriority,
+    sanitizeRepeat,
+    sanitizeSubtasks,
 } from '../src/app/helpers/validate.ts';
 
 test('963 — sanitizeName: empty/non-string becomes ""', () => {
@@ -85,4 +87,28 @@ test('1070 — sanitizeArchived: only truthy scalar forms flip the flag', () => 
     assert.equal(sanitizeArchived(''), false);
     assert.equal(sanitizeArchived(undefined), false);
     assert.equal(sanitizeArchived(null), false);
+});
+
+test('1080 — sanitizeRepeat: whitelist of daily/weekly/monthly, else null', () => {
+    assert.equal(sanitizeRepeat('daily'), 'daily');
+    assert.equal(sanitizeRepeat('weekly'), 'weekly');
+    assert.equal(sanitizeRepeat('monthly'), 'monthly');
+    assert.equal(sanitizeRepeat('yearly'), null);
+    assert.equal(sanitizeRepeat('DAILY'), null);
+    assert.equal(sanitizeRepeat(''), null);
+    assert.equal(sanitizeRepeat(undefined), null);
+    assert.equal(sanitizeRepeat(null), null);
+    assert.equal(sanitizeRepeat(42), null);
+});
+
+test('1090 — sanitizeSubtasks: trims rows, caps at 20, non-arrays → []', () => {
+    assert.deepEqual(sanitizeSubtasks([{ text: '  Beli  susu  ', done: true }, { text: 'Baca' }]), [
+        { text: 'Beli susu', done: true },
+        { text: 'Baca', done: false },
+    ]);
+    assert.deepEqual(sanitizeSubtasks([{ text: '   ' }, { text: 'Valid' }, 'bukan objek', null]), [{ text: 'Valid', done: false }]);
+    assert.deepEqual(sanitizeSubtasks('bukan array'), []);
+    assert.deepEqual(sanitizeSubtasks(undefined), []);
+    assert.deepEqual(sanitizeSubtasks(null), []);
+    assert.equal(sanitizeSubtasks(Array.from({ length: 30 }, (_, i) => ({ text: `t${i}` }))).length, 20);
 });

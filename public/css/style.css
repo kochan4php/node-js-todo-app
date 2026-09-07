@@ -2957,3 +2957,275 @@ kbd {
         transform: none;
     }
 }
+
+/* ============================================================
+   P2 — repeat badge, subtask checklist, bulk-select + bar
+   ============================================================ */
+
+/* repeat ("lagi-lagi") badge */
+.badge-repeat {
+    color: var(--accent);
+    border-color: var(--accent-soft);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+/* bulk-select checkbox — sits to the left of the drag handle */
+.todo-select {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.todo-select:disabled {
+    cursor: not-allowed;
+}
+
+/* subtask checklist — a nested block under the todo meta */
+.subtask-panel {
+    margin-top: 0.55rem;
+    padding-top: 0.55rem;
+    border-top: 1px dashed var(--border);
+}
+
+.subtask-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.28rem;
+}
+
+.subtask-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 1.9rem;
+}
+
+.subtask-toggle {
+    flex: none;
+    margin: 0;
+}
+
+.subtask-check {
+    display: grid;
+    place-items: center;
+    width: 1.4rem;
+    height: 1.4rem;
+    padding: 0;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 50%;
+    background: transparent;
+    color: transparent;
+    cursor: pointer;
+    transition:
+        background-color 0.25s var(--ease),
+        border-color 0.25s var(--ease),
+        transform 0.25s var(--ease);
+}
+
+.subtask-check:hover {
+    transform: scale(1.1);
+}
+
+.subtask-check-icon {
+    width: 0.8rem;
+    height: 0.8rem;
+}
+
+.subtask-check-icon path {
+    stroke-dasharray: 16;
+    stroke-dashoffset: 16;
+    transition: stroke-dashoffset 0.3s var(--ease);
+}
+
+.subtask-row.is-done .subtask-check {
+    background: var(--accent);
+    border-color: transparent;
+    color: var(--accent-ink);
+}
+
+.subtask-row.is-done .subtask-check-icon path {
+    stroke-dashoffset: 0;
+}
+
+.subtask-row.is-done .subtask-text {
+    color: var(--ink-mute);
+    text-decoration: line-through;
+    text-decoration-color: var(--border-strong);
+}
+
+.subtask-text {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+}
+
+.subtask-remove {
+    flex: none;
+    margin: 0;
+}
+
+.subtask-remove-btn {
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--ink-mute);
+    cursor: pointer;
+    transition:
+        color 0.2s var(--ease),
+        background-color 0.2s var(--ease);
+}
+
+.subtask-remove-btn:hover {
+    color: var(--danger, #c0392b);
+    background: color-mix(in srgb, #c0392b 12%, transparent);
+}
+
+.subtask-remove-btn svg {
+    width: 0.85rem;
+    height: 0.85rem;
+}
+
+.subtask-progress {
+    margin: 0.5rem 0 0;
+    font-family: var(--f-mono);
+    font-size: 0.62rem;
+    color: var(--ink-mute);
+}
+
+.subtask-empty {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--ink-mute);
+}
+
+/* editor: add-step input row */
+.subtask-add {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0.7rem 0 0;
+}
+
+.subtask-add input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 0.85rem;
+}
+
+.subtask-add input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+    outline: none;
+}
+
+.subtask-add button {
+    flex: none;
+    padding: 0.5rem 0.9rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s var(--ease);
+}
+
+.subtask-add button:hover {
+    opacity: 0.9;
+}
+
+/* archived items: dim the whole checklist */
+.todo-item.is-archived .subtask-panel {
+    opacity: 0.6;
+}
+
+/* floating bulk-action bar */
+.bulk-bar {
+    position: sticky;
+    bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 1rem 0 0;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.9rem;
+    background: var(--surface);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.bulk-bar[hidden] {
+    display: none;
+}
+
+.bulk-count {
+    font-family: var(--f-mono);
+    font-size: 0.78rem;
+    font-weight: 550;
+    color: var(--ink-soft);
+}
+
+.bulk-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-bulk {
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 0.8rem;
+    font-weight: 550;
+    cursor: pointer;
+    transition:
+        border-color 0.2s var(--ease),
+        color 0.2s var(--ease),
+        background-color 0.2s var(--ease);
+}
+
+.btn-bulk:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.btn-bulk-danger:hover {
+    border-color: #c0392b;
+    color: #c0392b;
+}
+
+.btn-bulk-ghost {
+    color: var(--ink-mute);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .todo-check,
+    .subtask-check {
+        transition: none;
+    }
+    .subtask-check-icon path {
+        transition: none;
+    }
+}

@@ -91,6 +91,20 @@
                     <input type="date" id="todo-due" name="due" value="<%= d %>">
                 </div>
 
+                <%
+                    const r = typeof oldRepeat !== 'undefined' ? oldRepeat : '';
+                %>
+                <div class="form-field">
+                    <label for="todo-repeat">Ulangi <span class="optional">(opsional)</span></label>
+                    <select id="todo-repeat" name="repeat">
+                        <option value="" <%= !r ? 'selected' : '' %>>Tidak</option>
+                        <option value="daily" <%= r === 'daily' ? 'selected' : '' %>>Harian</option>
+                        <option value="weekly" <%= r === 'weekly' ? 'selected' : '' %>>Mingguan</option>
+                        <option value="monthly" <%= r === 'monthly' ? 'selected' : '' %>>Bulanan</option>
+                    </select>
+                    <p class="form-hint">Selesai → otomatis muncul lagi di jadwal berikutnya (hari/minggu/bulan).</p>
+                </div>
+
                 <div class="form-field">
                     <label for="todo-notes">Catatan <span class="optional">(opsional)</span></label>
                     <textarea id="todo-notes"

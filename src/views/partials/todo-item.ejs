@@ -1,6 +1,9 @@
 <div class="todo-item <%= todo.completed ? 'is-done' : '' %> <%= todo.archived ? 'is-archived' : '' %>" data-id="<%= todo.id %>"
      data-priority="<%= todo.priority || '' %>" data-due="<%= todo.due || '' %>" data-category="<%= todo.category || '' %>"
-     data-archived="<%= todo.archived ? '1' : '0' %>" data-reorder="1" <%= todo.archived ? 'hidden' : '' %>>
+     data-archived="<%= todo.archived ? '1' : '0' %>" data-reorder="1" <%= typeof hidden !== 'undefined' && hidden ? 'hidden' : '' %>>
+    <% if (typeof selectable !== 'undefined' && selectable) { %>
+    <input type="checkbox" class="todo-select" aria-label="Pilih rencana untuk aksi massal: <%= todo.name %>" title="Pilih untuk aksi massal">
+    <% } %>
     <button type="button" class="drag-handle" draggable="false"
             aria-label="Geser untuk mengurutkan rencana" title="Geser untuk mengurutkan">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -35,9 +38,17 @@
             <% if (todo.due) { const d = fmtDue(todo.due, todo.completed); %>
             <span class="badge badge-due <%= d.state %>"><%= d.label %></span>
             <% } %>
+            <% if (todo.repeat) { %>
+            <span class="badge badge-repeat" title="Ulangi otomatis"><%= { daily: 'Harian', weekly: 'Mingguan', monthly: 'Bulanan' }[todo.repeat] %> · lagi-lagi</span>
+            <% } %>
         </div>
         <% } %>
         <span class="todo-meta">Dibuat <%= fmtWhen(todo.createdAt) %></span>
+        <% if (typeof todo.subtasks !== 'undefined' && todo.subtasks && todo.subtasks.length) { %>
+        <div class="subtask-panel" data-mode="list">
+            <%- include('subtask-rows', { subtasks: todo.subtasks, id: todo.id, mode: 'list' }) %>
+        </div>
+        <% } %>
     </div>
 
     <div class="todo-actions">
@@ -56,6 +67,8 @@
         </form>
         <form class="delete-form" method="post" action="/?_method=DELETE" data-name="<%= todo.name %>">
             <input type="hidden" name="id" value="<%= todo.id %>">
+            <input type="hidden" name="repeat" value="<%= todo.repeat || '' %>">
+            <input type="hidden" name="subtasks" value='<%= JSON.stringify(todo.subtasks ?? []).replace(/"/g, '&quot;') %>'>
             <button type="submit" class="icon-btn icon-btn-danger" title="Hapus" aria-label="Hapus rencana: <%= todo.name %>">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M10 11v6M14 11v6" />

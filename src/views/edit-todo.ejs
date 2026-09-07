@@ -90,6 +90,30 @@
                 </div>
 
                 <div class="form-field">
+                    <label for="todo-repeat">Ulangi <span class="optional">(opsional)</span></label>
+                    <select id="todo-repeat" name="repeat">
+                        <option value="" <%= !todo.repeat ? 'selected' : '' %>>Tidak</option>
+                        <option value="daily" <%= todo.repeat === 'daily' ? 'selected' : '' %>>Harian</option>
+                        <option value="weekly" <%= todo.repeat === 'weekly' ? 'selected' : '' %>>Mingguan</option>
+                        <option value="monthly" <%= todo.repeat === 'monthly' ? 'selected' : '' %>>Bulanan</option>
+                    </select>
+                    <p class="form-hint">Selesai → otomatis muncul lagi di jadwal berikutnya (hari/minggu/bulan).</p>
+                </div>
+
+                <div class="form-field">
+                    <span class="form-label" id="subtask-label">Langkah-langkah <span class="optional">(opsional)</span></span>
+                    <div class="subtask-panel" data-mode="edit">
+                        <%- include('partials/subtask-rows', { subtasks: todo.subtasks ?? [], id: todo.id, mode: 'edit' }) %>
+                    </div>
+                    <form class="subtask-add" method="post" action="/api/subtasks">
+                        <input type="hidden" name="id" value="<%= todo.id %>">
+                        <input type="hidden" name="action" value="add">
+                        <input type="text" name="text" maxlength="200" placeholder="Langkah baru…" aria-label="Langkah baru" autocomplete="off">
+                        <button type="submit" aria-label="Tambahkan langkah">Tambah</button>
+                    </form>
+                </div>
+
+                <div class="form-field">
                     <label for="todo-notes">Catatan <span class="optional">(opsional)</span></label>
                     <textarea id="todo-notes"
                               name="notes"

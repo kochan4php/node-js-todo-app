@@ -111,14 +111,14 @@
                     </button>
                 </form>
 
-                <div class="toolbar">
+                <form class="toolbar" method="get" action="/" id="toolbar">
                     <div class="search">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <circle cx="11" cy="11" r="7" />
                             <path d="M21 21l-4.3-4.3" />
                         </svg>
-                        <input type="search" id="todo-search" placeholder="Cari rencana…" autocomplete="off" aria-label="Cari rencana">
-                        <button type="button" class="search-clear" id="search-clear" aria-label="Bersihkan pencarian" hidden>
+                        <input type="search" id="todo-search" name="q" value="<%= view.q %>" placeholder="Cari rencana…" autocomplete="off" aria-label="Cari rencana">
+                        <button type="button" class="search-clear" id="search-clear" aria-label="Bersihkan pencarian" <%= view.q ? '' : 'hidden' %>>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
                                 <path d="M6 6l12 12M18 6L6 18" />
                             </svg>
@@ -126,39 +126,49 @@
                     </div>
                     <label class="sort-wrap">
                         <span class="sort-label" id="sort-label">Urutan</span>
-                        <select id="todo-sort" aria-labelledby="sort-label">
-                            <option value="newest" selected>Terbaru</option>
-                            <option value="az">A–Z</option>
-                            <option value="za">Z–A</option>
+                        <select id="todo-sort" name="s" aria-labelledby="sort-label">
+                            <option value="newest" <%= view.s === 'newest' ? 'selected' : '' %>>Terbaru</option>
+                            <option value="az" <%= view.s === 'az' ? 'selected' : '' %>>A–Z</option>
+                            <option value="za" <%= view.s === 'za' ? 'selected' : '' %>>Z–A</option>
                         </select>
                     </label>
                     <label class="sort-wrap">
                         <span class="sort-label" id="cat-label">Kategori</span>
-                        <select id="todo-category" aria-labelledby="cat-label">
+                        <select id="todo-category" name="c" aria-labelledby="cat-label">
                             <option value="">Semua</option>
                             <% categories.forEach((cat) => { %>
-                            <option value="<%= cat %>"><%= cat %></option>
+                            <option value="<%= cat %>" <%= view.c === cat ? 'selected' : '' %>><%= cat %></option>
                             <% }) %>
                         </select>
                     </label>
                     <div class="filters" role="group" aria-label="Filter status">
-                        <button type="button" class="filter-chip is-active" data-filter="all" aria-pressed="true">Semua <span class="filter-count"><%= stats.total %></span></button>
-                        <button type="button" class="filter-chip" data-filter="active" aria-pressed="false">Aktif <span class="filter-count"><%= stats.active %></span></button>
-                        <button type="button" class="filter-chip" data-filter="done" aria-pressed="false">Selesai <span class="filter-count"><%= stats.completed %></span></button>
-                        <button type="button" class="filter-chip" data-filter="archive" aria-pressed="false">Arsip <span class="filter-count"><%= stats.archived %></span></button>
+                        <button type="submit" class="filter-chip <%= view.f === 'all' ? 'is-active' : '' %>" data-filter="all" name="f" value="all" aria-pressed="<%= view.f === 'all' ? 'true' : 'false' %>">Semua <span class="filter-count"><%= stats.total %></span></button>
+                        <button type="submit" class="filter-chip <%= view.f === 'active' ? 'is-active' : '' %>" data-filter="active" name="f" value="active" aria-pressed="<%= view.f === 'active' ? 'true' : 'false' %>">Aktif <span class="filter-count"><%= stats.active %></span></button>
+                        <button type="submit" class="filter-chip <%= view.f === 'done' ? 'is-active' : '' %>" data-filter="done" name="f" value="done" aria-pressed="<%= view.f === 'done' ? 'true' : 'false' %>">Selesai <span class="filter-count"><%= stats.completed %></span></button>
+                        <button type="submit" class="filter-chip <%= view.f === 'archive' ? 'is-active' : '' %>" data-filter="archive" name="f" value="archive" aria-pressed="<%= view.f === 'archive' ? 'true' : 'false' %>">Arsip <span class="filter-count"><%= stats.archived %></span></button>
                     </div>
-                </div>
+                </form>
                 <% } %>
 
                 <div class="todo-list" id="todo-list" aria-live="polite">
                     <% if (stats.total + stats.archived === 0) { %>
                     <%- include('partials/empty-list') %>
                     <% } else { %>
-                    <% todos.forEach((todo) => { %>
-                    <%- include('partials/todo-item', { todo }) %>
+                    <% entries.forEach(({ todo, hidden }) => { %>
+                    <%- include('partials/todo-item', { todo, selectable: true, hidden }) %>
                     <% }) %>
                     <%- include('partials/empty-filtered') %>
                     <% } %>
+                </div>
+
+                <div class="bulk-bar" id="bulk-bar" hidden role="region" aria-label="Aksi massal">
+                    <span class="bulk-count" id="bulk-count">0 dipilih</span>
+                    <div class="bulk-actions">
+                        <button type="button" class="btn-bulk" data-bulk="complete">Selesaikan</button>
+                        <button type="button" class="btn-bulk" data-bulk="archive">Arsipkan</button>
+                        <button type="button" class="btn-bulk btn-bulk-danger" data-bulk="delete">Hapus</button>
+                        <button type="button" class="btn-bulk btn-bulk-ghost" id="bulk-clear">Batal</button>
+                    </div>
                 </div>
 
             </div>
@@ -174,12 +184,12 @@
     "@type": "ItemList",
     "name": "Daftar rencana",
     "itemListElement": [
-        <% todos.forEach((todo, i) => { %>
+        <% visible.forEach((entry, i) => { %>
         {
             "@type": "ListItem",
             "position": <%= i + 1 %>,
-            "name": "<%= todo.name.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/</g, '\\u003c').replace(/>/g, '\\u003e') %>"
-        }<%= i + 1 < todos.length ? ',' : '' %>
+            "name": "<%= entry.todo.name.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/</g, '\\u003c').replace(/>/g, '\\u003e') %>"
+        }<%= i + 1 < visible.length ? ',' : '' %>
         <% }) %>
     ]
 }

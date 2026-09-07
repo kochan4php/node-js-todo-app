@@ -522,4 +522,128 @@ test('HTTP routes end-to-end (real Express server + MongoDB) ', async (t) => {
         assert.equal(body.success, false);
         assert.match(body.message, /Maksimal 1000/);
     });
+
+    await t.test('1080 — POST / creates a recurring plan; visible + JSON toggle spawns the next occurrence', async () => {
+        const create = await req('/', {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded', accept: 'application/json' },
+            body: form({ name: 'Olahraga pagi', repeat: 'daily', due: '2026-09-07' }),
+        });
+        assert.equal(create.status, 200);
+        const created = (await create.json()) as { ok: boolean; todo: { id: string; repeat: string }; html: string };
+        assert.equal(created.ok, true);
+        assert.equal(created.todo.repeat, 'daily', 'repeat persisted via POST /');
+        assert.ok(created.html.includes('badge-repeat'), 'item renders the repeat badge');
+        assert.ok(created.html.includes('Harian · lagi-lagi'), 'badge text matches UI copy');
+
+        const all = await getAll();
+        const target = all.find((t) => t.name === 'Olahraga pagi');
+        assert.ok(target);
+
+        const toggled = await req(`/toggle/${target.id}`, {
+            method: 'POST',
+            headers: { accept: 'application/json' },
+        });
+        assert.equal(toggled.status, 200);
+        const payload = (await toggled.json()) as { ok: boolean; next: { id: string; html: string } };
+        assert.equal(payload.ok, true);
+        assert.ok(payload.next?.id, 'a next occurrence was spawned');
+        const spawned = await getAll();
+        assert.equal(spawned.filter((t) => t.name === 'Olahraga pagi').length, 2, 'original + spawned copy both exist');
+        assert.equal(spawned.find((t) => t.id === payload.next.id)?.completed, false, 'spawn starts active');
+    });
+
+    await t.test('1120 — GET /?f=done hides active items server-side (deep link renders correct list)', async () => {
+        const done = await htmlOf('/?f=done');
+        assert.ok(done.includes('Rencana dari cadangan'), 'done item visible under f=done');
+        assert.ok(done.includes('hidden'), 'non-matching items carry the hidden attribute');
+    });
+
+    await t.test('1090 — POST /api/subtasks adds & toggles; invalid id rejected', async () => {
+        const create = await req('/', {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            body: form({ name: 'Proyek subtask' }),
+            redirect: 'manual',
+        });
+        assert.equal(create.status, 302);
+        const target = (await getAll()).find((t) => t.name === 'Proyek subtask');
+        assert.ok(target);
+
+        const add = await req('/api/subtasks', {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded', accept: 'application/json' },
+            body: form({ id: target.id, action: 'add', text: '  Langkah satu  ' }),
+        });
+        assert.equal(add.status, 200);
+        const added = (await add.json()) as {
+            ok: boolean;
+            todo: { subtasks: Array<{ text: string; done: boolean }> };
+            html: string;
+        };
+        assert.equal(added.ok, true);
+        assert.equal(added.todo.subtasks[0]?.text, 'Langkah satu');
+        assert.ok(added.html.includes('subtask-row'), 'rows block re-rendered');
+
+        const toggled = await req('/api/subtasks', {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded', accept: 'application/json' },
+            body: form({ id: target.id, action: 'toggle', index: '0' }),
+        });
+        assert.equal(toggled.status, 200);
+        const toggledPayload = (await toggled.json()) as {
+            ok: boolean;
+            todo: { subtasks: Array<{ done: boolean }> };
+        };
+        assert.equal(toggledPayload.todo.subtasks[0]?.done, true, 'subtask toggled done');
+
+        const listHtml = await htmlOf('/');
+        assert.ok(listHtml.includes('subtask-panel'), 'list item shows the subtask panel');
+
+        const bad = await req('/api/subtasks', {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            body: form({ id: '000000000000000000000000', action: 'add', text: 'X' }),
+            redirect: 'manual',
+        });
+        assert.equal(bad.status, 302);
+        assert.equal(bad.headers.get('location'), '/?flash=invalid');
+    });
+
+    await t.test('1100 — POST /api/bulk completes selected plans', async () => {
+        const create = await req('/', {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            body: form({ name: 'Bulk satu' }),
+            redirect: 'manual',
+        });
+        assert.equal(create.status, 302);
+        const target = (await getAll()).find((t) => t.name === 'Bulk satu');
+        assert.ok(target);
+
+        const res = await req('/api/bulk', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ ids: [target.id], action: 'complete' }),
+        });
+        assert.equal(res.status, 200);
+        const body = (await res.json()) as { ok: boolean; processed: number };
+        assert.equal(body.ok, true);
+        assert.equal(body.processed, 1);
+        assert.equal((await getAll()).find((t) => t.id === target.id)?.completed, true);
+
+        const empty = await req('/api/bulk', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ ids: [], action: 'archive' }),
+        });
+        assert.equal(empty.status, 400);
+
+        const badAction = await req('/api/bulk', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ ids: [target.id], action: 'explode' }),
+        });
+        assert.equal(badAction.status, 400);
+    });
 });

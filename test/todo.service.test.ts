@@ -35,8 +35,8 @@ test('961/962 — CRUD: create → getById → update → toggle → remove', as
     assert.equal(updated?.name, 'Belajar Express');
     assert.equal(await svc.update('tidak-ada', 'Apa pun'), null);
 
-    assert.equal((await svc.toggle(created.id))?.completed, true);
-    assert.equal((await svc.toggle(created.id))?.completed, false);
+    assert.equal((await svc.toggle(created.id))?.todo.completed, true);
+    assert.equal((await svc.toggle(created.id))?.todo.completed, false);
     assert.equal(await svc.toggle('tidak-ada'), null);
 
     assert.equal(await svc.remove(created.id), true);
@@ -51,11 +51,11 @@ test('1040 — toggle stamps completedAt on done, clears it on not-done', async 
     assert.equal(todo.completedAt, null, 'not done → no completedAt');
 
     const done = await svc.toggle(todo.id);
-    assert.ok(done?.completedAt, 'done → completedAt set');
-    assert.ok(!Number.isNaN(new Date(done.completedAt).getTime()), 'completedAt parses as a date');
+    assert.ok(done?.todo.completedAt, 'done → completedAt set');
+    assert.ok(!Number.isNaN(new Date(done.todo.completedAt).getTime()), 'completedAt parses as a date');
 
     const undone = await svc.toggle(todo.id);
-    assert.equal(undone?.completedAt, null, 'not-done again → completedAt cleared');
+    assert.equal(undone?.todo.completedAt, null, 'not-done again → completedAt cleared');
 });
 
 test("1040 — create/update carry a category (internal spaces are the controller's job)", async () => {
@@ -216,4 +216,114 @@ test('962 — restore: full save, the limit counter also applies', async () => {
 
     const done = await svc.restore({ name: 'Pulihkan lagi', completed: false, createdAt: new Date().toISOString() });
     assert.equal(done?.completedAt, null, 'restored-as-active has no completedAt');
+});
+
+test('1080 — completing a recurring plan spawns the next occurrence (advanced due + fresh checklist)', async () => {
+    await reset();
+    const plan = await svc.create('Senam', 'low', '2026-09-07', null, null, 'weekly');
+    assert.ok(plan);
+    assert.equal(plan.repeat, 'weekly', 'repeat persisted');
+
+    const result = await svc.toggle(plan.id);
+    assert.ok(result, 'toggle succeeded');
+    assert.equal(result.todo.completed, true, 'the completed plan stays done (streak/history)');
+    assert.ok(result.next, 'a next occurrence was spawned');
+    assert.equal(result.next.name, 'Senam', 'spawn inherits the name');
+    assert.equal(result.next.completed, false, 'spawn starts active');
+    assert.equal(result.next.repeat, 'weekly', 'spawn keeps the recurrence');
+    assert.equal(result.next.due, '2026-09-14', 'weekly advances the due date by 7 days');
+    assert.equal(result.next.id !== result.todo.id, true, 'spawn is its own document');
+
+    const back = result.todo.id;
+    /* Un-completing the original (done→active) never spawns. */
+    const off = await svc.toggle(back);
+    assert.equal(off?.next, null, 'no spawn when un-completing');
+    assert.equal(off?.todo.completed, false);
+});
+
+test('1080 — recurring spawn respects the MAX_TODOS guard (silently skipped when full)', async () => {
+    await reset();
+    for (let i = 0; i < 5; i++) assert.ok(await svc.create(`Isi-${i}`), `confirmed slot ${i + 1}`);
+
+    /* Make room by removing one, then create the recurring plan to fill the cap. */
+    const all = await svc.getAll();
+    await svc.remove(all[0]?.id ?? '');
+    const rec = await svc.create('Spawn dicek', 'low', '2026-09-07', null, null, 'daily');
+    assert.ok(rec);
+    assert.equal(await TodoModel.countDocuments(), 5, 'collection is full');
+
+    const result = await svc.toggle(rec.id);
+    assert.ok(result);
+    assert.equal(result.todo.completed, true, 'the recurring plan itself still completes');
+    assert.equal(result.next, null, 'no spawn because the store is at the cap');
+});
+
+test('1080 — completing a plain plan does not spawn a next occurrence', async () => {
+    await reset();
+    const plan = await svc.create('Sekali saja');
+    assert.ok(plan);
+    const result = await svc.toggle(plan.id);
+    assert.ok(result);
+    assert.equal(result.todo.completed, true);
+    assert.equal(result.next, null, 'no recurrence → no spawn');
+});
+
+test('1090 — updateSubtask add/toggle/remove against the embedded checklist', async () => {
+    await reset();
+    const todo = await svc.create('Proyek');
+    assert.ok(todo);
+    assert.deepEqual(todo.subtasks, [], 'no subtasks by default');
+
+    const added = await svc.updateSubtask(todo.id, 'add', undefined, '  Riset aspek ');
+    assert.ok(added);
+    assert.deepEqual(added.subtasks, [{ text: 'Riset aspek', done: false }], 'added row is trimmed and active');
+
+    await svc.updateSubtask(todo.id, 'add', undefined, 'Tulis draf');
+    const toggled = await svc.updateSubtask(todo.id, 'toggle', 0);
+    assert.equal(toggled?.subtasks[0]?.done, true, 'toggling index 0 flips done');
+
+    const removed = await svc.updateSubtask(todo.id, 'remove', 0);
+    assert.deepEqual(
+        removed?.subtasks.map((s) => s.text),
+        ['Tulis draf'],
+        'removing index 0 leaves the rest',
+    );
+
+    assert.equal(await svc.updateSubtask('tidak-ada', 'add', undefined, 'X'), null, 'bad id → null');
+    assert.equal(await svc.updateSubtask(todo.id, 'toggle', 99), null, 'out-of-range index → null');
+    /* The 21st step is rejected (cap 20). */
+    await reset();
+    const capTodo = await svc.create('Isi langsir');
+    assert.ok(capTodo);
+    for (let i = 0; i < 20; i++) await svc.updateSubtask(capTodo.id, 'add', undefined, `Langkah-${i}`);
+    assert.equal(await svc.updateSubtask(capTodo.id, 'add', undefined, 'Langkah-21'), null, 'cap 20 → 21st rejected');
+    assert.equal(await svc.updateSubtask(capTodo.id, 'add', undefined, '   '), null, 'blank text rejected');
+});
+
+test('1100 — bulk completes / archives / deletes by id set', async () => {
+    await reset();
+    const a = await svc.create('A massal');
+    const b = await svc.create('B massal');
+    const c = await svc.create('C massal');
+    assert.ok(a && b && c);
+
+    assert.equal(await svc.bulk([a.id, b.id, 'bukan-id'], 'complete'), 2, 'valid ids only, completes both');
+    const afterComplete = await svc.getAll();
+    assert.equal(afterComplete.find((t) => t.id === a.id)?.completed, true);
+    assert.equal(afterComplete.find((t) => t.id === b.id)?.completed, true);
+    assert.equal(afterComplete.find((t) => t.id === c.id)?.completed, false);
+
+    assert.equal(await svc.bulk([a.id], 'archive'), 1, 'archives one');
+    assert.equal((await svc.getById(a.id))?.archived, true);
+
+    assert.equal(await svc.bulk([b.id, c.id], 'delete'), 2, 'deletes two');
+    assert.equal(await svc.getById(b.id), null);
+    assert.equal(await svc.getById(c.id), null);
+
+    assert.equal(await svc.bulk(['bukan-id'], 'archive'), 0, 'all-invalid → 0');
+});
+
+test('1100 — bulk returns 0 for an empty/invalid id set', async () => {
+    await reset();
+    assert.equal(await svc.bulk([], 'archive'), 0, 'empty list processed 0');
 });

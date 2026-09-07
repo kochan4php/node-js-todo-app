@@ -24,4 +24,9 @@ router.post('/import', express.json({ limit: '1mb' }), DataController.importData
 /* 1040 — reorder can carry ~1000 ids (≈25kb), beyond the global 10kb cap. */
 router.post('/reorder', express.json({ limit: '1mb' }), TodoController.reorder);
 
+/* 1090/1100 — P2: subtask checklist mutations + bulk actions (small JSON
+   bodies, well inside the global 10kb cap). */
+router.post('/subtasks', TodoController.subtasks);
+router.post('/bulk', TodoController.bulk);
+
 export default router;

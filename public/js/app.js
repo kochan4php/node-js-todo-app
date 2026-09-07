@@ -245,6 +245,8 @@
         body.set('category', saved.category || '');
         body.set('notes', saved.notes || '');
         body.set('archived', String(saved.archived));
+        if (saved.repeat) body.set('repeat', saved.repeat);
+        if (Array.isArray(saved.subtasks) && saved.subtasks.length) body.set('subtasks', JSON.stringify(saved.subtasks));
 
         fetch('/restore', {
             method: 'POST',
@@ -311,6 +313,15 @@
                       category: item.dataset.category || '',
                       notes: item.querySelector('.todo-note')?.textContent || '',
                       archived: isArchived(item),
+                      repeat: pendingForm.querySelector('input[name="repeat"]')?.value || '',
+                      subtasks: (() => {
+                          const raw = pendingForm.querySelector('input[name="subtasks"]')?.value || '';
+                          try {
+                              return JSON.parse(raw);
+                          } catch {
+                              return [];
+                          }
+                      })(),
                       node: item,
                   }
                 : null;
@@ -504,8 +515,13 @@
             const action = form.getAttribute('action');
 
             try {
-                const response = await fetch(action, { method: 'POST', credentials: 'same-origin' });
-                if (!response.ok) {
+                const response = await fetch(action, {
+                    method: 'POST',
+                    headers: { Accept: 'application/json' },
+                    credentials: 'same-origin',
+                });
+                const payload = await response.json().catch(() => null);
+                if (!response.ok || !payload?.ok) {
                     form.submit();
                     return;
                 }
@@ -519,8 +535,27 @@
                     `Tandai ${nowDone ? 'belum selesai' : 'selesai'}: ${namePartOf(button.getAttribute('aria-label'))}`,
                 );
 
-                showToast(nowDone ? 'Rencana ditandai selesai.' : 'Rencana ditandai belum selesai.');
+                /* 1080 — P2: completing a recurring plan spawned its next
+                   occurrence; append it like quick-add does. */
+                if (nowDone && payload.next?.html) {
+                    const wrapper = new DOMParser().parseFromString(payload.next.html, 'text/html');
+                    const next = wrapper.body.firstElementChild;
+                    const list = document.getElementById('todo-list');
+                    if (next && list) {
+                        const firstDone = [...list.querySelectorAll('.todo-item')].find((n) => n.classList.contains('is-done'));
+                        list.insertBefore(next, firstDone || document.getElementById('empty-filtered'));
+                        wireItem(next);
+                        if (window.gsap && !prefersReduced) {
+                            gsap.fromTo(next, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out' });
+                        }
+                        refreshDnD();
+                    }
+                    showToast(nowDone ? 'Selesai — jadwal berikutnya dibuat.' : 'Rencana ditandai belum selesai.');
+                } else {
+                    showToast(nowDone ? 'Rencana ditandai selesai.' : 'Rencana ditandai belum selesai.');
+                }
                 refreshStats();
+                applyView();
                 button.focus();
             } catch {
                 form.submit();
@@ -564,6 +599,48 @@
         });
     }
 
+    /* 1090 — P2: subtask checklist. One fetch endpoint mutates the embedded
+       array; the response re-renders the rows block, so both the list item
+       and the editor stay consistent without a page swap. Delegated across
+       the panel so freshly re-rendered rows keep working. */
+    function wireSubtaskPanel(panel) {
+        if (!panel.dataset.wired) panel.dataset.wired = '1';
+        else return;
+        const mode = panel.dataset.mode || 'list';
+
+        panel.addEventListener('click', async (event) => {
+            const row = event.target.closest('.subtask-row');
+            if (!row) return;
+            const form = event.target.closest('.subtask-toggle') || (mode === 'edit' ? event.target.closest('.subtask-remove') : null);
+            if (!form) return;
+            event.preventDefault();
+            const action = form.querySelector('input[name="action"]').value;
+            if (action === 'remove' && !window.confirm('Hapus langkah ini?')) return;
+
+            try {
+                const response = await fetch(form.getAttribute('action'), {
+                    method: 'POST',
+                    headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
+                    credentials: 'same-origin',
+                    body: new URLSearchParams(new FormData(form)),
+                });
+                const payload = await response.json().catch(() => null);
+                if (!response.ok || !payload?.ok) {
+                    form.submit();
+                    return;
+                }
+                const wrapper = new DOMParser().parseFromString(payload.html, 'text/html');
+                const block = wrapper.body.firstElementChild;
+                if (block && panel) {
+                    panel.innerHTML = block.outerHTML;
+                }
+                if (mode !== 'edit') refreshStats();
+            } catch {
+                form.submit();
+            }
+        });
+    }
+
     function wireItem(item) {
         const toggleForm = item.querySelector('.toggle-form');
         if (toggleForm) wireToggleForm(toggleForm);
@@ -571,6 +648,8 @@
         if (archiveForm) wireArchiveForm(archiveForm);
         const deleteForm = item.querySelector('.delete-form');
         if (deleteForm) wireDeleteForm(deleteForm);
+        const panel = item.querySelector('.subtask-panel');
+        if (panel) wireSubtaskPanel(panel);
     }
 
     /* ----------------------------------------
@@ -668,6 +747,39 @@
         document.querySelectorAll('.archive-form').forEach(wireArchiveForm);
 
         /* ----------------------------------------
+           Subtasks (1090) — panels are wired once per item; the editor's
+           "Tambah" form is a plain progressive POST (full reload without JS).
+        ---------------------------------------- */
+        document.querySelectorAll('.subtask-panel').forEach(wireSubtaskPanel);
+        document.querySelectorAll('.subtask-add').forEach((form) => {
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const input = form.querySelector('input[name="text"]');
+                if (!input?.value.trim()) return;
+                try {
+                    const response = await fetch(form.getAttribute('action'), {
+                        method: 'POST',
+                        headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
+                        credentials: 'same-origin',
+                        body: new URLSearchParams(new FormData(form)),
+                    });
+                    const payload = await response.json().catch(() => null);
+                    if (!response.ok || !payload?.ok) {
+                        form.submit();
+                        return;
+                    }
+                    const wrapper = new DOMParser().parseFromString(payload.html, 'text/html');
+                    const block = wrapper.body.firstElementChild;
+                    const panel = form.closest('.form-field')?.querySelector('.subtask-panel');
+                    if (block && panel) panel.innerHTML = block.outerHTML;
+                    input.value = '';
+                } catch {
+                    form.submit();
+                }
+            });
+        });
+
+        /* ----------------------------------------
            Search & filter, re-resolved against the current DOM.
         ---------------------------------------- */
         searchInput = document.getElementById('todo-search');
@@ -718,7 +830,8 @@
         }
 
         document.querySelectorAll('.filter-chip').forEach((chip) => {
-            chip.addEventListener('click', () => {
+            chip.addEventListener('click', (event) => {
+                event.preventDefault();
                 document.querySelectorAll('.filter-chip').forEach((other) => {
                     const active = other === chip;
                     other.classList.toggle('is-active', active);
@@ -825,6 +938,73 @@
             });
 
             todoList.addEventListener('dragend', cleanupDrag);
+        }
+
+        /* ----------------------------------------
+           Bulk actions (1100) — select checkboxes + floating action bar.
+        ---------------------------------------- */
+        const bulkBar = document.getElementById('bulk-bar');
+        const bulkCount = document.getElementById('bulk-count');
+        if (bulkBar && bulkCount) {
+            const refreshBulk = () => {
+                const selected = [...document.querySelectorAll('.todo-select:checked')];
+                bulkCount.textContent = `${selected.length} dipilih`;
+                bulkBar.hidden = selected.length === 0;
+            };
+            document.getElementById('todo-list')?.addEventListener('change', (event) => {
+                if (event.target.classList?.contains('todo-select')) refreshBulk();
+            });
+            document.getElementById('bulk-clear')?.addEventListener('click', () => {
+                document.querySelectorAll('.todo-select:checked').forEach((el) => {
+                    el.checked = false;
+                });
+                refreshBulk();
+            });
+            bulkBar.querySelectorAll('[data-bulk]').forEach((button) => {
+                button.addEventListener('click', async () => {
+                    const action = button.dataset.bulk;
+                    const ids = [...document.querySelectorAll('.todo-select:checked')].map((el) => el.closest('.todo-item').dataset.id);
+                    if (!ids.length) return;
+                    if (action === 'delete' && !window.confirm(`Hapus ${ids.length} rencana sekaligus?`)) return;
+                    button.disabled = true;
+                    try {
+                        const response = await fetch('/api/bulk', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                            credentials: 'same-origin',
+                            body: JSON.stringify({ ids, action }),
+                        });
+                        const payload = await response.json().catch(() => null);
+                        if (!response.ok || !payload?.ok) {
+                            showToast('Aksi massal gagal. Coba lagi.', 'error', 7000);
+                            return;
+                        }
+                        ids.forEach((id) => {
+                            const node = document.querySelector(`.todo-item[data-id="${id}"]`);
+                            if (!node) return;
+                            if (action === 'delete') {
+                                node.remove();
+                            } else if (action === 'archive') {
+                                node.dataset.archived = '1';
+                                node.classList.add('is-archived');
+                            } else {
+                                node.classList.add('is-done');
+                            }
+                        });
+                        refreshBulk();
+                        refreshStats();
+                        applyView();
+                        refreshDnD();
+                        showToast(
+                            `${ids.length} rencana ${action === 'complete' ? 'diselesaikan' : action === 'archive' ? 'diarsipkan' : 'dihapus'}.`,
+                        );
+                    } catch {
+                        showToast('Aksi massal gagal. Coba lagi.', 'error', 7000);
+                    } finally {
+                        button.disabled = false;
+                    }
+                });
+            });
         }
 
         /* ----------------------------------------

@@ -1,6 +1,8 @@
-import type { Priority } from '../../interfaces/todo.ts';
+import type { Priority, Recurrence, Subtask } from '../../interfaces/todo.ts';
 
 const PRIORITIES: readonly string[] = ['low', 'medium', 'high'];
+const RECURRENCES: readonly string[] = ['daily', 'weekly', 'monthly'];
+const MAX_SUBTASKS = 20;
 
 /* 963 — input validators that are unit-testable. */
 export function sanitizeName(value: unknown): string {
@@ -41,4 +43,25 @@ export function sanitizeNotes(value: unknown): string | null {
 
 export function sanitizeArchived(value: unknown): boolean {
     return value === true || value === 'true' || value === 1 || value === '1';
+}
+
+/* 1080 — P2: repeat whitelist; anything else (incl. empty) → no recurrence. */
+export function sanitizeRepeat(value: unknown): Recurrence | null {
+    return typeof value === 'string' && RECURRENCES.includes(value) ? (value as Recurrence) : null;
+}
+
+/* 1090 — P2: subtasks come in as a JSON array; each row keeps a trimmed
+   text (reused name rules, cap 200) + a done flag. Array capped at 20. */
+export function sanitizeSubtasks(value: unknown): Subtask[] {
+    if (!Array.isArray(value)) return [];
+    const out: Subtask[] = [];
+    for (const row of value) {
+        if (out.length >= MAX_SUBTASKS) break;
+        if (row === null || typeof row !== 'object') continue;
+        const item = row as Record<string, unknown>;
+        const text = sanitizeName(item.text);
+        if (!text) continue;
+        out.push({ text, done: item.done === true });
+    }
+    return out;
 }

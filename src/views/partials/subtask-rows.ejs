@@ -1,0 +1,38 @@
+<% if (subtasks.length) { %>
+<ul class="subtask-list">
+    <% subtasks.forEach((sub, i) => { %>
+    <li class="subtask-row <%= sub.done ? 'is-done' : '' %>" data-index="<%= i %>">
+        <form class="subtask-toggle" method="post" action="/api/subtasks">
+            <input type="hidden" name="id" value="<%= id %>">
+            <input type="hidden" name="action" value="toggle">
+            <input type="hidden" name="index" value="<%= i %>">
+            <button type="submit"
+                    class="subtask-check"
+                    role="checkbox"
+                    aria-checked="<%= sub.done ? 'true' : 'false' %>"
+                    aria-label="<%= sub.done ? 'Tandai belum selesai' : 'Tandai selesai' %> langkah: <%= sub.text %>">
+                <svg class="subtask-check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5.5 12.8l4 4 9-9" />
+                </svg>
+            </button>
+        </form>
+        <span class="subtask-text"><%= sub.text %></span>
+        <% if (mode === 'edit') { %>
+        <form class="subtask-remove" method="post" action="/api/subtasks">
+            <input type="hidden" name="id" value="<%= id %>">
+            <input type="hidden" name="action" value="remove">
+            <input type="hidden" name="index" value="<%= i %>">
+            <button type="submit" class="subtask-remove-btn" aria-label="Hapus langkah: <%= sub.text %>">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+            </button>
+        </form>
+        <% } %>
+    </li>
+    <% }) %>
+</ul>
+<p class="subtask-progress" aria-hidden="true"><%= subtasks.filter((s) => s.done).length %> dari <%= subtasks.length %> langkah selesai</p>
+<% } else { %>
+<p class="subtask-empty">Belum ada langkah.</p>
+<% } %>

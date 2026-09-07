@@ -84,6 +84,40 @@ Project changelog — follows [Keep a Changelog](https://keepachangelog.com/en/1
   - `/api/auth/*` handled by Better Auth's Node handler, mounted before the
     body parsers.
 
+### P2 — recurring plans, subtasks, bulk actions & deep-linkable filters
+
+- **Recurring plans ("lagi-lagi")**: optional `daily`/`weekly`/`monthly`
+  repeat on every plan (dropdown in add/edit + quick-add). Completing a plan
+  with a repeat stamps it done like any other *and* spawns the next occurrence
+  server-side — same name/priority/category/notes/streak-piece, due advanced
+  (`+1 day`, `+7 days`, or same day-of-month clamped to the last day of the
+  target month, leap-year aware), fresh checklist. Un-completing never spawns;
+  the store rate-limits spawns at `MAX_TODOS` silently. The list item shows a
+  "Harian · lagi-lagi" badge. Repeat survives edit, delete-undo (`POST
+  /restore`) and `api/export`/`api/import`. Bulk complete intentionally does
+  **not** spawn (documented in `todo.service.ts`).
+- **Subtasks ("langkah-langkah kecil")**: an embedded checklist (max 20 rows,
+  names trimmed to the same rules as plan names) on every plan. Added/toggled/
+  removed across one `POST /api/subtasks` (`{id, action, index, text}`), which
+  re-renders the shared `partials/subtask-rows` for the JSON path and the
+  edit page for no-JS; rows render on the list item with "X dari Y langkah
+  selesai", and the full editor lives on `GET /edit-todo/:id`. Undo/delete
+  round-trips subtasks via hidden fields; export/import carry them.
+- **Bulk actions**: a per-item checkbox (`.todo-select`) enables a sticky
+  action bar ("Selesaikan / Arsipkan / Hapus / Batal"). `POST /api/bulk`
+  (`{ids, action}`) validates the action, keeps only valid ObjectIds, and
+  applies it idempotently (`updateMany $set` / `deleteMany`); 400 on an empty
+  set or unknown action.
+- **Server-rendered view state (deep links)**: `GET /` now honors `?f=`
+  (`all|active|done|archive`), `?s=` (`newest|az|za`), `?q=` (search) and
+  `?c=` (category) server-side with the same predicate the client applies
+  (`hiddenBy`/`viewTodos` in the controller), so no-JS access and deep/shared
+  links render the correct list. The toolbar is a GET form (`id="toolbar"`
+  with preselected controls); JSON-LD ItemList and the empty-filtered state
+  use the server-filtered set. JS keeps working client-side with zero
+  requests — the DOM retains every item (`hidden` attr only) so stats and
+  counts stay consistent.
+
 ### Changed
 
 - Navbar decluttered: signed-in header now shows a one-letter user avatar

@@ -1,3 +1,5 @@
+import type { Recurrence } from '../../interfaces/todo.ts';
+
 const LONG = new Intl.DateTimeFormat('id-ID', {
     weekday: 'long',
     day: 'numeric',
@@ -32,6 +34,27 @@ function localDayKey(date: Date): string {
 export function dayKeyOfIso(iso: string): string {
     const date = new Date(iso);
     return Number.isNaN(date.getTime()) ? '' : localDayKey(date);
+}
+
+/* 1080 — P2: the next occurrence's due date for a recurring plan. No anchor
+   (null due) → no advanced date. Monthly clamps to the target month's end
+   (31 → Feb stays Feb, not the March rollover). */
+export function advanceDue(due: string | null, repeat: Recurrence): string | null {
+    if (!due) return null;
+    const date = new Date(`${due}T00:00:00`);
+    if (Number.isNaN(date.getTime())) return null;
+    if (repeat === 'daily') {
+        date.setDate(date.getDate() + 1);
+    } else if (repeat === 'weekly') {
+        date.setDate(date.getDate() + 7);
+    } else {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const day = date.getDate();
+        const lastDayNextMonth = new Date(year, month + 2, 0).getDate();
+        date.setMonth(month + 1, Math.min(day, lastDayNextMonth));
+    }
+    return localDayKey(date);
 }
 
 /* 1040 — P0: 7 hari terakhir (hari ini di ujung kanan) untuk mini chart. */
