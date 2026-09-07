@@ -6,6 +6,15 @@ Project changelog — follows [Keep a Changelog](https://keepachangelog.com/en/1
 
 ### Added
 
+- **SPA-style navigation** (Turbo/Hotwire approach): `public/js/spa.js` intercepts
+  internal same-origin GET links and swaps only the `<main>` region + matching
+  head metadata (`<title>`, description, canonical, OpenGraph/Twitter) into the
+  current document, so the chrome (header, theme, toasts, footer) never reloads
+  and navigation feels instant with no page flash. Every navigation re-fetches a
+  fresh full HTML document and the per-page `spa:ready` event re-binds the page
+  scripts; Back/Forward restore instantly from a small LRU cache and restore
+  scroll position per page. Errors, redirects (e.g. session expiry) and missing
+  `<main>` fall back to a normal full navigation; forms still submit natively.
 - **Authentication** via [Better Auth](https://better-auth.com) (email +
   password, MongoDB adapter sharing the Mongoose connection):
   - `POST /register` & `POST /login` (Indonesian UI), `POST /logout`;

@@ -81,6 +81,19 @@ test('HTTP routes end-to-end (real Express server + MongoDB) ', async (t) => {
         assert.ok(!html.includes('href="/login"'), 'login link hidden when authenticated');
     });
 
+    await t.test('SPA driver: served, ordered before app.js, swap target present', async () => {
+        const home = await htmlOf('/');
+        assert.ok(home.includes('id="main-content"'), 'main swap target present');
+        assert.ok(home.includes('src="/js/spa.js?v='), 'layout loads the SPA driver');
+        assert.ok(home.indexOf('src="/js/spa.js?v=') < home.indexOf('src="/js/app.js?v='), 'spa.js runs before app.js');
+        const spa = await req('/js/spa.js');
+        assert.equal(spa.status, 200);
+        const code = await spa.text();
+        assert.ok(code.includes('spa:ready'), 'SPA dispatches spa:ready after a swap');
+        assert.ok(code.includes('rencanaSpa'), 'SPA exposes the navigate hook');
+        assert.ok(code.includes('main-content'), 'SPA targets the <main id="main-content"> region');
+    });
+
     await t.test('965/985/987 — POST / creates; persisted in MongoDB; XSS escaped in HTML', async () => {
         const payload = 'Beli susu <script>alert(1)</script>';
         const res = await req('/', {
