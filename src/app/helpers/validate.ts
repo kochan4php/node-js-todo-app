@@ -32,3 +32,13 @@ export function sanitizeDue(value: unknown): string | null {
     const valid = date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
     return valid ? value.trim() : null;
 }
+
+export function sanitizeNotes(value: unknown): string | null {
+    if (typeof value !== 'string') return null;
+    const clean = value.trim().slice(0, 2000);
+    return clean || null;
+}
+
+export function sanitizeArchived(value: unknown): boolean {
+    return value === true || value === 'true' || value === 1 || value === '1';
+}

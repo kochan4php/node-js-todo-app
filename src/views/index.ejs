@@ -98,7 +98,7 @@
         <div class="deck-shell">
             <div class="deck-core">
 
-                <% if (stats.total > 0) { %>
+                <% if (stats.total + stats.archived > 0) { %>
                 <form class="quick-add" id="quick-add" method="post" action="/" autocomplete="off">
                     <input type="text" name="name" maxlength="200"
                            placeholder="Tambahkan rencana cepat…"
@@ -145,12 +145,13 @@
                         <button type="button" class="filter-chip is-active" data-filter="all" aria-pressed="true">Semua <span class="filter-count"><%= stats.total %></span></button>
                         <button type="button" class="filter-chip" data-filter="active" aria-pressed="false">Aktif <span class="filter-count"><%= stats.active %></span></button>
                         <button type="button" class="filter-chip" data-filter="done" aria-pressed="false">Selesai <span class="filter-count"><%= stats.completed %></span></button>
+                        <button type="button" class="filter-chip" data-filter="archive" aria-pressed="false">Arsip <span class="filter-count"><%= stats.archived %></span></button>
                     </div>
                 </div>
                 <% } %>
 
                 <div class="todo-list" id="todo-list" aria-live="polite">
-                    <% if (stats.total === 0) { %>
+                    <% if (stats.total + stats.archived === 0) { %>
                     <%- include('partials/empty-list') %>
                     <% } else { %>
                     <% todos.forEach((todo) => { %>

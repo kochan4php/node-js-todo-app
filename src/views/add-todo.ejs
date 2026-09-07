@@ -91,6 +91,16 @@
                     <input type="date" id="todo-due" name="due" value="<%= d %>">
                 </div>
 
+                <div class="form-field">
+                    <label for="todo-notes">Catatan <span class="optional">(opsional)</span></label>
+                    <textarea id="todo-notes"
+                              name="notes"
+                              rows="3"
+                              maxlength="2000"
+                              placeholder="Mis. Detail, tautan, hal yang perlu diingat…"><%= typeof oldNotes !== 'undefined' ? oldNotes : '' %></textarea>
+                    <p class="field-counter" data-counter-for="todo-notes" aria-hidden="true"></p>
+                </div>
+
                 <div class="form-actions">
                     <button type="submit" class="btn btn-cta">
                         <span class="btn-label">Tambah Rencana</span>

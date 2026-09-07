@@ -9,6 +9,8 @@ type CreatedTodo = {
     priority?: Priority;
     due?: string | null;
     category?: string | null;
+    notes?: string | null;
+    archived?: boolean;
 };
 
 export type ImportItem = {
@@ -20,6 +22,8 @@ export type ImportItem = {
     completedAt?: Date;
     createdAt?: Date;
     updatedAt?: Date;
+    notes?: string | null;
+    archived?: boolean;
 };
 
 function validId(id: string): boolean {
@@ -45,6 +49,8 @@ async function insertOne(item: {
     category?: string | null;
     completedAt?: Date | null;
     createdAt?: Date;
+    notes?: string | null;
+    archived?: boolean;
 }): Promise<Todo | null> {
     const count = await TodoModel.countDocuments();
     if (count >= MAX_TODOS) return null;
@@ -53,8 +59,14 @@ async function insertOne(item: {
     return toTodo(doc);
 }
 
-export function create(name: string, priority?: Priority, due?: string | null, category?: string | null): Promise<Todo | null> {
-    return insertOne({ name, completed: false, priority, due: due ?? null, category: category ?? null });
+export function create(
+    name: string,
+    priority?: Priority,
+    due?: string | null,
+    category?: string | null,
+    notes?: string | null,
+): Promise<Todo | null> {
+    return insertOne({ name, completed: false, priority, due: due ?? null, category: category ?? null, notes: notes ?? null });
 }
 
 export function restore(saved: CreatedTodo & { completed: boolean; createdAt: string }): Promise<Todo | null> {
@@ -68,6 +80,8 @@ export function restore(saved: CreatedTodo & { completed: boolean; createdAt: st
         priority: saved.priority,
         due: saved.due ?? null,
         category: saved.category ?? null,
+        notes: saved.notes ?? null,
+        archived: saved.archived ?? false,
     });
 }
 
@@ -77,6 +91,7 @@ export async function update(
     priority?: Priority,
     due?: string | null,
     category?: string | null,
+    notes?: string | null,
 ): Promise<Todo | null> {
     if (!validId(id)) return null;
     const doc = await TodoModel.findById(id);
@@ -85,6 +100,7 @@ export async function update(
     doc.priority = priority;
     doc.due = due ?? null;
     doc.category = category ?? null;
+    doc.notes = notes ?? null;
     await doc.save();
     logger.info(`Updated ${id}`);
     return toTodo(doc);
@@ -99,6 +115,18 @@ export async function toggle(id: string): Promise<Todo | null> {
     doc.completedAt = doc.completed ? new Date() : null;
     await doc.save();
     logger.info(`Toggled ${id}`);
+    return toTodo(doc);
+}
+
+/* Archive = set aside a plan (e.g. it became irrelevant) without deleting it.
+   Archived plans vanish from the active list but stay in the data + export. */
+export async function toggleArchived(id: string): Promise<Todo | null> {
+    if (!validId(id)) return null;
+    const doc = await TodoModel.findById(id);
+    if (!doc) return null;
+    doc.archived = !(doc.archived ?? false);
+    await doc.save();
+    logger.info(`Archived ${id}: ${doc.archived}`);
     return toTodo(doc);
 }
 
@@ -136,6 +164,8 @@ export async function importTodos(items: ImportItem[]): Promise<number> {
                     due: item.due ?? null,
                     category: item.category ?? null,
                     completedAt,
+                    notes: item.notes ?? null,
+                    archived: item.archived ?? false,
                     createdAt: item.createdAt ?? now,
                     updatedAt: item.updatedAt ?? now,
                 };

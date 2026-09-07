@@ -1338,6 +1338,28 @@ strong {
     text-decoration-thickness: 1px;
 }
 
+.todo-note {
+    margin: 0.18rem 0 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--ink-mute);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.todo-item.is-archived .todo-name {
+    color: var(--ink-mute);
+    text-decoration: line-through;
+    text-decoration-color: var(--border-strong);
+    text-decoration-thickness: 1px;
+}
+
+.todo-item.is-archived .badge,
+.todo-item.is-archived .todo-note,
+.todo-item.is-archived .todo-meta {
+    opacity: 0.6;
+}
+
 .todo-meta {
     display: block;
     margin-top: 0.16rem;
@@ -1792,6 +1814,24 @@ strong {
         background-color 0.3s var(--ease);
 }
 
+.form-field textarea {
+    width: 100%;
+    padding: 0.9rem 1.05rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    resize: vertical;
+    outline: none;
+    transition:
+        border-color 0.3s var(--ease),
+        box-shadow 0.3s var(--ease),
+        background-color 0.3s var(--ease);
+}
+
 /* Todo name = hero input, slightly taller and more spacious */
 .form-field input[type="text"] {
     min-height: 58px;
@@ -1803,13 +1843,15 @@ strong {
     color: var(--ink-mute);
 }
 
-.form-field input:focus {
+.form-field input:focus,
+.form-field textarea:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-soft);
     background: var(--surface);
 }
 
-.form-field.is-error input {
+.form-field.is-error input,
+.form-field.is-error textarea {
     border-color: var(--danger);
 }
 

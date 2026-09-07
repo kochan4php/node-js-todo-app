@@ -11,4 +11,6 @@ export interface Todo {
     category?: string | null;
     completedAt?: string | null;
     sortOrder: number;
+    notes?: string | null;
+    archived: boolean;
 }

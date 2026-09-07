@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { MAX_TODOS } from '../../config/app.ts';
 import { logger } from '../../logger/index.ts';
-import { sanitizeCategory, sanitizeDue, sanitizeName, sanitizePriority } from '../helpers/validate.ts';
+import { sanitizeArchived, sanitizeCategory, sanitizeDue, sanitizeName, sanitizeNotes, sanitizePriority } from '../helpers/validate.ts';
 import { getAll, importTodos } from '../services/todo.service.ts';
 
 /* 1030 — manual backup: download a JSON copy of all data. */
@@ -42,6 +42,8 @@ async function importData(req: Request, res: Response) {
             priority: sanitizePriority(item.priority),
             due: sanitizeDue(item.due),
             category: sanitizeCategory(item.category),
+            notes: sanitizeNotes(item.notes),
+            archived: sanitizeArchived(item.archived),
         });
     }
 

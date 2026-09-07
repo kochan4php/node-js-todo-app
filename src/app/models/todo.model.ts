@@ -15,6 +15,8 @@ const todoSchema = new Schema(
         category: { type: String, trim: true, maxlength: 40, default: null, set: (value: unknown) => value || null },
         completedAt: { type: Date, default: null },
         sortOrder: { type: Number, default: 0 },
+        notes: { type: String, trim: true, maxlength: 2000, default: null, set: (value: unknown) => value || null },
+        archived: { type: Boolean, default: false },
     },
     { timestamps: true },
 );
@@ -30,6 +32,8 @@ type TodoDoc = {
     category?: string | null;
     completedAt?: Date | null;
     sortOrder?: number;
+    notes?: string | null;
+    archived?: boolean;
     createdAt: Date;
     updatedAt: Date;
 };
@@ -47,5 +51,7 @@ export function toTodo(doc: TodoDoc): Todo {
         category: doc.category ?? null,
         completedAt: doc.completedAt ? doc.completedAt.toISOString() : null,
         sortOrder: doc.sortOrder ?? 0,
+        notes: doc.notes ?? null,
+        archived: doc.archived ?? false,
     };
 }

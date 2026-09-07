@@ -26,6 +26,8 @@ test('961/962 — CRUD: create → getById → update → toggle → remove', as
     const created = await svc.create('Belajar Node');
     assert.ok(created);
     assert.equal(created.id.length, 24, 'id is an ObjectId hex (MongoDB)');
+    assert.equal(created.archived, false, 'created plans are never archived');
+    assert.equal(created.notes, null, 'created plans have no notes by default');
     assert.equal((await svc.getById(created.id))?.name, 'Belajar Node');
     assert.equal(await svc.getById('tidak-ada'), null);
 
@@ -67,6 +69,53 @@ test("1040 — create/update carry a category (internal spaces are the controlle
 
     const cleared = await svc.update(todo.id, 'Rencana', 'low', null, '');
     assert.equal(cleared?.category, null, 'empty category clears it');
+});
+
+test('1070 — create/update persist notes; empty notes clear them', async () => {
+    await reset();
+    const todo = await svc.create('Dengan catatan', 'low', null, null, '  Beli dua   bungkus  ');
+    assert.ok(todo);
+    assert.equal(todo.notes, 'Beli dua   bungkus', 'notes stored (internal spaces preserved)');
+
+    const updated = await svc.update(todo.id, 'Dengan catatan', 'low', null, null, 'Update catatan');
+    assert.equal(updated?.notes, 'Update catatan');
+
+    const cleared = await svc.update(todo.id, 'Dengan catatan', 'low', null, null, '');
+    assert.equal(cleared?.notes, null, 'empty notes clears them');
+});
+
+test('1070 — toggleArchived flips archived and survives getAll', async () => {
+    await reset();
+    const todo = await svc.create('Rencana arsip');
+    assert.ok(todo);
+    assert.equal((await svc.toggleArchived(todo.id))?.archived, true, 'archived after toggle');
+    assert.equal((await svc.getById(todo.id))?.archived, true, 'flip persisted to MongoDB');
+    const listed = (await svc.getAll()).find((t) => t.id === todo.id);
+    assert.equal(listed?.archived, true, 'getAll carries archived');
+    assert.equal((await svc.toggleArchived(todo.id))?.archived, false, 'toggle again unarchives');
+    assert.equal(await svc.toggleArchived('tidak-ada'), null, 'bad id → null');
+});
+
+test('1070 — restore preserves archived status and notes (undo from the Arsip view)', async () => {
+    await reset();
+    const t = await svc.restore({
+        name: 'Pulih dari arsip',
+        completed: false,
+        createdAt: new Date().toISOString(),
+        notes: 'Catatan tersimpan',
+        archived: true,
+    });
+    assert.ok(t);
+    assert.equal(t.archived, true, 'restored item stays archived');
+    assert.equal(t.notes, 'Catatan tersimpan', 'restored item keeps its notes');
+
+    const back = await svc.restore({
+        name: 'Pulih aktif',
+        completed: false,
+        createdAt: new Date().toISOString(),
+        archived: false,
+    });
+    assert.equal(back?.archived, false, 'explicit archived:false stays unarchived');
 });
 
 test('1040 — reorderTodos writes index as sortOrder and getAll honors it', async () => {

@@ -43,6 +43,21 @@ Project changelog — follows [Keep a Changelog](https://keepachangelog.com/en/1
   like `/api/import`). Reordering is only offered when the *whole* list is
   visible (no search/filter/sort/category) so a partial view never reorders
   against a misleading subset.
+### P1 — notes & archive (keep context, retire plans)
+
+- **Notes**: optional free-text note (max 2000 chars, sanitized) on every plan.
+  Rendered as a muted second line under the name with note HTML escaped; written
+  in the add/edit forms; sent through `POST /` (quick-add too), `PUT /`, and
+  preserved by delete-undo (`POST /restore`) and `api/export`/`api/import`.
+- **Archive**: "arsipkan" sets a plan aside without deleting it.
+  - `POST /archive/:id` toggles `archived` (same button restores it); a new
+    "Arsip" filter chip shows the archived count and lists retired plans.
+  - Archived plans are hidden from the default list and **excluded from the
+    ledger** (total/active/done, streak, 7-day chart — `statsOf` now computes
+    over live plans only; `stats.archived` feeds the chip count).
+  - Archived plans stay in the DOM (`data-archived`, `is-archived`, server-side
+    `hidden`) so the Arsip filter runs client-side with no server round-trip;
+    they are never draggable, never counted, and still exportable.
 - **Authentication** via [Better Auth](https://better-auth.com) (email +
   password, MongoDB adapter sharing the Mongoose connection):
   - `POST /register` & `POST /login` (Indonesian UI), `POST /logout`;

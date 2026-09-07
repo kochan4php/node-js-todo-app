@@ -3,7 +3,7 @@ import { MAX_TODOS } from '../../config/app.ts';
 import type { Todo } from '../../interfaces/todo.ts';
 import { createdShort, dayKeyOfIso, dueInfo, last7Days, relativeWhen, streakDays, todayLong } from '../helpers/date.ts';
 import { renderPartial, render as renderView } from '../helpers/render.ts';
-import { sanitizeCategory, sanitizeDue, sanitizeName, sanitizePriority } from '../helpers/validate.ts';
+import { sanitizeArchived, sanitizeCategory, sanitizeDue, sanitizeName, sanitizeNotes, sanitizePriority } from '../helpers/validate.ts';
 import {
     create,
     getAll,
@@ -11,18 +11,22 @@ import {
     remove,
     reorderTodos,
     restore,
+    toggleArchived as toggleArchivedTodo,
     toggle as toggleTodo,
     update as updateTodo,
 } from '../services/todo.service.ts';
 
 function statsOf(todos: Todo[]) {
-    const completed = todos.filter((todo) => todo.completed).length;
-    const active = todos.length - completed;
-    const percent = todos.length === 0 ? 0 : Math.round((completed / todos.length) * 100);
+    /* 1070 — archived plans are "retired": they leave the ledger entirely and
+       only show under the Arsip filter. */
+    const live = todos.filter((todo) => !todo.archived);
+    const completed = live.filter((todo) => todo.completed).length;
+    const active = live.length - completed;
+    const percent = live.length === 0 ? 0 : Math.round((completed / live.length) * 100);
 
     /* 1040 — P0: per-day completion counts for the 7-day chart + streak. */
     const countByDay = new Map<string, number>();
-    for (const todo of todos) {
+    for (const todo of live) {
         if (!todo.completedAt) continue;
         const key = dayKeyOfIso(todo.completedAt);
         if (key) countByDay.set(key, (countByDay.get(key) ?? 0) + 1);
@@ -36,10 +40,11 @@ function statsOf(todos: Todo[]) {
     const weekLabel = `7 hari terakhir — ${chart.map((day) => `${day.full}: ${day.count} selesai`).join('; ')}`;
 
     return {
-        total: todos.length,
+        total: live.length,
         active,
         completed,
         percent,
+        archived: todos.length - live.length,
         week: chart,
         weekLabel,
         streak: streakDays(countByDay, dayKeyOfIso(new Date().toISOString())),
@@ -52,7 +57,9 @@ function categoriesOf(todos: Todo[]): string[] {
 
 function flashOf(req: Request): string {
     const value = String(req.query.flash ?? '');
-    return ['created', 'updated', 'deleted', 'toggled', 'invalid', 'full', 'restored'].includes(value) ? value : '';
+    return ['created', 'updated', 'deleted', 'toggled', 'invalid', 'full', 'restored', 'archived', 'unarchived'].includes(value)
+        ? value
+        : '';
 }
 
 async function index(req: Request, res: Response) {
@@ -88,6 +95,7 @@ async function store(req: Request, res: Response) {
     const priority = sanitizePriority(req.body.priority);
     const due = sanitizeDue(req.body.due);
     const category = sanitizeCategory(req.body.category);
+    const notes = sanitizeNotes(req.body.notes);
     /* 1040 — P0: the quick-add form posts with Accept: application/json. */
     const wantsJson = req.accepts(['html', 'json']) === 'json';
     const addFormData = {
@@ -108,10 +116,11 @@ async function store(req: Request, res: Response) {
             oldPriority: priority,
             oldDue: due,
             oldCategory: category,
+            oldNotes: notes,
         });
     }
 
-    const todo = await create(name, priority, due, category);
+    const todo = await create(name, priority, due, category, notes);
     if (!todo) {
         if (wantsJson) return res.status(400).json({ ok: false, error: `Batas ${MAX_TODOS} rencana tercapai.` });
         return renderView(res, 'add-todo', {
@@ -121,6 +130,7 @@ async function store(req: Request, res: Response) {
             oldPriority: priority,
             oldDue: due,
             oldCategory: category,
+            oldNotes: notes,
         });
     }
 
@@ -157,6 +167,7 @@ async function update(req: Request, res: Response) {
     const priority = sanitizePriority(req.body.priority);
     const due = sanitizeDue(req.body.due);
     const category = sanitizeCategory(req.body.category);
+    const notes = sanitizeNotes(req.body.notes);
     const todo = await getById(id);
 
     if (!todo) return res.redirect('/?flash=invalid');
@@ -172,10 +183,11 @@ async function update(req: Request, res: Response) {
             maxTodos: MAX_TODOS,
             categories: categoriesOf(await getAll()),
             error: 'Rencana tidak boleh kosong.',
+            oldNotes: req.body.notes,
         });
     }
 
-    await updateTodo(id, name, priority, due, category);
+    await updateTodo(id, name, priority, due, category, notes);
     return res.redirect('/?flash=updated');
 }
 
@@ -183,6 +195,19 @@ async function toggle(req: Request, res: Response) {
     const id = String(req.params.id);
     if (!(await toggleTodo(id))) return res.redirect('/?flash=invalid');
     return res.redirect('/?flash=toggled');
+}
+
+/* 1070 — arsip: put a plan away without deleting it. Undo-able via the
+   Arsip filter + the same route (un-archive). */
+async function archive(req: Request, res: Response) {
+    const id = String(req.params.id);
+    const todo = await toggleArchivedTodo(id);
+    if (!todo) return res.redirect('/?flash=invalid');
+
+    if (req.accepts(['html', 'json']) === 'json') {
+        return res.json({ ok: true, todo });
+    }
+    return res.redirect(`/?flash=${todo.archived ? 'archived' : 'unarchived'}`);
 }
 
 async function destroy(req: Request, res: Response) {
@@ -198,6 +223,8 @@ async function restoreTodo(req: Request, res: Response) {
         priority: sanitizePriority(req.body.priority),
         due: sanitizeDue(req.body.due),
         category: sanitizeCategory(req.body.category),
+        notes: sanitizeNotes(req.body.notes),
+        archived: sanitizeArchived(req.body.archived),
     });
 
     if (!todo) return res.redirect('/?flash=full');
@@ -217,4 +244,4 @@ async function reorder(req: Request, res: Response) {
     return res.json({ ok: true, updated });
 }
 
-export default { index, addForm, store, editForm, update, toggle, destroy, restoreTodo, reorder };
+export default { index, addForm, store, editForm, update, toggle, archive, destroy, restoreTodo, reorder };

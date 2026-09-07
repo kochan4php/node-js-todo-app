@@ -262,6 +262,82 @@ test('HTTP routes end-to-end (real Express server + MongoDB) ', async (t) => {
         assert.ok(!/class="todo-item[^"]*is-done/.test(undone), 'not is-done after toggling back');
     });
 
+    await t.test('1070 — POST /archive/:id retires a plan: hidden from list/stats, kept in export', async () => {
+        const seed = await req('/', {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            body: form({ name: 'Rencana yang diarsipkan', notes: 'Alasan: tidak relevan <script>alert(1)</script>' }),
+            redirect: 'manual',
+        });
+        assert.equal(seed.status, 302);
+        const all = await getAll();
+        const target = all.find((todo) => todo.name === 'Rencana yang diarsipkan');
+        assert.ok(target, 'seed created');
+        assert.equal(
+            target.notes,
+            'Alasan: tidak relevan <script>alert(1)</script>',
+            'notes stored verbatim via POST / (escaped on render)',
+        );
+
+        const res = await req(`/archive/${target.id}`, { method: 'POST', redirect: 'manual' });
+        assert.equal(res.status, 302);
+        assert.equal(res.headers.get('location'), '/?flash=archived', 'archive → flash=archived');
+        assert.equal((await getAll()).find((t) => t.id === target.id)?.archived, true, 'archived in MongoDB');
+
+        const html = await htmlOf('/');
+        assert.ok(html.includes('Rencana yang diarsipkan'), 'archived plan still rendered in the DOM');
+        assert.ok(html.includes('class="todo-note"'), 'note paragraph rendered');
+        assert.ok(html.includes('&lt;script&gt;'), 'note HTML-escaped on render');
+        assert.ok(!html.includes('>Alasan: tidak relevan <script>'), 'raw <script> never emitted');
+        assert.ok(html.includes('data-archived="1"'), 'item flagged data-archived="1" because the Arsip filter runs client-side');
+        assert.ok(html.includes('hidden'), 'archived item starts hidden (no flash of the retired item)');
+        assert.match(html, /Arsip <span class="filter-count">1<\/span>/, 'Arsip chip counts 1');
+
+        const stamped = await getAll();
+        const ledger = stamped.filter((t) => !t.archived);
+        assert.ok(!ledger.some((t) => t.id === target.id), 'archived plan absent from the live ledger');
+
+        const exported = (await (await req('/api/export')).json()) as Array<{ name: string; archived: boolean }>;
+        assert.ok(
+            exported.some((t) => t.name === 'Rencana yang diarsipkan' && t.archived === true),
+            'export keeps archived plans',
+        );
+    });
+
+    await t.test('1070 — archive again un-archives; unknown id → ?flash=invalid', async () => {
+        const all = await getAll();
+        const target = all.find((t) => t.name === 'Rencana yang diarsipkan');
+        assert.ok(target);
+        const res = await req(`/archive/${target.id}`, { method: 'POST', redirect: 'manual' });
+        assert.equal(res.status, 302);
+        assert.equal(res.headers.get('location'), '/?flash=unarchived', 'un-archive → flash=unarchived');
+
+        const html = await htmlOf('/');
+        assert.ok(html.includes('data-archived="0"'), 'item back to data-archived="0"');
+        assert.ok(!/Arsip <span class="filter-count">[1-9]/.test(html), 'no archived count after unarchiving all');
+
+        const junk = await req(`/archive/${'0'.repeat(24)}`, { method: 'POST', redirect: 'manual' });
+        assert.equal(junk.status, 302);
+        assert.equal(junk.headers.get('location'), '/?flash=invalid');
+    });
+
+    await t.test('1070 — notes render on the item and survive an edit', async () => {
+        const all = await getAll();
+        const target = all.find((t) => t.name === 'Rencana yang diarsipkan');
+        assert.ok(target);
+        const html = await htmlOf('/');
+        assert.ok(html.includes('class="todo-note"'), 'note paragraph rendered');
+
+        const put = await req('/', {
+            method: 'PUT',
+            headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            body: form({ id: target.id, name: 'Rencana yang diarsipkan', notes: 'Catatan diubah' }),
+            redirect: 'manual',
+        });
+        assert.equal(put.status, 302);
+        assert.ok((await htmlOf('/')).includes('Catatan diubah'), 'edited note visible in the list');
+    });
+
     await t.test('968 — unknown id falls back to 302 ?flash=invalid', async () => {
         const put = await req('/', {
             method: 'PUT',

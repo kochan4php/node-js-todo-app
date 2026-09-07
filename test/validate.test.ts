@@ -1,6 +1,13 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { sanitizeCategory, sanitizeDue, sanitizeName, sanitizePriority } from '../src/app/helpers/validate.ts';
+import {
+    sanitizeArchived,
+    sanitizeCategory,
+    sanitizeDue,
+    sanitizeName,
+    sanitizeNotes,
+    sanitizePriority,
+} from '../src/app/helpers/validate.ts';
 
 test('963 — sanitizeName: empty/non-string becomes ""', () => {
     assert.equal(sanitizeName(''), '');
@@ -55,4 +62,27 @@ test('1040 — sanitizeCategory: trims, collapses spaces, caps at 40, empty → 
     assert.equal(sanitizeCategory(undefined), null);
     assert.equal(sanitizeCategory(null), null);
     assert.equal(sanitizeCategory(42), null);
+});
+
+test('1070 — sanitizeNotes: trims, caps at 2000, empty/non-string → null', () => {
+    assert.equal(sanitizeNotes('  Ada   catatan  '), 'Ada   catatan');
+    assert.equal((sanitizeNotes('b'.repeat(2500)) ?? '').length, 2000);
+    assert.equal(sanitizeNotes(''), null);
+    assert.equal(sanitizeNotes('   '), null);
+    assert.equal(sanitizeNotes(undefined), null);
+    assert.equal(sanitizeNotes(null), null);
+    assert.equal(sanitizeNotes(42), null);
+});
+
+test('1070 — sanitizeArchived: only truthy scalar forms flip the flag', () => {
+    assert.equal(sanitizeArchived(true), true);
+    assert.equal(sanitizeArchived('true'), true);
+    assert.equal(sanitizeArchived(1), true);
+    assert.equal(sanitizeArchived('1'), true);
+    assert.equal(sanitizeArchived(false), false);
+    assert.equal(sanitizeArchived('false'), false);
+    assert.equal(sanitizeArchived(0), false);
+    assert.equal(sanitizeArchived(''), false);
+    assert.equal(sanitizeArchived(undefined), false);
+    assert.equal(sanitizeArchived(null), false);
 });

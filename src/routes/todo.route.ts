@@ -8,6 +8,7 @@ router.get('/add-todo', TodoController.addForm);
 router.get('/edit-todo/:id', TodoController.editForm);
 router.post('/', TodoController.store);
 router.post('/toggle/:id', TodoController.toggle);
+router.post('/archive/:id', TodoController.archive);
 router.post('/restore', TodoController.restoreTodo);
 router.put('/', TodoController.update);
 router.delete('/', TodoController.destroy);

@@ -1,6 +1,6 @@
-<div class="todo-item <%= todo.completed ? 'is-done' : '' %>" data-id="<%= todo.id %>"
+<div class="todo-item <%= todo.completed ? 'is-done' : '' %> <%= todo.archived ? 'is-archived' : '' %>" data-id="<%= todo.id %>"
      data-priority="<%= todo.priority || '' %>" data-due="<%= todo.due || '' %>" data-category="<%= todo.category || '' %>"
-     data-reorder="1">
+     data-archived="<%= todo.archived ? '1' : '0' %>" data-reorder="1" <%= todo.archived ? 'hidden' : '' %>>
     <button type="button" class="drag-handle" draggable="false"
             aria-label="Geser untuk mengurutkan rencana" title="Geser untuk mengurutkan">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -21,6 +21,9 @@
 
     <div class="todo-body">
         <p class="todo-name"><%= todo.name %></p>
+        <% if (todo.notes) { %>
+        <p class="todo-note"><%= todo.notes %></p>
+        <% } %>
         <% if (todo.priority || todo.due || todo.category) { %>
         <div class="todo-tags">
             <% if (todo.category) { %>
@@ -43,6 +46,14 @@
                 <path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
             </svg>
         </a>
+        <form class="archive-form" method="post" action="/archive/<%= todo.id %>" data-name="<%= todo.name %>">
+            <button type="submit" class="icon-btn" title="<%= todo.archived ? 'Aktifkan kembali' : 'Arsipkan' %>"
+                    aria-label="<%= todo.archived ? 'Aktifkan kembali rencana' : 'Arsipkan rencana' %>: <%= todo.name %>">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4" />
+                </svg>
+            </button>
+        </form>
         <form class="delete-form" method="post" action="/?_method=DELETE" data-name="<%= todo.name %>">
             <input type="hidden" name="id" value="<%= todo.id %>">
             <button type="submit" class="icon-btn icon-btn-danger" title="Hapus" aria-label="Hapus rencana: <%= todo.name %>">

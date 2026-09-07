@@ -243,6 +243,8 @@
         body.set('priority', saved.priority || '');
         body.set('due', saved.due || '');
         body.set('category', saved.category || '');
+        body.set('notes', saved.notes || '');
+        body.set('archived', String(saved.archived));
 
         fetch('/restore', {
             method: 'POST',
@@ -262,8 +264,12 @@
                 node.dataset.priority = todo.priority || '';
                 node.dataset.due = todo.due || '';
                 node.dataset.category = todo.category || '';
+                node.dataset.archived = todo.archived ? '1' : '0';
+                node.classList.toggle('is-archived', Boolean(todo.archived));
                 const toggleForm = node.querySelector('.toggle-form');
                 toggleForm.setAttribute('action', `/toggle/${todo.id}`);
+                const archiveForm = node.querySelector('.archive-form');
+                if (archiveForm) archiveForm.setAttribute('action', `/archive/${todo.id}`);
                 const editLink = node.querySelector('a[href^="/edit-todo/"]');
                 editLink.setAttribute('href', `/edit-todo/${todo.id}`);
                 editLink.setAttribute('aria-label', `Ubah rencana: ${todo.name}`);
@@ -278,6 +284,8 @@
                     node.hidden = false;
                 }
                 refreshStats();
+                applyView();
+                refreshDnD();
                 showToast('Rencana dikembalikan.');
             })
             .catch(() => {
@@ -301,6 +309,8 @@
                       priority: item.dataset.priority || '',
                       due: item.dataset.due || '',
                       category: item.dataset.category || '',
+                      notes: item.querySelector('.todo-note')?.textContent || '',
+                      archived: isArchived(item),
                       node: item,
                   }
                 : null;
@@ -339,6 +349,10 @@
         return [...document.querySelectorAll('.todo-item')];
     }
 
+    function isArchived(item) {
+        return item.dataset.archived === '1';
+    }
+
     function updateCounts() {
         const items = visibleItems();
         const searchTerm = searchInput ? searchInput.value.trim().toLowerCase() : '';
@@ -346,8 +360,16 @@
         const matches = (filter) =>
             items.filter((item) => {
                 const done = item.classList.contains('is-done');
-                if (filter === 'active' && done) return false;
-                if (filter === 'done' && !done) return false;
+                const archived = isArchived(item);
+                if (filter === 'archive') {
+                    if (!archived) return false;
+                } else if (archived) {
+                    return false;
+                } else if (filter === 'active' && done) {
+                    return false;
+                } else if (filter === 'done' && !done) {
+                    return false;
+                }
                 if (searchTerm) {
                     const name = item.querySelector('.todo-name').textContent.toLowerCase();
                     if (!name.includes(searchTerm)) return false;
@@ -362,7 +384,7 @@
     }
 
     function refreshStats() {
-        const items = visibleItems();
+        const items = visibleItems().filter((item) => !isArchived(item));
         const done = items.filter((item) => item.classList.contains('is-done')).length;
         const total = items.length;
         const active = total - done;
@@ -396,7 +418,11 @@
 
         visibleItems().forEach((item) => {
             const done = item.classList.contains('is-done');
-            const filterOk = currentFilter === 'all' || (currentFilter === 'active' && !done) || (currentFilter === 'done' && done);
+            const archived = isArchived(item);
+            const filterOk =
+                currentFilter === 'archive'
+                    ? archived
+                    : !archived && (currentFilter === 'all' || (currentFilter === 'active' && !done) || (currentFilter === 'done' && done));
             const searchOk = !searchTerm || item.querySelector('.todo-name').textContent.toLowerCase().includes(searchTerm);
             const catOk = !currentCategory || (item.dataset.category ?? '') === currentCategory;
             const show = filterOk && searchOk && catOk;
@@ -454,7 +480,7 @@
        SPA fetched it. */
     function updateTitle(q, f, s, c) {
         if (!searchInput) return;
-        const label = f ? ({ active: 'Aktif', done: 'Selesai' }[f] ?? '') : '';
+        const label = f ? ({ active: 'Aktif', done: 'Selesai', archive: 'Arsip' }[f] ?? '') : '';
         const extras = [label, c || '', q ? `cari "${q}"` : '', s ? `diurut ${s}` : ''].filter(Boolean).join(' · ');
         document.title = extras ? `${extras} — ${BASE_TITLE}` : BASE_TITLE;
     }
@@ -502,9 +528,47 @@
         });
     }
 
+    /* 1070 — arsip: fetch POST /archive/:id returns {ok, todo}; re-render
+       the item so it reflects its archive state. */
+    function wireArchiveForm(form) {
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const button = form.querySelector('button');
+            const item = form.closest('.todo-item');
+            const action = form.getAttribute('action');
+
+            try {
+                const response = await fetch(action, {
+                    method: 'POST',
+                    headers: { Accept: 'application/json' },
+                    credentials: 'same-origin',
+                });
+                if (!response.ok) throw new Error(response.statusText);
+                const payload = await response.json();
+                if (!payload?.ok || !payload.todo) throw new Error('archive failed');
+
+                const archived = payload.todo.archived;
+                item.dataset.archived = archived ? '1' : '0';
+                item.classList.toggle('is-archived', archived);
+                const title = archived ? 'Aktifkan kembali' : 'Arsipkan';
+                button.title = title;
+                button.setAttribute('aria-label', `${archived ? 'Aktifkan kembali rencana' : 'Arsipkan rencana'}: ${payload.todo.name}`);
+
+                applyView();
+                refreshStats();
+                refreshDnD();
+                showToast(archived ? 'Rencana diarsipkan.' : 'Rencana dikembalikan dari arsip.');
+            } catch {
+                form.submit();
+            }
+        });
+    }
+
     function wireItem(item) {
         const toggleForm = item.querySelector('.toggle-form');
         if (toggleForm) wireToggleForm(toggleForm);
+        const archiveForm = item.querySelector('.archive-form');
+        if (archiveForm) wireArchiveForm(archiveForm);
         const deleteForm = item.querySelector('.delete-form');
         if (deleteForm) wireDeleteForm(deleteForm);
     }
@@ -521,15 +585,17 @@
     function refreshDnD() {
         const allow = reorderable();
         document.querySelectorAll('.todo-item').forEach((item) => {
-            item.dataset.reorder = allow ? '1' : '0';
+            item.dataset.reorder = allow && !isArchived(item) ? '1' : '0';
             const handle = item.querySelector('.drag-handle');
-            if (handle) handle.setAttribute('draggable', String(allow));
+            if (handle) handle.setAttribute('draggable', String(allow && !isArchived(item)));
         });
     }
 
     function persistOrder() {
         const list = document.getElementById('todo-list');
-        const ids = [...(list ? list.querySelectorAll('.todo-item') : [])].map((node) => node.dataset.id);
+        const ids = [...(list ? list.querySelectorAll('.todo-item') : [])]
+            .filter((node) => !isArchived(node))
+            .map((node) => node.dataset.id);
         if (!ids.length) return Promise.resolve();
         return fetch('/api/reorder', {
             method: 'POST',
@@ -595,6 +661,11 @@
            Toggle done — progressive: fetch when JS is available, form otherwise
         ---------------------------------------- */
         document.querySelectorAll('.toggle-form').forEach(wireToggleForm);
+
+        /* ----------------------------------------
+           Archive — same progressive fetch pattern (1070)
+        ---------------------------------------- */
+        document.querySelectorAll('.archive-form').forEach(wireArchiveForm);
 
         /* ----------------------------------------
            Search & filter, re-resolved against the current DOM.
@@ -685,7 +756,7 @@
             }
         }
         const stateFilter = urlParams.get('f');
-        if (stateFilter === 'active' || stateFilter === 'done') {
+        if (stateFilter === 'active' || stateFilter === 'done' || stateFilter === 'archive') {
             currentFilter = stateFilter;
             document.querySelectorAll('.filter-chip').forEach((chip) => {
                 const active = chip.dataset.filter === stateFilter;

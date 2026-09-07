@@ -21,6 +21,8 @@ test('969 — schema defaults: completed false, due null, timestamps set, priori
     assert.equal(doc.category, null, 'category default null');
     assert.equal(doc.completedAt, null, 'completedAt default null');
     assert.equal(doc.sortOrder, 0, 'sortOrder default 0');
+    assert.equal(doc.notes, null, 'notes default null');
+    assert.equal(doc.archived, false, 'archived default false');
     assert.equal(doc.priority, undefined, 'priority optional');
     assert.ok(doc.createdAt instanceof Date, 'createdAt set by mongoose');
     assert.ok(doc.updatedAt instanceof Date, 'updatedAt set by mongoose');
