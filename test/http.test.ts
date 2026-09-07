@@ -9,13 +9,29 @@ import { connectTestDb, type StopFn } from './helpers/mongo.ts';
 let server: Server;
 let base: string;
 let stopDb: StopFn;
+let cookie = '';
 
 function form(values: Record<string, string>): string {
     return new URLSearchParams(values).toString();
 }
 
+function reqHeaders(extra?: unknown): Headers {
+    const headers = new Headers();
+    if (cookie) headers.set('cookie', cookie);
+    if (extra instanceof Headers) {
+        extra.forEach((value, key) => {
+            headers.set(key, value);
+        });
+    } else if (Array.isArray(extra)) {
+        for (const [key, value] of extra) headers.set(key, value);
+    } else if (extra && typeof extra === 'object') {
+        for (const [key, value] of Object.entries(extra)) headers.set(key, String(value));
+    }
+    return headers;
+}
+
 async function req(path: string, init?: RequestInit): Promise<Response> {
-    return fetch(`${base}${path}`, init);
+    return fetch(`${base}${path}`, { ...init, headers: reqHeaders(init?.headers) });
 }
 
 async function htmlOf(path: string): Promise<string> {
@@ -24,14 +40,29 @@ async function htmlOf(path: string): Promise<string> {
     return res.text();
 }
 
+async function registerUser(name: string, email: string): Promise<void> {
+    const res = await fetch(`${base}/register`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/x-www-form-urlencoded', 'x-forwarded-for': '198.51.100.7' },
+        body: form({ name, email, password: 'supersecret123' }),
+        redirect: 'manual',
+    });
+    assert.equal(res.status, 302, 'register redirects');
+    assert.equal(res.headers.get('location'), '/?flash=registered');
+    cookie = res.headers
+        .getSetCookie()
+        .map((part) => part.split(';')[0])
+        .join('; ');
+}
+
 before(async () => {
-    process.env.NODE_ENV = 'production';
     stopDb = await connectTestDb();
     const { default: init } = await import('../src/app.ts');
     const app = init();
     server = app.listen(0);
     await new Promise<void>((resolveListen) => server.once('listening', resolveListen));
     base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+    await registerUser('Test User', 'http-test@example.test');
 });
 
 after(
@@ -46,6 +77,8 @@ test('HTTP routes end-to-end (real Express server + MongoDB) ', async (t) => {
         const html = await htmlOf('/');
         assert.ok(html.includes('Lembar masih'), 'empty-state displayed');
         assert.match(html, /lang="id"/);
+        assert.ok(html.includes('class="nav-avatar"'), 'nav shows the signed-in user');
+        assert.ok(!html.includes('href="/login"'), 'login link hidden when authenticated');
     });
 
     await t.test('965/985/987 — POST / creates; persisted in MongoDB; XSS escaped in HTML', async () => {

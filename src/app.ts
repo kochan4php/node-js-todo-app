@@ -1,13 +1,17 @@
 import { randomBytes } from 'node:crypto';
 import { resolve } from 'node:path';
+import { toNodeHandler } from 'better-auth/node';
 import compression from 'compression';
 import express, { type Application, type NextFunction, type Request, type Response } from 'express';
 import expressLayouts from 'express-ejs-layouts';
 import helmet from 'helmet';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
+import { auth } from './app/auth/auth.ts';
 import { render } from './app/helpers/render.ts';
+import { requireAuth } from './app/middleware/require-auth.ts';
 import { logger } from './logger/index.ts';
+import authRoute from './routes/auth.route.ts';
 import healthCheckRoute from './routes/health-check.route.ts';
 import mainRoute from './routes/main.route.ts';
 import notFoundRoute from './routes/not-found.route.ts';
@@ -57,6 +61,11 @@ const init = (): Application => {
 
     app.use(compression());
     app.use(express.static(resolve(import.meta.dirname, '../public'), { maxAge: '7d', etag: true }));
+
+    /* Better Auth handler — mounted BEFORE express.json(): body parsers would
+       consume the request stream and break auth endpoint handling. */
+    app.all('/api/auth/*splat', toNodeHandler(auth));
+
     /* 846 — body limited to 10kb; /api/import is exempt because it uploads JSON
        backups (its own parser enforces a 1mb limit at the route). */
     const jsonParser = express.json({ limit: '10kb' });
@@ -82,9 +91,11 @@ const init = (): Application => {
     });
 
     app.use('/', seoRoute);
+    app.use('/api/health-check', healthCheckRoute);
+    app.use('/', authRoute);
+    app.use(requireAuth); /* every page/API below requires a session */
     app.use('/', todoRoute);
     app.use('/api', mainRoute);
-    app.use('/api/health-check', healthCheckRoute);
     app.use(notFoundRoute);
 
     /* 527/726 — unexpected errors: full stack in dev, short message in prod, 500 page. */

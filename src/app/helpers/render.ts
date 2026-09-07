@@ -9,7 +9,7 @@ const ASSET_VERSION = JSON.parse(readFileSync(resolve(import.meta.dirname, '../.
 /* 463 — fallback title; 479 — the "App Name · Description" pattern is born
    in the layout helper. */
 const DEFAULT_TITLE = APP_NAME;
-const DEFAULT_DESCRIPTION = 'Catat, selesaikan, dan rayakan langkah kecilmu — semua tersimpan di perangkatmu, tanpa akun, tanpa database.';
+const DEFAULT_DESCRIPTION = 'Catat, selesaikan, dan rayakan langkah kecilmu — semua tersimpan aman di akunmu.';
 const DEFAULT_ROBOTS = 'index, follow';
 
 export interface ViewData {

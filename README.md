@@ -1,8 +1,8 @@
 # Rencana
 
 Todo app — **Express.js 5 + TypeScript (ESM) + EJS**, data centralized in
-**MongoDB** via **Mongoose ODM** (single `Todo` schema), with no local data
-files, no cache, no accounts.
+**MongoDB** via **Mongoose ODM** (single `Todo` schema), with per-account
+authentication (Better Auth: email + password, device & auth-activity tracking).
 
 ## Running
 
@@ -17,7 +17,9 @@ You need a running MongoDB (`mongod` locally, Docker, or Atlas). Default port
 `3000`; set via env `PORT`. Optional env vars:
 `MONGODB_URI` (connection, default `mongodb://127.0.0.1:27017/planner`),
 `TODOS_LIMIT` (max number of todos, default 1000), `SITE_URL` (absolute
-domain for canonical/sitemap).
+domain for canonical/sitemap), `BETTER_AUTH_URL` (public origin for auth
+cookies), `BETTER_AUTH_SECRET` (**required in production** — generate one
+with `openssl rand -base64 32`).
 
 ## Structure
 
@@ -25,14 +27,16 @@ domain for canonical/sitemap).
 src/
   app.ts                  middleware assembly + routes
   index.ts                MongoDB connection → listen + graceful shutdown
-  config/app.ts           env config (PORT, MONGODB_URI, SITE_URL, MAX_TODOS)
+  config/app.ts           env config (PORT, MONGODB_URI, SITE_URL, auth)
   db/connect.ts           connection bootstrap (exit when DB is unreachable)
-  routes/                 per-domain routers (todo, seo, main, health, not-found)
+  routes/                 per-domain routers (todo, seo, auth, main, health, not-found)
+  app/auth/               Better Auth instance + device/IP tracking + auth audit
+  app/middleware/         requireAuth gate (session check → /login)
   app/controllers/        thin layer: parse request → call service → render
   app/services/           business logic + all MongoDB access (ODM)
-  app/models/             single Mongoose schema (Todo) + document mapping
+  app/models/             Mongoose schemas (Todo, DeviceLog) + document mapping
   app/helpers/            render (meta/canonical/asset version), date, API response
-  views/                  EJS (layouts, partials, pages)
+  views/                  EJS (layouts, partials, pages: login/register/account)
   logger/                 mini logger (info/warn/error + timestamp)
   interfaces/             Todo type
 ```
@@ -41,6 +45,10 @@ src/
 
 - RESTful routes: `GET /`, `POST /`, `GET /add-todo`, `GET /edit-todo/:id`,
   `POST /toggle/:id`, `PUT /` (update), `DELETE /` (delete), `POST /restore` (undo).
+- Account routes: `GET/POST /register`, `GET/POST /login`, `POST /logout`,
+  `GET /account` (account details, change password, login devices + auth
+  activity, revoke sessions). Todo pages and the `/api` backup endpoints
+  require a session.
 - Backup routes: `GET /api/export` (download JSON), `POST /api/import` (replace data).
 - Design tokens: self-hosted Geist/Geist Mono, neutral Bento zinc/slate,
   one desaturated accent. Dark theme persists in `localStorage`.
@@ -70,12 +78,15 @@ State lives in MongoDB — the server is fully *stateless*, good enough for a
 single user/family or many users via a managed DB provider.
 
 - **VPS/Railway/Fly**: run `pnpm build && pnpm start`, set `PORT`,
-  `MONGODB_URI` (e.g. Atlas), and `SITE_URL`; point `GET /api/health-check`
-  at an uptime monitor (e.g. UptimeRobot/Cronitor) — the response includes the
-  DB connection status (`data.db`). `trust proxy` is set for one reverse
-  proxy (Nginx/Caddy).
-- **Privacy**: no accounts or cookies — but data now lives in a centralized
-  database, not on-device. Adjust your privacy story accordingly.
+  `MONGODB_URI` (e.g. Atlas), `SITE_URL`, and `BETTER_AUTH_SECRET`; point
+  `GET /api/health-check` at an uptime monitor (e.g. UptimeRobot/Cronitor) —
+  the response includes the DB connection status (`data.db`). `trust proxy`
+  is set for one reverse proxy (Nginx/Caddy).
+- **Privacy**: accounts protected by Better Auth (email + password, per-login
+  IP/device records and a full authentication audit trail — sign-up/sign-in
+  attempts, sign-out, password changes, session revocations with device
+  context — on the `/account` page). Data lives in the centralized database —
+  adjust your privacy story accordingly.
 - **Scaling**: raise `TODOS_LIMIT` via env and use the Mongo indexes defined
   in the schema if needed; no UI changes required.
 
@@ -85,7 +96,9 @@ single user/family or many users via a managed DB provider.
   for the inline theme script, Strict-Transport-Security, Referrer-Policy,
   and `X-Powered-By` off.
 - `Permissions-Policy` denies geolocation/camera/microphone.
-- No cookies/sessions — no CSRF surface. No secrets in the repo.
+- Sessions via Better Auth: HTTP-only signed cookies (`rencana.*`), 7-day
+  expiry + 24h sliding update, per-endpoint rate limits, CSRF-protected auth
+  endpoints, and open-redirect-safe `?next=` handling. Secrets never committed.
 - Input validated: name is a required string, trimmed, double spaces
   collapsed, max 200 chars; `due` checked as `YYYY-MM-DD`; priority only
   low/medium/high. The Mongoose schema repeats those limits as a second layer
@@ -107,8 +120,10 @@ pnpm build         # tsc → dist/
 The `test/` suite uses built-in `node:test` (no extra dependencies) and runs
 Node 24 directly on TypeScript requests — covering unit (validator, service,
 model schema), HTTP integration (real Express server via `fetch`), Mongoose
-schema defaults & enums, max limits, XSS/escaping, Unicode, and a production
-smoke test. Each test file uses `mongodb-memory-server` (in-memory MongoDB,
+schema defaults & enums, max limits, XSS/escaping, Unicode, the full auth
+flow (register/login/logout, protected redirects, device logging, session
+revocation), and a production smoke
+test. Each test file uses `mongodb-memory-server` (in-memory MongoDB,
 no separate server install) via an internal `<uri>`; `pretest` runs typecheck
 first; `test:coverage` fails when `src/` line coverage drops below 80%.
 

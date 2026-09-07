@@ -1,0 +1,206 @@
+<%
+    const initials = (user.name || '?').trim().charAt(0).toUpperCase();
+    const deviceIcon = (type) => {
+        if (type === 'mobile') return 'phone';
+        if (type === 'tablet') return 'tablet';
+        return 'laptop';
+    };
+    const ACTIVITY_LABEL = {
+        'sign-up': 'Daftar',
+        'sign-in': 'Masuk',
+        'sign-out': 'Keluar',
+        'password-change': 'Ganti kata sandi',
+        'revoke': 'Sesi dihapus',
+        'revoke-all': 'Semua sesi diakhiri',
+    };
+    const when = (value) => relativeWhen(value instanceof Date ? value.toISOString() : String(value));
+    const client = (row) => [row.browser, row.browserVersion, row.os && row.osVersion ? `${row.os} ${row.osVersion}` : row.os, row.model && row.model !== 'unknown' ? row.model : ''].filter(Boolean).join(' ').trim() || (row.userAgent ? 'Browser & OS tidak terdeteksi' : '');
+%>
+<%- include('partials/header') %>
+
+<main class="content" id="main-content">
+    <div class="page-head" data-reveal>
+        <a class="back-link" href="/">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 12H5M11 18l-6-6 6-6" />
+            </svg>
+            Kembali ke daftar
+        </a>
+    </div>
+
+    <section class="account-shell" data-reveal>
+        <div class="security-head account-head">
+            <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Akun &amp; keamanan</p>
+            <h1 class="masthead-title">Akun <em>terlindungi.</em></h1>
+        </div>
+
+        <div class="account-layout">
+            <div class="account-profile-grid">
+                <div class="security-card account-detail">
+                    <div class="security-card-head">
+                        <p class="eyebrow">Detail akun</p>
+                    </div>
+                    <div class="account-row">
+                        <span class="account-avatar" aria-hidden="true"><%= initials %></span>
+                        <div class="account-main">
+                            <p class="account-name"><%= user.name %></p>
+                            <p class="account-email">
+                                <%= user.email %>
+                                <% if (user.emailVerified) { %><span class="badge badge-ok">terverifikasi</span><% } %>
+                            </p>
+                        </div>
+                        <span class="badge badge-soft"><%= user.role === 'admin' ? 'Admin' : 'Pengguna' %></span>
+                    </div>
+                </div>
+
+                <div class="security-card account-live">
+                    <p class="eyebrow">Sesi aktif</p>
+                    <p class="account-count"><%= devices.filter((d) => d.active).length %> perangkat masuk</p>
+                    <p class="account-note"><%= devices.length %> perangkat tercatat &middot; kelola di bawah.</p>
+                </div>
+            </div>
+
+            <div class="security-card account-password">
+                <div class="security-card-head">
+                    <p class="eyebrow">Ganti kata sandi</p>
+                </div>
+
+                <form method="post" action="/account/password" class="account-form">
+                    <div class="form-field <%= pwError ? 'is-error' : '' %>">
+                        <label for="pw-current">Kata sandi saat ini</label>
+                        <input type="password" id="pw-current" name="currentPassword" autocomplete="current-password" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="form-col">
+                        <div class="form-field <%= pwError ? 'is-error' : '' %>">
+                            <label for="pw-new">Kata sandi baru</label>
+                            <input type="password" id="pw-new" name="newPassword" autocomplete="new-password" placeholder="Minimal 8 karakter" minlength="8" maxlength="128" required>
+                        </div>
+
+                        <div class="form-field <%= pwError ? 'is-error' : '' %>">
+                            <label for="pw-confirm">Ulangi kata sandi baru</label>
+                            <input type="password" id="pw-confirm" name="confirmPassword" autocomplete="new-password" placeholder="Minimal 8 karakter" minlength="8" maxlength="128" required>
+                        </div>
+                    </div>
+
+                    <% if (pwError) { %>
+                        <p class="form-error" role="alert">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+                            <%= pwError %>
+                        </p>
+                    <% } %>
+
+                    <div class="form-actions account-form-actions">
+                        <button type="submit" class="btn btn-cta">
+                            <span class="btn-label">Perbarui kata sandi</span>
+                            <span class="btn-ico" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7" /></svg>
+                            </span>
+                        </button>
+                    </div>
+                    <p class="account-form-note">Sesi di perangkat lain akan diakhiri. Aktivitas di sesimu saat ini tetap berlanjut.</p>
+                </form>
+            </div>
+
+            <div class="security-card account-shortcuts">
+                <div class="security-card-head">
+                    <p class="eyebrow">Pintasan</p>
+                </div>
+                <div class="account-actions">
+                    <a class="btn btn-ghost" href="/">Rencana saya</a>
+                    <form method="post" action="/logout">
+                        <button type="submit" class="btn btn-ghost">Keluar dari akun</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-card account-blocks">
+            <div class="security-card-head">
+                <p class="eyebrow">Perangkat yang digunakan untuk masuk</p>
+                <form method="post" action="/account/revoke-all" data-confirm="Keluar dari semua perangkat?">
+                    <button type="submit" class="btn btn-ghost btn-sm">Keluar dari semua perangkat</button>
+                </form>
+            </div>
+
+            <% if (devices.length === 0) { %>
+                <p class="empty-desc">Belum ada perangkat tercatat untuk akun ini.</p>
+            <% } else { %>
+                <ul class="device-list">
+                    <% devices.forEach((d) => { %>
+                        <li class="device-row <%= d.current ? 'is-current' : '' %>">
+                            <span class="device-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                    <% if (deviceIcon(d.device) === 'phone') { %>
+                                        <rect x="7" y="2.5" width="10" height="19" rx="2.5" />
+                                        <path d="M11 18.5h2" />
+                                    <% } else if (deviceIcon(d.device) === 'tablet') { %>
+                                        <rect x="4" y="3.5" width="16" height="17" rx="2.5" />
+                                        <path d="M11 18h2" />
+                                    <% } else { %>
+                                        <rect x="4" y="5" width="16" height="11" rx="2" />
+                                        <path d="M8 20h8M12 16v4" />
+                                    <% } %>
+                                </svg>
+                            </span>
+                            <div class="device-main">
+                                <p class="device-title">
+                                    <%= d.browser || d.device || 'Perangkat' %><%= d.os ? ' · ' + d.os : '' %><%= d.model && d.model !== 'unknown' ? ' (' + d.model + ')' : '' %>
+                                    <% if (d.current) { %><span class="badge badge-ok">perangkat ini</span><% } %>
+                                </p>
+                                <p class="device-meta">
+                                    IP <%= d.ip || '—' %><%= d.ipVersion ? ' (IPv' + d.ipVersion + ')' : '' %> &middot; <%= d.authMethod %>
+                                </p>
+                                <p class="device-meta">
+                                    <%= d.loginCount %> login &middot; terakhir aktif <%= fmtTime(d.lastSeenAt) %>
+                                    <% if (d.active && d.expiresAt) { %> &middot; sesi berakhir <%= fmtTime(d.expiresAt) %><% } %>
+                                </p>
+                            </div>
+                            <% if (d.active && !d.current) { %>
+                                <form method="post" action="/account/revoke">
+                                    <input type="hidden" name="token" value="<%= d.sessionToken %>">
+                                    <button type="submit" class="btn btn-ghost btn-sm">Keluar</button>
+                                </form>
+                            <% } %>
+                        </li>
+                    <% }) %>
+                </ul>
+            <% } %>
+        </div>
+
+        <div class="security-card account-blocks">
+            <div class="security-card-head">
+                <p class="eyebrow">Aktivitas login</p>
+            </div>
+
+            <% if (!activity || activity.length === 0) { %>
+                <p class="empty-desc">Belum ada aktivitas autentikasi tercatat.</p>
+            <% } else { %>
+                <ul class="activity-list">
+                    <% activity.forEach((ev) => { %>
+                        <li class="activity-row">
+                            <span class="activity-icon <%= ev.success ? 'is-ok' : 'is-fail' %>" aria-hidden="true">
+                                <% if (ev.success) { %>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                <% } else { %>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+                                <% } %>
+                            </span>
+                            <div class="activity-main">
+                                <p class="activity-title">
+                                    <%= ACTIVITY_LABEL[ev.type] || ev.type %>
+                                    <% if (ev.success) { %><span class="badge badge-ok">berhasil</span><% } else { %><span class="badge badge-danger">gagal</span><% } %>
+                                </p>
+                                <p class="activity-meta">
+                                    <%= client(ev) %><%= client(ev) && ev.ip ? ' · ' : '' %><%= ev.ip ? 'IP ' + ev.ip : '' %>
+                                    <% if (ev.reason) { %> &middot; <%= ev.reason %><% } %>
+                                </p>
+                            </div>
+                            <span class="activity-when" title="<%= fmtTime(ev.createdAt) %>"><%= when(ev.createdAt) %></span>
+                        </li>
+                    <% }) %>
+                </ul>
+            <% } %>
+        </div>
+    </section>
+</main>

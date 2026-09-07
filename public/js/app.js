@@ -146,6 +146,13 @@
 
     document.querySelectorAll('.toast[data-toast]').forEach(wireToast);
 
+    /* Destructive forms (e.g. "keluar dari semua perangkat") confirm via native dialog. */
+    document.querySelectorAll('form[data-confirm]').forEach((form) => {
+        form.addEventListener('submit', (event) => {
+            if (!window.confirm(form.dataset.confirm)) event.preventDefault();
+        });
+    });
+
     /* Flash is not kept in the URL (item 267) — cleared via syncState() below. */
 
     /* ------------------------------------------------------------------

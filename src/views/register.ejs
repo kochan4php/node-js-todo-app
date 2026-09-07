@@ -1,0 +1,81 @@
+<%- include('partials/header') %>
+
+<main class="content" id="main-content">
+    <section class="auth-hero" data-reveal>
+        <div class="auth-hero-copy">
+            <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Buat akun</p>
+            <h1 class="masthead-title">Mulai <em>berencana.</em></h1>
+            <p class="auth-hint">Akunmu menyimpan rencana, sesi login, dan riwayat autentikasi dengan aman — satu langkah untuk mulai mencatat.</p>
+
+            <ul class="auth-points">
+                <li>
+                    <span class="auth-point-ico" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                    </span>
+                    Gratis — catat rencana harianmu tanpa biaya.
+                </li>
+                <li>
+                    <span class="auth-point-ico" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="10" width="12" height="9" rx="2" /><path d="M9 10V7a3 3 0 0 1 6 0v3" /><circle cx="12" cy="14.5" r="1.2" /></svg>
+                    </span>
+                    Data autentikasi &amp; perangkat dicatat dan terlindungi.
+                </li>
+                <li>
+                    <span class="auth-point-ico" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" /></svg>
+                    </span>
+                    Kelola sesi dan pantau aktivitas kapan saja.
+                </li>
+            </ul>
+        </div>
+
+        <div class="auth-card">
+            <div class="auth-card-head">
+                <span class="auth-card-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14" /></svg>
+                </span>
+                <div class="auth-card-titles">
+                    <p class="auth-card-title">Buat akun Rencana</p>
+                    <p class="auth-card-sub">Daftar dengan email &amp; kata sandi</p>
+                </div>
+            </div>
+
+            <form method="post" action="/register" class="form auth-form">
+                <div class="form-field <%= error ? 'is-error' : '' %>">
+                    <label for="reg-name">Nama</label>
+                    <input type="text" id="reg-name" name="name" value="<%= old %>" autocomplete="name" placeholder="Nama panggilanmu" maxlength="100" required autofocus>
+                </div>
+
+                <div class="form-field <%= error ? 'is-error' : '' %>">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" name="email" value="<%= oldEmail %>" autocomplete="email" inputmode="email" placeholder="kamu@email.com" required>
+                </div>
+
+                <div class="form-field <%= error ? 'is-error' : '' %>">
+                    <label for="reg-password">Kata sandi</label>
+                    <input type="password" id="reg-password" name="password" autocomplete="new-password" placeholder="Minimal 8 karakter" minlength="8" maxlength="128" required>
+                </div>
+
+                <% if (error) { %>
+                    <p class="form-error" role="alert">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+                        <%= error %>
+                    </p>
+                <% } %>
+
+                <div class="auth-form-actions">
+                    <button type="submit" class="btn btn-cta auth-submit">
+                        <span class="btn-label">Daftar &amp; mulai</span>
+                        <span class="btn-ico" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-4-4 4 4-4 4" /></svg>
+                        </span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="auth-card-foot">
+                <p class="auth-switch">Sudah punya akun? <a href="/login">Masuk</a></p>
+            </div>
+        </div>
+    </section>
+</main>

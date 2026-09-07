@@ -7,10 +7,16 @@ const LONG = new Intl.DateTimeFormat('id-ID', {
 
 const SHORT = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short' });
 
+const DATETIME = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+
 const DAY_MS = 86_400_000;
 
 export function todayLong(): string {
     return LONG.format(new Date());
+}
+
+export function fmtDateTime(value: string | Date): string {
+    return DATETIME.format(new Date(value));
 }
 
 export function createdShort(iso: string): string {

@@ -1,13 +1,15 @@
 import { createServer } from 'node:http';
 import mongoose from 'mongoose';
-import init from './app.ts';
 import { MONGODB_URI, PORT } from './config/app.ts';
 import { connectDb } from './db/connect.ts';
 import { logger } from './logger/index.ts';
 
 /* 100% MongoDB — without a connection the app never starts. */
+/* Better Auth needs the live Mongoose client, so the app module (which
+   builds the auth instance) loads only after the connection exists. */
 await connectDb(MONGODB_URI);
 
+const { default: init } = await import('./app.ts');
 const app = init();
 const server = createServer(app);
 
