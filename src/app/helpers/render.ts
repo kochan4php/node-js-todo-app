@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import ejs from 'ejs';
 import type { Response } from 'express';
 import { APP_NAME, SITE_URL } from '../../config/app.ts';
 
@@ -46,4 +47,11 @@ export function render(res: Response, view: string, data?: ViewData): void {
         siteUrl: SITE_URL,
         assetVersion: ASSET_VERSION,
     });
+}
+
+/* Render one EJS partial (e.g. partials/todo-item) to an HTML string — used
+   for JSON responses that append an item without leaving the page. Same view
+   data contract the full page uses, so item markup stays in one place. */
+export function renderPartial(view: string, data: Record<string, unknown>): Promise<string> {
+    return ejs.renderFile(resolve(import.meta.dirname, '../../views', `${view}.ejs`), data, { async: true });
 }

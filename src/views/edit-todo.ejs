@@ -43,6 +43,23 @@
                 </div>
 
                 <div class="form-field">
+                    <label for="todo-category">Kategori <span class="optional">(opsional)</span></label>
+                    <input type="text"
+                           id="todo-category"
+                           name="category"
+                           value="<%= todo.category || '' %>"
+                           placeholder="Mis. Kerja, Rumah, Belajar"
+                           maxlength="40"
+                           list="todo-category-list"
+                           autocomplete="off">
+                    <datalist id="todo-category-list">
+                        <% categories.forEach((cat) => { %>
+                        <option value="<%= cat %>"></option>
+                        <% }) %>
+                    </datalist>
+                </div>
+
+                <div class="form-field">
                     <span class="form-label" id="priority-label">Prioritas <span class="optional">(opsional)</span></span>
                     <div class="pri-options" role="radiogroup" aria-labelledby="priority-label">
                         <label class="pri-chip">

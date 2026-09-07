@@ -12,6 +12,13 @@ export function sanitizePriority(value: unknown): Priority | undefined {
     return typeof value === 'string' && PRIORITIES.includes(value) ? (value as Priority) : undefined;
 }
 
+/* 1040 — P0: kategori opsional, dibersihkan lalu dipotong ke 40 karakter. */
+export function sanitizeCategory(value: unknown): string | null {
+    if (typeof value !== 'string') return null;
+    const clean = value.trim().replace(/\s+/g, ' ').slice(0, 40);
+    return clean || null;
+}
+
 export function sanitizeDue(value: unknown): string | null {
     if (typeof value !== 'string' || !value) return null;
     const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());

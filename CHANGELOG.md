@@ -15,6 +15,34 @@ Project changelog — follows [Keep a Changelog](https://keepachangelog.com/en/1
   scripts; Back/Forward restore instantly from a small LRU cache and restore
   scroll position per page. Errors, redirects (e.g. session expiry) and missing
   `<main>` fall back to a normal full navigation; forms still submit natively.
+- **Navigation progress bar** (follows the accent color, `scaleX`-animated,
+  respects `prefers-reduced-motion`): shown during every SPA page fetch and as
+  a short flash on cache hits.
+
+### P0 — motivation layer (track progress, sort & tag your plans)
+
+- **Category**: optional free-text tag (max 40 chars, sanitized) on every plan.
+  - Badge shown on list items, accent-tinted.
+  - Category `<select>` filter in the toolbar (client-side, syncs to `?c=` in
+    the URL like search/filter/sort); the add/edit forms offer existing
+    categories via a `<datalist>`. Quick-add inherits the selected category.
+- **Completion history (`completedAt`)** → **daily streak + 7-day mini chart**:
+  toggling a plan done/undone stamps/clears `completedAt`; the ledger now shows
+  "N hari berturut-turut" and a last-7-days bar chart (accessible `role="img"`,
+  per-day tooltips, zero days rendered muted).
+- **Quick-add**: inline "Tambahkan rencana cepat…" field on the home page.
+  Without JS it posts normally (full reload); with JS it appends the rendered
+  item server-side (`POST /` returns `{ok, todo, html}` over JSON — the
+  `partials/todo-item` view is the single source of item markup via a new
+  `renderPartial()` helper in `render.ts`), re-wiring toggle/edit/delete on the
+  new node without a reload.
+- **Manual order + drag & drop**: each plan stores `sortOrder`; the list sorts
+  by `{ completed, sortOrder, createdAt }`. A drag handle reorders the visible
+  list (delegated on the container) and `POST /api/reorder` persists the new
+  order in one `bulkWrite` (≤1mb JSON body, exempt from the global 10kb limit
+  like `/api/import`). Reordering is only offered when the *whole* list is
+  visible (no search/filter/sort/category) so a partial view never reorders
+  against a misleading subset.
 - **Authentication** via [Better Auth](https://better-auth.com) (email +
   password, MongoDB adapter sharing the Mongoose connection):
   - `POST /register` & `POST /login` (Indonesian UI), `POST /logout`;

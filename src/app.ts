@@ -66,11 +66,12 @@ const init = (): Application => {
        consume the request stream and break auth endpoint handling. */
     app.all('/api/auth/*splat', toNodeHandler(auth));
 
-    /* 846 — body limited to 10kb; /api/import is exempt because it uploads JSON
-       backups (its own parser enforces a 1mb limit at the route). */
+    /* 846 — body limited to 10kb; /api/import and /api/reorder are exempt
+       because they upload larger JSON payloads (their own route-level
+       parser enforces a 1mb limit). */
     const jsonParser = express.json({ limit: '10kb' });
     app.use((req, res, next: NextFunction) => {
-        if (req.path === '/api/import') return next();
+        if (req.path === '/api/import' || req.path === '/api/reorder') return next();
         jsonParser(req, res, next);
     });
     app.use(express.urlencoded({ extended: true, limit: '10kb' }));

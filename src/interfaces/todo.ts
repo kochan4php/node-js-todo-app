@@ -8,4 +8,7 @@ export interface Todo {
     updatedAt: string;
     priority?: Priority;
     due?: string | null;
+    category?: string | null;
+    completedAt?: string | null;
+    sortOrder: number;
 }

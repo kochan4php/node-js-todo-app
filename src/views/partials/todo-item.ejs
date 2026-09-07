@@ -1,5 +1,12 @@
 <div class="todo-item <%= todo.completed ? 'is-done' : '' %>" data-id="<%= todo.id %>"
-     data-priority="<%= todo.priority || '' %>" data-due="<%= todo.due || '' %>">
+     data-priority="<%= todo.priority || '' %>" data-due="<%= todo.due || '' %>" data-category="<%= todo.category || '' %>"
+     data-reorder="1">
+    <button type="button" class="drag-handle" draggable="false"
+            aria-label="Geser untuk mengurutkan rencana" title="Geser untuk mengurutkan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M9 6h.01M9 12h.01M9 18h.01M15 6h.01M15 12h.01M15 18h.01" />
+        </svg>
+    </button>
     <form class="toggle-form" method="post" action="/toggle/<%= todo.id %>" aria-label="Ubah status rencana">
         <button type="submit"
                 class="todo-check"
@@ -14,8 +21,11 @@
 
     <div class="todo-body">
         <p class="todo-name"><%= todo.name %></p>
-        <% if (todo.priority || todo.due) { %>
+        <% if (todo.priority || todo.due || todo.category) { %>
         <div class="todo-tags">
+            <% if (todo.category) { %>
+            <span class="badge badge-category"><%= todo.category %></span>
+            <% } %>
             <% if (todo.priority) { %>
             <span class="badge badge-priority badge-priority-<%= todo.priority %>"><%= { low: 'Rendah', medium: 'Sedang', high: 'Tinggi' }[todo.priority] %></span>
             <% } %>

@@ -40,6 +40,23 @@
                     <% } %>
                 </div>
 
+                <div class="form-field">
+                    <label for="todo-category">Kategori <span class="optional">(opsional)</span></label>
+                    <input type="text"
+                           id="todo-category"
+                           name="category"
+                           value="<%= typeof oldCategory !== 'undefined' ? oldCategory : '' %>"
+                           placeholder="Mis. Kerja, Rumah, Belajar"
+                           maxlength="40"
+                           list="todo-category-list"
+                           autocomplete="off">
+                    <datalist id="todo-category-list">
+                        <% categories.forEach((cat) => { %>
+                        <option value="<%= cat %>"></option>
+                        <% }) %>
+                    </datalist>
+                </div>
+
                 <%
                     const p = typeof oldPriority !== 'undefined' ? oldPriority : undefined;
                     const d = typeof oldDue !== 'undefined' ? oldDue : '';

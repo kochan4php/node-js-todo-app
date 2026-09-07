@@ -42,6 +42,58 @@ test('961/962 — CRUD: create → getById → update → toggle → remove', as
     assert.equal(await svc.getById(created.id), null);
 });
 
+test('1040 — toggle stamps completedAt on done, clears it on not-done', async () => {
+    await reset();
+    const todo = await svc.create('Stempel waktu');
+    assert.ok(todo);
+    assert.equal(todo.completedAt, null, 'not done → no completedAt');
+
+    const done = await svc.toggle(todo.id);
+    assert.ok(done?.completedAt, 'done → completedAt set');
+    assert.ok(!Number.isNaN(new Date(done.completedAt).getTime()), 'completedAt parses as a date');
+
+    const undone = await svc.toggle(todo.id);
+    assert.equal(undone?.completedAt, null, 'not-done again → completedAt cleared');
+});
+
+test("1040 — create/update carry a category (internal spaces are the controller's job)", async () => {
+    await reset();
+    const todo = await svc.create('Rencana', 'high', null, '  Kerja tim  ');
+    assert.ok(todo);
+    assert.equal(todo.category, 'Kerja tim', 'schema trims the edges');
+
+    const updated = await svc.update(todo.id, 'Rencana', 'low', null, 'Kuliah');
+    assert.equal(updated?.category, 'Kuliah');
+
+    const cleared = await svc.update(todo.id, 'Rencana', 'low', null, '');
+    assert.equal(cleared?.category, null, 'empty category clears it');
+});
+
+test('1040 — reorderTodos writes index as sortOrder and getAll honors it', async () => {
+    await reset();
+    const a = await svc.create('Rencana A');
+    const b = await svc.create('Rencana B');
+    const c = await svc.create('Rencana C');
+    assert.ok(a);
+    assert.ok(b);
+    assert.ok(c);
+
+    /* All sortOrder 0 → the newest createdAt order wins (createdAt desc). */
+    assert.deepEqual(
+        (await svc.getAll()).map((t) => t.id),
+        [c.id, b.id, a.id],
+    );
+
+    const n = await svc.reorderTodos([a.id, c.id, b.id]);
+    assert.equal(n, 3);
+    assert.equal(await svc.reorderTodos(['bukan-id']), 0, 'invalid ids are skipped');
+    assert.deepEqual(
+        (await svc.getAll()).map((t) => t.id),
+        [a.id, c.id, b.id],
+        'sortOrder asc now drives the order',
+    );
+});
+
 test('962/992 — getAll: active first, latest within each group', async () => {
     await reset();
     /* restore() takes an explicit createdAt → deterministic order. */
@@ -98,9 +150,21 @@ test('988/990 — unicode & duplicate names accepted', async () => {
 
 test('962 — restore: full save, the limit counter also applies', async () => {
     await reset();
-    const t = await svc.restore({ name: 'Pulihkan', completed: true, createdAt: new Date().toISOString(), priority: 'high', due: null });
+    const t = await svc.restore({
+        name: 'Pulihkan',
+        completed: true,
+        createdAt: new Date().toISOString(),
+        priority: 'high',
+        due: null,
+        category: 'Urgent',
+    });
     assert.ok(t);
     assert.equal(t.completed, true);
     assert.equal(t.priority, 'high');
     assert.equal(t.due, null);
+    assert.equal(t.category, 'Urgent');
+    assert.ok(t.completedAt, 'restored-as-done gets a completedAt');
+
+    const done = await svc.restore({ name: 'Pulihkan lagi', completed: false, createdAt: new Date().toISOString() });
+    assert.equal(done?.completedAt, null, 'restored-as-active has no completedAt');
 });

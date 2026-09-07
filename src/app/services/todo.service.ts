@@ -8,6 +8,7 @@ type CreatedTodo = {
     name: string;
     priority?: Priority;
     due?: string | null;
+    category?: string | null;
 };
 
 export type ImportItem = {
@@ -15,6 +16,8 @@ export type ImportItem = {
     completed: boolean;
     priority?: Priority;
     due?: string | null;
+    category?: string | null;
+    completedAt?: Date;
     createdAt?: Date;
     updatedAt?: Date;
 };
@@ -24,7 +27,7 @@ function validId(id: string): boolean {
 }
 
 export async function getAll(): Promise<Todo[]> {
-    const docs = await TodoModel.find().sort({ completed: 1, createdAt: -1 }).lean();
+    const docs = await TodoModel.find().sort({ completed: 1, sortOrder: 1, createdAt: -1 }).lean();
     return docs.map((doc) => toTodo(doc as unknown as Parameters<typeof toTodo>[0]));
 }
 
@@ -39,6 +42,8 @@ async function insertOne(item: {
     completed: boolean;
     priority?: Priority;
     due?: string | null;
+    category?: string | null;
+    completedAt?: Date | null;
     createdAt?: Date;
 }): Promise<Todo | null> {
     const count = await TodoModel.countDocuments();
@@ -48,22 +53,38 @@ async function insertOne(item: {
     return toTodo(doc);
 }
 
-export function create(name: string, priority?: Priority, due?: string | null): Promise<Todo | null> {
-    return insertOne({ name, completed: false, priority, due: due ?? null });
+export function create(name: string, priority?: Priority, due?: string | null, category?: string | null): Promise<Todo | null> {
+    return insertOne({ name, completed: false, priority, due: due ?? null, category: category ?? null });
 }
 
 export function restore(saved: CreatedTodo & { completed: boolean; createdAt: string }): Promise<Todo | null> {
     const createdAt = saved.createdAt ? new Date(saved.createdAt) : undefined;
-    return insertOne({ name: saved.name, completed: saved.completed, createdAt, priority: saved.priority, due: saved.due ?? null });
+    const completedAt = saved.completed ? new Date() : null;
+    return insertOne({
+        name: saved.name,
+        completed: saved.completed,
+        createdAt,
+        completedAt,
+        priority: saved.priority,
+        due: saved.due ?? null,
+        category: saved.category ?? null,
+    });
 }
 
-export async function update(id: string, name: string, priority?: Priority, due?: string | null): Promise<Todo | null> {
+export async function update(
+    id: string,
+    name: string,
+    priority?: Priority,
+    due?: string | null,
+    category?: string | null,
+): Promise<Todo | null> {
     if (!validId(id)) return null;
     const doc = await TodoModel.findById(id);
     if (!doc) return null;
     doc.name = name;
     doc.priority = priority;
     doc.due = due ?? null;
+    doc.category = category ?? null;
     await doc.save();
     logger.info(`Updated ${id}`);
     return toTodo(doc);
@@ -74,9 +95,19 @@ export async function toggle(id: string): Promise<Todo | null> {
     const doc = await TodoModel.findById(id);
     if (!doc) return null;
     doc.completed = !doc.completed;
+    /* 1040 — P0: when completion flips on/off the timestamp follows it. */
+    doc.completedAt = doc.completed ? new Date() : null;
     await doc.save();
     logger.info(`Toggled ${id}`);
     return toTodo(doc);
+}
+
+/* 1040 — P0: manual order. Each id in the array gets sortOrder = its index. */
+export async function reorderTodos(ids: string[]): Promise<number> {
+    const valid = ids.filter((id) => typeof id === 'string' && validId(id));
+    if (!valid.length) return 0;
+    await TodoModel.bulkWrite(valid.map((id, index) => ({ updateOne: { filter: { _id: id }, update: { $set: { sortOrder: index } } } })));
+    return valid.length;
 }
 
 export async function remove(id: string): Promise<boolean> {
@@ -97,11 +128,14 @@ export async function importTodos(items: ImportItem[]): Promise<number> {
         await TodoModel.insertMany(
             items.map((item) => {
                 const now = new Date();
+                const completedAt = item.completedAt instanceof Date ? item.completedAt : item.completed ? now : null;
                 return {
                     name: item.name,
                     completed: item.completed,
                     priority: item.priority,
                     due: item.due ?? null,
+                    category: item.category ?? null,
+                    completedAt,
                     createdAt: item.createdAt ?? now,
                     updatedAt: item.updatedAt ?? now,
                 };

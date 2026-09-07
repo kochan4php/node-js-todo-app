@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { sanitizeDue, sanitizeName, sanitizePriority } from '../src/app/helpers/validate.ts';
+import { sanitizeCategory, sanitizeDue, sanitizeName, sanitizePriority } from '../src/app/helpers/validate.ts';
 
 test('963 — sanitizeName: empty/non-string becomes ""', () => {
     assert.equal(sanitizeName(''), '');
@@ -45,4 +45,14 @@ test('963 — sanitizeDue: malformed/impossible dates rejected', () => {
     assert.equal(sanitizeDue('2023-02-30'), null);
     assert.equal(sanitizeDue('abc'), null);
     assert.equal(sanitizeDue('2026-9-6'), null);
+});
+
+test('1040 — sanitizeCategory: trims, collapses spaces, caps at 40, empty → null', () => {
+    assert.equal(sanitizeCategory('  Kerja   tim  '), 'Kerja tim');
+    assert.equal((sanitizeCategory('a'.repeat(60)) ?? '').length, 40);
+    assert.equal(sanitizeCategory(''), null);
+    assert.equal(sanitizeCategory('   '), null);
+    assert.equal(sanitizeCategory(undefined), null);
+    assert.equal(sanitizeCategory(null), null);
+    assert.equal(sanitizeCategory(42), null);
 });

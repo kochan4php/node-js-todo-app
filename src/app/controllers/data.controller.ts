@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { MAX_TODOS } from '../../config/app.ts';
 import { logger } from '../../logger/index.ts';
-import { sanitizeDue, sanitizeName, sanitizePriority } from '../helpers/validate.ts';
+import { sanitizeCategory, sanitizeDue, sanitizeName, sanitizePriority } from '../helpers/validate.ts';
 import { getAll, importTodos } from '../services/todo.service.ts';
 
 /* 1030 — manual backup: download a JSON copy of all data. */
@@ -32,13 +32,16 @@ async function importData(req: Request, res: Response) {
 
         const createdAt = typeof item.createdAt === 'string' && item.createdAt ? new Date(item.createdAt) : undefined;
         const updatedAt = typeof item.updatedAt === 'string' && item.updatedAt ? new Date(item.updatedAt) : undefined;
+        const completedAt = typeof item.completedAt === 'string' && item.completedAt ? new Date(item.completedAt) : undefined;
         imports.push({
             name,
             completed: typeof item.completed === 'boolean' ? item.completed : false,
             createdAt,
             updatedAt,
+            completedAt,
             priority: sanitizePriority(item.priority),
             due: sanitizeDue(item.due),
+            category: sanitizeCategory(item.category),
         });
     }
 

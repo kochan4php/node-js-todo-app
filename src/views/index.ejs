@@ -70,6 +70,24 @@
                         </svg>
                         Semua selesai — mantap!
                     </div>
+
+                    <div class="ledger-insight">
+                        <p class="streak" id="ledger-streak">
+                            <% if (stats.streak > 0) { %>
+                            <%= stats.streak %> hari berturut-turut
+                            <% } else { %>
+                            Selesaikan satu rencana hari ini untuk memulai streak.
+                            <% } %>
+                        </p>
+                        <div class="week-chart" id="week-chart" role="img" aria-label="<%= stats.weekLabel %>">
+                            <% stats.week.forEach((day) => { %>
+                            <div class="week-col" title="<%= day.full %>: <%= day.count %> selesai">
+                                <span class="week-bar" style="--h: <%= day.bar %>" <%= day.isZero ? 'data-zero' : '' %>></span>
+                                <span class="week-day"><%= day.short %></span>
+                            </div>
+                            <% }) %>
+                        </div>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -81,6 +99,18 @@
             <div class="deck-core">
 
                 <% if (stats.total > 0) { %>
+                <form class="quick-add" id="quick-add" method="post" action="/" autocomplete="off">
+                    <input type="text" name="name" maxlength="200"
+                           placeholder="Tambahkan rencana cepat…"
+                           aria-label="Rencana baru" />
+                    <input type="hidden" name="category" id="quick-add-category" value="">
+                    <button type="submit" class="quick-add-btn" aria-label="Tambahkan rencana">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg>
+                    </button>
+                </form>
+
                 <div class="toolbar">
                     <div class="search">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -100,6 +130,15 @@
                             <option value="newest" selected>Terbaru</option>
                             <option value="az">A–Z</option>
                             <option value="za">Z–A</option>
+                        </select>
+                    </label>
+                    <label class="sort-wrap">
+                        <span class="sort-label" id="cat-label">Kategori</span>
+                        <select id="todo-category" aria-labelledby="cat-label">
+                            <option value="">Semua</option>
+                            <% categories.forEach((cat) => { %>
+                            <option value="<%= cat %>"><%= cat %></option>
+                            <% }) %>
                         </select>
                     </label>
                     <div class="filters" role="group" aria-label="Filter status">

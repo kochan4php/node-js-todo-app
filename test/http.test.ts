@@ -152,6 +152,83 @@ test('HTTP routes end-to-end (real Express server + MongoDB) ', async (t) => {
         assert.ok(html.includes('a'.repeat(200)), 'name cut to exactly 200 characters');
     });
 
+    await t.test('1040 — POST / accepts JSON (quick-add): 200 {ok, todo, html}', async () => {
+        const res = await req('/', {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded', accept: 'application/json' },
+            body: form({ name: 'Rencana cepat', category: 'Kerja' }),
+            redirect: 'manual',
+        });
+        assert.equal(res.status, 200);
+        const payload = (await res.json()) as { ok: boolean; todo: { id: string; category: string; completedAt: null }; html: string };
+        assert.equal(payload.ok, true);
+        assert.equal(payload.todo.category, 'Kerja', 'category stored');
+        assert.equal(payload.todo.completedAt, null);
+        assert.ok(payload.html.includes('badge-category'), 'html ships the rendered item (single source of truth)');
+    });
+
+    await t.test('1040 — POST / invalid name over JSON → 400 {ok:false}', async () => {
+        const res = await req('/', {
+            method: 'POST',
+            headers: { 'content-type': 'application/x-www-form-urlencoded', accept: 'application/json' },
+            body: form({ name: '   ' }),
+            redirect: 'manual',
+        });
+        assert.equal(res.status, 400);
+        const payload = (await res.json()) as { ok: boolean; error: string };
+        assert.equal(payload.ok, false);
+        assert.match(payload.error, /tidak boleh kosong/);
+    });
+
+    await t.test('1040 — index renders quick-add, category filter & 7-day chart', async () => {
+        const html = await htmlOf('/');
+        assert.ok(html.includes('id="quick-add"'), 'quick-add form present');
+        assert.ok(html.includes('id="todo-category"'), 'category filter present');
+        assert.ok(html.includes('value="Kerja"'), 'category option listed in the filter');
+        assert.ok(html.includes('class="week-chart"'), '7-day chart rendered');
+        assert.ok(html.includes('aria-label="7 hari terakhir —'), 'chart is described for AT');
+    });
+
+    await t.test('1040 — reorder API persists manual order', async () => {
+        const posts = await Promise.all(
+            ['R1', 'R2', 'R3'].map((n) =>
+                req('/', {
+                    method: 'POST',
+                    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+                    body: form({ name: n }),
+                    redirect: 'manual',
+                }),
+            ),
+        );
+        assert.ok(posts.every((r) => r.status === 302));
+
+        const all = await getAll();
+        const targets = all.filter((t) => ['R1', 'R2', 'R3'].includes(t.name));
+        assert.equal(targets.length, 3);
+        const reverse = targets.map((t) => t.id).reverse();
+
+        const res = await req('/api/reorder', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ ids: reverse }),
+        });
+        assert.equal(res.status, 200);
+        assert.equal(((await res.json()) as { ok: boolean }).ok, true);
+
+        const after = await getAll();
+        const ordered = after.filter((t) => ['R1', 'R2', 'R3'].includes(t.name)).map((t) => t.id);
+        assert.deepEqual(ordered, reverse, 'reordered ids now come first, in given order');
+    });
+
+    await t.test('1040 — reorder API rejects empty/garbage ids', async () => {
+        const bad = await req('/api/reorder', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ ids: ['tidak-valid'] }),
+        });
+        assert.equal(bad.status, 400);
+    });
+
     await t.test('966 — PUT /?_method=PUT renames the todo', async () => {
         const data = await getAll();
         const target = data.find((todo) => todo.name === 'Beli susu <script>alert(1)</script>');

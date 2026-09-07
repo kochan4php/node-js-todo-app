@@ -18,7 +18,10 @@
     let emptyFiltered = null;
     let emptyClear = null;
     let sortSelect = null;
+    let categorySelect = null;
     let currentFilter = 'all';
+    let currentCategory = '';
+    let dragging = null;
 
     /* ------------------------------------------------------------------
        GSAP entry — masthead intro + reveal of [data-reveal] via
@@ -239,6 +242,7 @@
         body.set('createdAt', saved.createdAt);
         body.set('priority', saved.priority || '');
         body.set('due', saved.due || '');
+        body.set('category', saved.category || '');
 
         fetch('/restore', {
             method: 'POST',
@@ -257,6 +261,7 @@
                 node.dataset.id = todo.id;
                 node.dataset.priority = todo.priority || '';
                 node.dataset.due = todo.due || '';
+                node.dataset.category = todo.category || '';
                 const toggleForm = node.querySelector('.toggle-form');
                 toggleForm.setAttribute('action', `/toggle/${todo.id}`);
                 const editLink = node.querySelector('a[href^="/edit-todo/"]');
@@ -295,6 +300,7 @@
                       createdAt: new Date().toISOString(),
                       priority: item.dataset.priority || '',
                       due: item.dataset.due || '',
+                      category: item.dataset.category || '',
                       node: item,
                   }
                 : null;
@@ -392,7 +398,8 @@
             const done = item.classList.contains('is-done');
             const filterOk = currentFilter === 'all' || (currentFilter === 'active' && !done) || (currentFilter === 'done' && done);
             const searchOk = !searchTerm || item.querySelector('.todo-name').textContent.toLowerCase().includes(searchTerm);
-            const show = filterOk && searchOk;
+            const catOk = !currentCategory || (item.dataset.category ?? '') === currentCategory;
+            const show = filterOk && searchOk && catOk;
             item.hidden = !show;
             if (show) visible += 1;
         });
@@ -428,25 +435,118 @@
         const q = searchInput?.value.trim();
         const f = currentFilter === 'all' ? '' : currentFilter;
         const s = sortSelect && sortSelect.value !== 'newest' ? sortSelect.value : '';
+        const c = currentCategory;
         if (q) params.set('q', q);
         else params.delete('q');
         if (f) params.set('f', f);
         else params.delete('f');
         if (s) params.set('s', s);
         else params.delete('s');
+        if (c) params.set('c', c);
+        else params.delete('c');
         const qs = params.toString();
         history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
-        updateTitle(q, f, s);
+        updateTitle(q, f, s, c);
     }
 
     /* 272 — the tab title follows the currently filtered list context. Only
        the list pages carry that context, so other pages leave the title as the
        SPA fetched it. */
-    function updateTitle(q, f, s) {
+    function updateTitle(q, f, s, c) {
         if (!searchInput) return;
         const label = f ? ({ active: 'Aktif', done: 'Selesai' }[f] ?? '') : '';
-        const extras = [label, q ? `cari "${q}"` : '', s ? `diurut ${s}` : ''].filter(Boolean).join(' · ');
+        const extras = [label, c || '', q ? `cari "${q}"` : '', s ? `diurut ${s}` : ''].filter(Boolean).join(' · ');
         document.title = extras ? `${extras} — ${BASE_TITLE}` : BASE_TITLE;
+    }
+
+    /* ----------------------------------------
+       Progressive form wiring — shared by runPage() and freshly added items
+       (quick-add). A form must be wired once per rendered DOM instance.
+    ---------------------------------------- */
+    function wireDeleteForm(form) {
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            openConfirmModal(form.dataset.name || 'rencana ini', form.querySelector('button'));
+        });
+    }
+
+    function wireToggleForm(form) {
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const button = form.querySelector('.todo-check');
+            const item = form.closest('.todo-item');
+            const action = form.getAttribute('action');
+
+            try {
+                const response = await fetch(action, { method: 'POST', credentials: 'same-origin' });
+                if (!response.ok) {
+                    form.submit();
+                    return;
+                }
+
+                const wasDone = item.classList.contains('is-done');
+                const nowDone = !wasDone;
+                item.classList.toggle('is-done', nowDone);
+                button.setAttribute('aria-checked', String(nowDone));
+                button.setAttribute(
+                    'aria-label',
+                    `Tandai ${nowDone ? 'belum selesai' : 'selesai'}: ${namePartOf(button.getAttribute('aria-label'))}`,
+                );
+
+                showToast(nowDone ? 'Rencana ditandai selesai.' : 'Rencana ditandai belum selesai.');
+                refreshStats();
+                button.focus();
+            } catch {
+                form.submit();
+            }
+        });
+    }
+
+    function wireItem(item) {
+        const toggleForm = item.querySelector('.toggle-form');
+        if (toggleForm) wireToggleForm(toggleForm);
+        const deleteForm = item.querySelector('.delete-form');
+        if (deleteForm) wireDeleteForm(deleteForm);
+    }
+
+    /* ----------------------------------------
+       Drag & drop manual order (1040). Active only when the whole list is
+       visible — hidden/searching/filtered lists would reorder against a
+       misleading subset. Delegated on the list, so appended items work too.
+    ---------------------------------------- */
+    function reorderable() {
+        return !searchInput?.value.trim() && currentFilter === 'all' && (!sortSelect || sortSelect.value === 'newest') && !currentCategory;
+    }
+
+    function refreshDnD() {
+        const allow = reorderable();
+        document.querySelectorAll('.todo-item').forEach((item) => {
+            item.dataset.reorder = allow ? '1' : '0';
+            const handle = item.querySelector('.drag-handle');
+            if (handle) handle.setAttribute('draggable', String(allow));
+        });
+    }
+
+    function persistOrder() {
+        const list = document.getElementById('todo-list');
+        const ids = [...(list ? list.querySelectorAll('.todo-item') : [])].map((node) => node.dataset.id);
+        if (!ids.length) return Promise.resolve();
+        return fetch('/api/reorder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids }),
+            credentials: 'same-origin',
+        })
+            .then((response) => (response.ok ? null : Promise.reject(new Error(response.statusText))))
+            .then(
+                () => showToast('Urutan rencana disimpan.'),
+                () => showToast('Gagal menyimpan urutan. Muat ulang halaman.', 'error', 7000),
+            );
+    }
+
+    function cleanupDrag() {
+        if (dragging) dragging.classList.remove('is-grabbed');
+        dragging = null;
     }
 
     /* ------------------------------------------------------------------
@@ -489,47 +589,12 @@
         /* ----------------------------------------
            Delete confirmation flow (bound per rendered form).
         ---------------------------------------- */
-        document.querySelectorAll('.delete-form').forEach((form) => {
-            form.addEventListener('submit', (event) => {
-                event.preventDefault();
-                openConfirmModal(form.dataset.name || 'rencana ini', form.querySelector('button'));
-            });
-        });
+        document.querySelectorAll('.delete-form').forEach(wireDeleteForm);
 
         /* ----------------------------------------
            Toggle done — progressive: fetch when JS is available, form otherwise
         ---------------------------------------- */
-        document.querySelectorAll('.toggle-form').forEach((form) => {
-            form.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const button = form.querySelector('.todo-check');
-                const item = form.closest('.todo-item');
-                const action = form.getAttribute('action');
-
-                try {
-                    const response = await fetch(action, { method: 'POST', credentials: 'same-origin' });
-                    if (!response.ok) {
-                        form.submit();
-                        return;
-                    }
-
-                    const wasDone = item.classList.contains('is-done');
-                    const nowDone = !wasDone;
-                    item.classList.toggle('is-done', nowDone);
-                    button.setAttribute('aria-checked', String(nowDone));
-                    button.setAttribute(
-                        'aria-label',
-                        `Tandai ${nowDone ? 'belum selesai' : 'selesai'}: ${namePartOf(button.getAttribute('aria-label'))}`,
-                    );
-
-                    showToast(nowDone ? 'Rencana ditandai selesai.' : 'Rencana ditandai belum selesai.');
-                    refreshStats();
-                    button.focus();
-                } catch {
-                    form.submit();
-                }
-            });
-        });
+        document.querySelectorAll('.toggle-form').forEach(wireToggleForm);
 
         /* ----------------------------------------
            Search & filter, re-resolved against the current DOM.
@@ -539,7 +604,9 @@
         emptyFiltered = document.getElementById('empty-filtered');
         emptyClear = document.getElementById('empty-clear');
         sortSelect = document.getElementById('todo-sort');
+        categorySelect = document.getElementById('todo-category');
         currentFilter = 'all';
+        currentCategory = '';
 
         if (searchInput && searchClear) {
             searchInput.addEventListener('keyup', () => {
@@ -569,8 +636,13 @@
                     chip.setAttribute('aria-pressed', String(active));
                 });
                 currentFilter = 'all';
+                if (categorySelect) {
+                    categorySelect.value = '';
+                    currentCategory = '';
+                }
                 applyView();
                 syncState();
+                refreshDnD();
             });
         }
 
@@ -599,6 +671,7 @@
                 }
                 applySort(sortSelect.value);
                 syncState();
+                refreshDnD();
             });
         }
 
@@ -624,8 +697,123 @@
         if (stateSort === 'az' || stateSort === 'za') {
             applySort(stateSort);
         }
+        const stateCategory = urlParams.get('c');
+        if (categorySelect && stateCategory && [...categorySelect.options].some((o) => o.value === stateCategory)) {
+            categorySelect.value = stateCategory;
+            currentCategory = stateCategory;
+        }
         applyView();
         syncState();
+
+        /* Category filter — same no-reload behaviour as the status chips. */
+        if (categorySelect) {
+            categorySelect.addEventListener('change', () => {
+                currentCategory = categorySelect.value;
+                applyView();
+                syncState();
+                refreshDnD();
+            });
+        }
+
+        /* ----------------------------------------
+           Drag & drop manual order (1040) — delegated on the list.
+        ---------------------------------------- */
+        refreshDnD();
+        const todoList = document.getElementById('todo-list');
+        if (todoList) {
+            todoList.addEventListener('dragstart', (event) => {
+                const handle = event.target.closest('.drag-handle');
+                if (!handle || !reorderable()) return;
+                const item = handle.closest('.todo-item');
+                if (!item) return;
+                dragging = item;
+                event.dataTransfer.setData('text/plain', item.dataset.id ?? '');
+                event.dataTransfer.effectAllowed = 'move';
+                item.classList.add('is-grabbed');
+            });
+
+            todoList.addEventListener('dragover', (event) => {
+                if (!dragging) return;
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'move';
+                const target = event.target.closest('.todo-item');
+                if (!target || target === dragging) return;
+                const rect = target.getBoundingClientRect();
+                todoList.insertBefore(dragging, event.clientY > rect.top + rect.height / 2 ? target.nextSibling : target);
+            });
+
+            todoList.addEventListener('drop', (event) => {
+                if (!dragging) return;
+                event.preventDefault();
+                const item = dragging;
+                cleanupDrag();
+                persistOrder();
+                if (item && window.gsap && !prefersReduced) {
+                    gsap.fromTo(item, { scale: 0.98 }, { scale: 1, duration: 0.35, ease: 'power2.out' });
+                }
+            });
+
+            todoList.addEventListener('dragend', cleanupDrag);
+        }
+
+        /* ----------------------------------------
+           Quick-add (1040) — native form posts as usual without JS (full
+           reload); with JS it appends the item inline via JSON.
+        ---------------------------------------- */
+        const quickAdd = document.getElementById('quick-add');
+        if (quickAdd) {
+            const quickCategory = document.getElementById('quick-add-category');
+            const quickInput = quickAdd.querySelector('input[name="name"]');
+            const quickBtn = quickAdd.querySelector('button[type="submit"]');
+            const setQuickCategory = () => {
+                if (quickCategory && categorySelect) quickCategory.value = categorySelect.value;
+            };
+            setQuickCategory();
+            quickAdd.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                if (!quickInput || !quickBtn) return;
+                const value = quickInput.value.trim();
+                if (!value) return;
+                setQuickCategory();
+                const body = new URLSearchParams(new FormData(quickAdd));
+                quickBtn.disabled = true;
+                try {
+                    const response = await fetch(quickAdd.getAttribute('action') || '/', {
+                        method: 'POST',
+                        body,
+                        headers: { Accept: 'application/json' },
+                        credentials: 'same-origin',
+                    });
+                    const payload = await response.json().catch(() => null);
+                    if (!response.ok || !payload?.ok || !payload.html) {
+                        const error = typeof payload?.error === 'string' ? payload.error : 'Gagal menambahkan rencana.';
+                        showToast(error, 'error', 7000);
+                        return;
+                    }
+                    const wrapper = new DOMParser().parseFromString(payload.html, 'text/html');
+                    const item = wrapper.body.firstElementChild;
+                    const list = document.getElementById('todo-list');
+                    if (!item || !list) return;
+                    /* A fresh todo belongs on top of the active group (newest first). */
+                    const firstDone = [...list.querySelectorAll('.todo-item')].find((n) => n.classList.contains('is-done'));
+                    list.insertBefore(item, firstDone || document.getElementById('empty-filtered'));
+                    wireItem(item);
+                    wrapper.remove();
+                    if (window.gsap && !prefersReduced) {
+                        gsap.fromTo(item, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out' });
+                    }
+                    quickInput.value = '';
+                    refreshStats();
+                    refreshDnD();
+                    showToast('Rencana ditambahkan.');
+                } catch {
+                    showToast('Gagal menambahkan rencana. Coba lagi.', 'error', 7000);
+                } finally {
+                    quickBtn.disabled = false;
+                    quickInput.focus();
+                }
+            });
+        }
 
         /* ----------------------------------------
            Soft character counter (341): "n/200" under the name input

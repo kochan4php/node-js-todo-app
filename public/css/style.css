@@ -920,6 +920,58 @@ strong {
     color: var(--accent-ink);
 }
 
+/* 1040 — P0: 7-day completion mini chart + daily streak, under the recap. */
+.ledger-insight {
+    margin-top: 1.1rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--border);
+}
+
+.streak {
+    margin: 0 0 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 550;
+    color: var(--ink);
+}
+
+.week-chart {
+    display: flex;
+    align-items: stretch;
+    gap: 0.35rem;
+    height: 3.4rem;
+}
+
+.week-col {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.3rem;
+}
+
+.week-bar {
+    width: 100%;
+    max-width: 1.3rem;
+    height: calc(var(--h, 0) * 100%);
+    min-height: 2px;
+    border-radius: 999px 999px 2px 2px;
+    background: var(--accent);
+    transition: height 0.4s var(--ease);
+}
+
+.week-bar[data-zero] {
+    background: var(--surface-2);
+}
+
+.week-day {
+    font-family: var(--f-mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-mute);
+}
+
 /* --------------------------------------------------------------------------
    9. DECK — list container (Bento card, diffused shadow)
    -------------------------------------------------------------------------- */
@@ -929,6 +981,78 @@ strong {
     background: var(--surface);
     box-shadow: var(--shadow-lift), var(--gloss);
     overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   10. TOOLBAR — search & filter + quick-add (1040)
+   -------------------------------------------------------------------------- */
+.quick-add {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: clamp(0.85rem, 2vw, 1.1rem) clamp(1rem, 2.5vw, 1.35rem);
+    border-bottom: 1px solid var(--border);
+}
+
+.quick-add input[type="text"] {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    padding: 0 1rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg);
+    font-size: 0.9rem;
+    outline: none;
+    transition:
+        border-color 0.3s var(--ease),
+        box-shadow 0.3s var(--ease),
+        background-color 0.3s var(--ease);
+}
+
+.quick-add input[type="text"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+    background: var(--surface);
+}
+
+.quick-add input[type="text"]::placeholder {
+    color: var(--ink-mute);
+}
+
+.quick-add-btn {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--surface);
+    cursor: pointer;
+    transition:
+        transform 0.3s var(--ease),
+        background-color 0.3s var(--ease);
+}
+
+.quick-add-btn svg {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+.quick-add-btn:hover {
+    transform: scale(1.06);
+}
+
+.quick-add-btn:active {
+    transform: scale(0.96);
+}
+
+.quick-add-btn:disabled {
+    pointer-events: none;
+    opacity: 0.55;
 }
 
 /* --------------------------------------------------------------------------
@@ -1279,6 +1403,13 @@ strong {
     background: var(--danger-soft);
 }
 
+/* 1040 — P0: category wears the accent so it stands apart from priority. */
+.badge-category {
+    color: var(--accent);
+    border-color: var(--accent-soft);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
 .todo-item.is-done .badge {
     color: var(--ink-mute);
     background: transparent;
@@ -1340,6 +1471,49 @@ strong {
 
 .icon-btn[href]:hover svg {
     transform: rotate(8deg);
+}
+
+/* 1040 — P0: drag handle for manual order; hidden when the list is filtered. */
+.drag-handle {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink-mute);
+    cursor: grab;
+    -webkit-touch-callout: none;
+    transition:
+        background-color 0.25s var(--ease),
+        color 0.25s var(--ease);
+}
+
+.drag-handle svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.drag-handle:hover {
+    background: var(--surface-2);
+    color: var(--ink);
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.todo-item[data-reorder="0"] .drag-handle {
+    display: none;
+}
+
+.todo-item.is-grabbed {
+    opacity: 0.55;
+    outline: 1px solid var(--accent);
+    outline-offset: -1px;
 }
 
 /* --------------------------------------------------------------------------
