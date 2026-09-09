@@ -16,8 +16,6 @@
     const when = (value) => relativeWhen(value instanceof Date ? value.toISOString() : String(value));
     const client = (row) => [row.browser, row.browserVersion, row.os && row.osVersion ? `${row.os} ${row.osVersion}` : row.os, row.model && row.model !== 'unknown' ? row.model : ''].filter(Boolean).join(' ').trim() || (row.userAgent ? 'Browser & OS tidak terdeteksi' : '');
 %>
-<%- include('partials/header') %>
-
 <main class="content" id="main-content">
     <div class="page-head" data-reveal>
         <a class="back-link" href="/">

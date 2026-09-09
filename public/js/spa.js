@@ -27,6 +27,7 @@
     const scrolls = {}; // key -> scrollY, restored on Back/Forward
     let busy = null; // AbortController
     let appliedClientSide = false; // ignore the initial history entry's popstate
+    let currentHead = null; // head of the page currently on screen
 
     const keyOf = (url) => url.pathname + url.search;
     const currentKey = () => location.pathname + location.search;
@@ -57,7 +58,11 @@
     }
 
     function applyHead(head) {
-        if (head.title) document.title = head.title;
+        if (head.title) {
+            document.title = head.title;
+            const el = document.querySelector('title');
+            if (el) el.textContent = head.title;
+        }
         const setMeta = (selector, attr, value) => {
             if (value === null || value === undefined) return;
             const el = document.head.querySelector(selector);
@@ -94,6 +99,7 @@
             location.assign(key);
             return;
         }
+        currentHead = entry.head;
         main.innerHTML = entry.mainHtml;
         applyHead(entry.head);
         syncJsonLd(entry.jsonLd);
@@ -208,5 +214,5 @@
     const main = mainEl();
     if (main) main.setAttribute('tabindex', '-1');
 
-    window.rencanaSpa = { navigate };
+    window.rencanaSpa = { navigate, head: () => currentHead };
 })();

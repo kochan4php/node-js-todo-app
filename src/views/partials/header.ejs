@@ -1,6 +1,7 @@
 <%
     const hasSession = typeof session !== 'undefined' && !!session;
     const initials = hasSession && session.user.name ? session.user.name.trim().charAt(0).toUpperCase() : '?';
+    const dayLabel = typeof today !== 'undefined' ? today : '';
 %>
 <header class="app-header">
     <div class="app-header-inner">
@@ -13,7 +14,7 @@
             </span>
             <span class="brand-text">
                 <span class="brand-name">Rencana</span>
-                <span class="brand-date"><%= today %></span>
+                <span class="brand-date"><%= dayLabel %></span>
             </span>
         </a>
 

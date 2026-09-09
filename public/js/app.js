@@ -1,6 +1,5 @@
 (() => {
     const theme = document.documentElement;
-    const BASE_TITLE = theme.dataset.title || document.title;
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     /* Navigate through the SPA layer when available; otherwise a full load. */
@@ -33,8 +32,8 @@
         if (!children.length) return;
         gsap.fromTo(
             children,
-            { autoAlpha: 0, y: 28 },
-            { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.09, ease: 'power3.out', delay: 0.05 },
+            { autoAlpha: 0, y: 32, filter: 'blur(4px)' },
+            { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.85, stagger: 0.1, ease: 'power3.out', delay: 0.08 },
         );
     }
 
@@ -51,11 +50,12 @@
                     const el = entry.target;
                     gsap.fromTo(
                         el,
-                        { autoAlpha: 0, y: 26 },
+                        { autoAlpha: 0, y: 30, filter: 'blur(3px)' },
                         {
                             autoAlpha: 1,
                             y: 0,
-                            duration: 0.7,
+                            filter: 'blur(0px)',
+                            duration: 0.8,
                             delay: parseFloat(getComputedStyle(el).getPropertyValue('--d')) || 0,
                             ease: 'power3.out',
                         },
@@ -63,7 +63,7 @@
                     revealObserver.unobserve(el);
                 });
             },
-            { threshold: 0.1, rootMargin: '0px 0px -6% 0px' },
+            { threshold: 0.08, rootMargin: '0px 0px -4% 0px' },
         );
         els.forEach((el) => {
             revealObserver.observe(el);
@@ -486,14 +486,19 @@
         updateTitle(q, f, s, c);
     }
 
-    /* 272 — the tab title follows the currently filtered list context. Only
-       the list pages carry that context, so other pages leave the title as the
-       SPA fetched it. */
+    /* 272 — the tab title follows the currently filtered list context. The base
+       is the page title the SPA has on screen (authoritative — survives any
+       stale write from an error-page load); on a plain full page it comes from
+       the live <title>, stripping our own `ekstra — ` prefix if present. */
     function updateTitle(q, f, s, c) {
         if (!searchInput) return;
         const label = f ? ({ active: 'Aktif', done: 'Selesai', archive: 'Arsip' }[f] ?? '') : '';
         const extras = [label, c || '', q ? `cari "${q}"` : '', s ? `diurut ${s}` : ''].filter(Boolean).join(' · ');
-        document.title = extras ? `${extras} — ${BASE_TITLE}` : BASE_TITLE;
+        const spaHead = window.rencanaSpa?.head?.();
+        let base = spaHead?.title || document.title;
+        const sepAt = base.indexOf(' — ');
+        if (sepAt > 0) base = base.slice(sepAt + 3);
+        document.title = extras ? `${extras} — ${base}` : base;
     }
 
     /* ----------------------------------------
@@ -705,7 +710,25 @@
             introMasthead();
             runReveals();
 
-            /* Ledger stat count-up — mono numbers climb slowly */
+            /* Staggered entrance for todo items */
+            const todoItems = document.querySelectorAll('.todo-item');
+            if (todoItems.length) {
+                gsap.fromTo(
+                    todoItems,
+                    { autoAlpha: 0, y: 16, scale: 0.99 },
+                    {
+                        autoAlpha: 1,
+                        y: 0,
+                        scale: 1,
+                        duration: 0.5,
+                        stagger: 0.04,
+                        ease: 'power2.out',
+                        delay: 0.2,
+                    },
+                );
+            }
+
+            /* Ledger stat count-up — mono numbers climb smoothly */
             document.querySelectorAll('.ledger-num strong').forEach((el) => {
                 const target = Math.max(0, parseInt(el.textContent, 10));
                 if (!target) return;
@@ -713,8 +736,9 @@
                 el.textContent = '0';
                 gsap.to(state, {
                     value: target,
-                    duration: 1.1,
+                    duration: 1.4,
                     ease: 'power2.out',
+                    delay: 0.3,
                     onUpdate: () => {
                         el.textContent = String(Math.round(state.value));
                     },
