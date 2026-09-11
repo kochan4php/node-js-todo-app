@@ -3378,3 +3378,619 @@ kbd {
         transition: none;
     }
 }
+
+/* ==========================================================================
+   BRUTAL FIX PACK — liquid glass ekstrem + anti AI-slop + responsif ekstrem
+   Prinsip: kaca harus terlihat (blur tebal + saturasi + highlight dalam),
+   bukan glow neon. Semua default visible — tidak ada opacity:0 via CSS.
+   ========================================================================== */
+
+/* --- token kaca brutal --- */
+:root {
+    --glass-blur: blur(28px) saturate(1.8) brightness(1.04);
+    --glass-bg: color-mix(in srgb, var(--surface) 66%, transparent);
+    --glass-bg-strong: color-mix(in srgb, var(--surface) 82%, transparent);
+    --glass-edge: color-mix(in srgb, #ffffff 38%, transparent);
+    --glass-hi:
+        inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 1px 0 0 rgba(255, 255, 255, 0.16), inset -1px 0 0 rgba(255, 255, 255, 0.16),
+        inset 0 -1px 0 rgba(15, 23, 42, 0.05);
+    --glass-shadow: 0 12px 32px -12px rgba(15, 23, 42, 0.18), 0 2px 8px -2px rgba(15, 23, 42, 0.08);
+    --content-w: min(1280px, 100% - clamp(16px, 4vw, 96px) - env(safe-area-inset-left) - env(safe-area-inset-right));
+}
+
+[data-theme="dark"] {
+    --glass-bg: color-mix(in srgb, #1d1d22 62%, transparent);
+    --glass-bg-strong: color-mix(in srgb, #1d1d22 84%, transparent);
+    --glass-edge: rgba(255, 255, 255, 0.12);
+    --glass-hi:
+        inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 1px 0 0 rgba(255, 255, 255, 0.05), inset -1px 0 0 rgba(255, 255, 255, 0.05),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+    --glass-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.6), 0 2px 8px -2px rgba(0, 0, 0, 0.5);
+}
+
+/* --- latar ambient netral agar kaca punya sesuatu untuk diburamkan --- */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(560px 380px at 12% 0%, rgba(15, 118, 110, 0.08), transparent 70%),
+        radial-gradient(640px 420px at 88% 18%, rgba(71, 85, 105, 0.1), transparent 70%),
+        radial-gradient(720px 520px at 50% 110%, rgba(15, 118, 110, 0.05), transparent 70%);
+}
+
+[data-theme="dark"] body::before {
+    background:
+        radial-gradient(560px 380px at 12% 0%, rgba(45, 212, 191, 0.07), transparent 70%),
+        radial-gradient(640px 420px at 88% 18%, rgba(148, 163, 184, 0.08), transparent 70%),
+        radial-gradient(720px 520px at 50% 110%, rgba(45, 212, 191, 0.04), transparent 70%);
+}
+
+/* --- anti AI-slop: bunuh glow, sheen, float --- */
+.masthead::before {
+    display: none;
+}
+
+.btn-cta::after {
+    display: none;
+}
+
+.btn-cta {
+    transform: none;
+}
+
+.empty-art {
+    animation: none;
+}
+
+.live-dot {
+    animation: live-blink 2.2s ease-in-out infinite;
+    box-shadow: none;
+}
+
+@keyframes live-blink {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.45;
+    }
+}
+
+.toast-dot {
+    box-shadow: none;
+}
+
+.toast-error .toast-dot,
+.toast-warning .toast-dot {
+    box-shadow: none;
+}
+
+.todo-check:hover {
+    box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+/* --- reveal baru: default visible, anti-hilang --- */
+.masthead-copy,
+.auth-hero-copy,
+.form-cell {
+    min-width: 0;
+    max-width: 100%;
+}
+
+html.js .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+        opacity 0.5s var(--ease),
+        transform 0.5s var(--ease);
+}
+
+html.js .reveal.is-in {
+    opacity: 1;
+    transform: none;
+}
+
+/* transisi item tambah/hapus — murni CSS */
+.todo-item {
+    transition:
+        background-color 0.25s var(--ease),
+        opacity 0.18s var(--ease),
+        transform 0.18s var(--ease);
+}
+
+.todo-item.is-entering {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.todo-item.is-leaving {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+/* --- LIQUID GLASS BRUTAL: header tidak pernah transparan lagi --- */
+.app-header-inner {
+    background: var(--glass-bg-strong);
+    border: 1px solid var(--glass-edge);
+    box-shadow: var(--glass-hi), var(--glass-shadow);
+    -webkit-backdrop-filter: blur(30px) saturate(1.9) brightness(1.05);
+    backdrop-filter: blur(30px) saturate(1.9) brightness(1.05);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+    .app-header-inner {
+        background: var(--surface);
+    }
+}
+
+.app-header-inner.is-scrolled {
+    background: var(--glass-bg-strong);
+    border-color: var(--glass-edge);
+    box-shadow:
+        var(--glass-hi),
+        0 18px 44px -14px rgba(15, 23, 42, 0.24);
+}
+
+/* --- kaca brutal untuk semua kartu utama --- */
+.ledger,
+.deck,
+.auth-card,
+.rail,
+.modal-card,
+.toast,
+.bulk-bar,
+.security-card {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-edge);
+    box-shadow: var(--glass-hi), var(--glass-shadow);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+    .ledger,
+    .deck,
+    .auth-card,
+    .rail,
+    .modal-card,
+    .toast,
+    .bulk-bar,
+    .security-card {
+        background: var(--surface);
+    }
+}
+
+.deck:hover,
+.ledger:hover,
+.auth-card:hover,
+.rail:hover,
+.security-card:hover {
+    transform: none;
+    box-shadow: var(--glass-hi), var(--glass-shadow);
+}
+
+.modal-backdrop {
+    background: rgba(15, 23, 42, 0.44);
+    -webkit-backdrop-filter: blur(22px) saturate(1.4);
+    backdrop-filter: blur(22px) saturate(1.4);
+}
+
+.toast-stack {
+    z-index: var(--z-toast);
+}
+
+/* lapisan refraksi kedua: garis cahaya atas pada kartu kaca */
+.ledger,
+.auth-card,
+.rail,
+.modal-card,
+.deck {
+    position: relative;
+}
+
+.eyebrow {
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.5);
+    backdrop-filter: blur(14px) saturate(1.5);
+    border-color: var(--glass-edge);
+    box-shadow: var(--glass-hi);
+}
+
+/* --- UPGRADE BRUTAL: auth --- */
+.auth-hero {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+}
+
+.auth-hero-copy .masthead-title {
+    font-size: clamp(2rem, 4.6vw, 3rem);
+    line-height: 1.04;
+    letter-spacing: -0.032em;
+    text-wrap: balance;
+}
+
+.auth-card {
+    padding: 0;
+    overflow: hidden;
+    border-radius: 1.4rem;
+}
+
+.auth-card-head {
+    padding: clamp(1.1rem, 3vw, 1.5rem) clamp(1.1rem, 3vw, 1.5rem) 1.1rem;
+    background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+    border-bottom: 1px solid var(--border);
+}
+
+.auth-card .auth-form {
+    padding: 0 clamp(1.1rem, 3vw, 1.5rem);
+}
+
+.auth-card-foot {
+    margin: 1.25rem 0 0;
+    padding: 1rem clamp(1.1rem, 3vw, 1.5rem) clamp(1.1rem, 3vw, 1.5rem);
+    background: color-mix(in srgb, var(--surface-2) 45%, transparent);
+}
+
+.auth-points li {
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 0.9rem;
+    background: color-mix(in srgb, var(--surface) 70%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+}
+
+.auth-point-ico {
+    margin-top: 0.1rem;
+}
+
+.pw-wrap {
+    position: relative;
+}
+
+.pw-wrap input {
+    width: 100%;
+    padding-right: 3rem;
+}
+
+.pw-toggle {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 0;
+    border-radius: 0.7rem;
+    background: transparent;
+    color: var(--ink-mute);
+    cursor: pointer;
+}
+
+.pw-toggle:hover {
+    background: var(--surface-2);
+    color: var(--ink);
+}
+
+.pw-toggle svg {
+    width: 1.15rem;
+    height: 1.15rem;
+}
+
+.auth-submit {
+    min-height: 3.25rem;
+    font-size: 0.95rem;
+}
+
+/* --- UPGRADE BRUTAL: form add/edit --- */
+.form-grid {
+    grid-template-columns: minmax(0, 1fr) clamp(18rem, 26vw, 22rem);
+}
+
+.form-cell > .form {
+    padding: clamp(1.1rem, 3vw, 1.6rem);
+    border: 1px solid var(--glass-edge);
+    border-radius: 1.4rem;
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-hi), var(--glass-shadow);
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
+    font-size: 1rem;
+}
+
+.form-field select,
+.form-field input[type="date"] {
+    width: 100%;
+    min-height: 52px;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 0.9rem;
+    background: color-mix(in srgb, var(--surface) 80%, transparent);
+    color: var(--ink);
+    outline: none;
+}
+
+.form-field select:focus,
+.form-field input[type="date"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* --- RESPONSIF EKSTREM --- */
+img,
+svg,
+video,
+canvas {
+    max-width: 100%;
+}
+
+.content,
+.app-header-inner,
+.footer-inner,
+.footer-meta {
+    min-width: 0;
+}
+
+@media (max-width: 1024px) {
+    .masthead,
+    .auth-hero {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 2rem;
+    }
+    .form-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .masthead,
+    .auth-hero,
+    .form-grid,
+    .account-profile-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .masthead {
+        align-items: start;
+        padding-block: 2rem 1.75rem;
+    }
+    .ledger {
+        max-width: 34rem;
+    }
+    .rail {
+        position: static;
+        order: -1;
+    }
+    .form-cell {
+        order: 1;
+    }
+    .auth-hero {
+        align-items: start;
+        padding-block: 2rem;
+    }
+    .auth-hero-copy {
+        max-width: 100%;
+    }
+    .account-form .form-col {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .content {
+        padding: 1.5rem 0 2.5rem;
+    }
+    .app-header {
+        top: 8px;
+    }
+    .app-header-inner {
+        gap: 0.35rem;
+        padding: 0.3rem 0.3rem 0.3rem 0.7rem;
+        border-radius: 1.1rem;
+        /* FIX TRANSPARAN: blur tetap jalan + bg pekat di mobile */
+        -webkit-backdrop-filter: blur(30px) saturate(1.9) brightness(1.05);
+        backdrop-filter: blur(30px) saturate(1.9) brightness(1.05);
+        background: var(--glass-bg-strong);
+    }
+    .brand-name {
+        font-size: 0.95rem;
+    }
+    .brand-mark {
+        width: 2rem;
+        height: 2rem;
+    }
+    .nav-avatar,
+    .nav-icon,
+    .quick-add-btn,
+    .icon-btn,
+    .todo-check {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+    .nav-add {
+        min-height: 2.5rem;
+    }
+    .app-header-actions {
+        gap: 0.25rem;
+    }
+    .nav-divider {
+        display: none;
+    }
+    .masthead-title,
+    .form-title {
+        font-size: clamp(1.9rem, 8.4vw, 2.4rem);
+    }
+    .masthead-actions {
+        gap: 0.6rem;
+    }
+    .masthead-actions .btn-cta {
+        flex: 1 1 100%;
+        justify-content: center;
+    }
+    .toolbar {
+        gap: 0.6rem;
+        padding: 0.9rem;
+    }
+    .search {
+        flex: 1 1 100%;
+    }
+    .sort-wrap {
+        flex: 1 1 100%;
+    }
+    .sort-wrap select {
+        flex: 1;
+        min-width: 0;
+    }
+    .filters {
+        flex: 1 1 100%;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.4rem;
+    }
+    .filter-chip {
+        justify-content: center;
+        min-height: 44px;
+        padding: 0.5rem 0.4rem;
+        font-size: 0.78rem;
+    }
+    .filter-count {
+        display: none;
+    }
+    .todo-item {
+        flex-wrap: wrap;
+        column-gap: 0.7rem;
+        row-gap: 0.4rem;
+        align-items: flex-start;
+        padding: 0.85rem 0.9rem;
+    }
+    .todo-item .drag-handle {
+        display: none;
+    }
+    .todo-item .toggle-form {
+        flex: none;
+        order: 1;
+    }
+    .todo-item .todo-select {
+        flex: none;
+        order: 1;
+        width: 1.35rem;
+        height: 1.35rem;
+        margin-top: 0.55rem;
+    }
+    .todo-item .todo-body {
+        flex: 1 1 calc(100% - 3.4rem);
+        order: 2;
+        min-width: 0;
+    }
+    .todo-item .todo-actions {
+        flex: 1 1 100%;
+        order: 3;
+        justify-content: flex-start;
+        margin-left: 3.1rem;
+        gap: 0.1rem;
+    }
+    .todo-item .icon-btn {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+    .quick-add {
+        padding: 0.8rem 0.9rem;
+    }
+    .device-row,
+    .activity-row {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+    .device-row form,
+    .activity-when {
+        grid-column: 2;
+        justify-self: start;
+        margin: 0;
+    }
+    .bulk-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .bulk-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    .auth-points li {
+        font-size: 0.85rem;
+    }
+    .form-cell > .form {
+        padding: 1rem;
+    }
+    .pri-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    .pri-chip {
+        justify-content: center;
+    }
+    .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 400px) {
+    .brand-text {
+        display: none;
+    }
+    .filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .nav-link {
+        min-height: 2.5rem;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    .todo-item .todo-body,
+    .todo-item .todo-actions {
+        margin-left: 0;
+    }
+    .modal-card {
+        width: min(440px, calc(100vw - 2rem));
+        padding: 1.15rem;
+    }
+    .auth-card-head,
+    .auth-card .auth-form,
+    .auth-card-foot {
+        padding-inline: 1rem;
+    }
+}
+
+@media (hover: none), (pointer: coarse) {
+    .drag-handle {
+        display: none;
+    }
+    .deck:hover,
+    .ledger:hover,
+    .auth-card:hover,
+    .rail:hover,
+    .security-card:hover,
+    .todo-item:hover,
+    .icon-btn:hover,
+    .nav-avatar:hover,
+    .nav-add:hover,
+    .nav-icon:hover,
+    .nav-link:hover,
+    .pri-chip:hover,
+    .scroll-top:hover {
+        transform: none;
+    }
+}

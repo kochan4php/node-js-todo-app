@@ -23,51 +23,50 @@
     let dragging = null;
 
     /* ------------------------------------------------------------------
-       GSAP entry — masthead intro + reveal of [data-reveal] via
-       IntersectionObserver. Without GSAP or with prefers-reduced-motion:
-       elements simply stay visible (default).
+       Reveal — CSS-only, anti-hilang. Default visible (no-JS aman).
+       Dengan JS: tambah .reveal, observer tambah .is-in. Safety timeout
+       paksa visible dalam 800ms agar tidak ada yang nyangkut opacity:0.
     ------------------------------------------------------------------ */
-    function introMasthead() {
-        const children = document.querySelectorAll('.masthead-copy > *');
-        if (!children.length) return;
-        gsap.fromTo(
-            children,
-            { autoAlpha: 0, y: 32, filter: 'blur(4px)' },
-            { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.85, stagger: 0.1, ease: 'power3.out', delay: 0.08 },
-        );
-    }
-
     let revealObserver = null;
     function runReveals() {
         if (revealObserver) revealObserver.disconnect();
-        const els = document.querySelectorAll('[data-reveal]');
+        const els = [...document.querySelectorAll('[data-reveal]')];
         if (!els.length) return;
-
+        if (prefersReduced) {
+            els.forEach((el) => {
+                el.classList.add('is-in');
+            });
+            return;
+        }
+        els.forEach((el) => {
+            el.classList.add('reveal');
+            const d = Number.parseFloat(getComputedStyle(el).getPropertyValue('--d')) || 0;
+            el.style.transitionDelay = d ? `${d}s` : '';
+        });
+        const show = (el) => {
+            el.classList.add('is-in');
+            if (revealObserver) revealObserver.unobserve(el);
+        };
+        if (!('IntersectionObserver' in window)) {
+            els.forEach(show);
+            return;
+        }
         revealObserver = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    if (!entry.isIntersecting) return;
-                    const el = entry.target;
-                    gsap.fromTo(
-                        el,
-                        { autoAlpha: 0, y: 30, filter: 'blur(3px)' },
-                        {
-                            autoAlpha: 1,
-                            y: 0,
-                            filter: 'blur(0px)',
-                            duration: 0.8,
-                            delay: parseFloat(getComputedStyle(el).getPropertyValue('--d')) || 0,
-                            ease: 'power3.out',
-                        },
-                    );
-                    revealObserver.unobserve(el);
+                    if (entry.isIntersecting) show(entry.target);
                 });
             },
-            { threshold: 0.08, rootMargin: '0px 0px -4% 0px' },
+            { threshold: 0.05, rootMargin: '0px 0px -2% 0px' },
         );
         els.forEach((el) => {
             revealObserver.observe(el);
         });
+        window.setTimeout(() => {
+            els.forEach((el) => {
+                el.classList.add('is-in');
+            });
+        }, 800);
     }
 
     /* ------------------------------------------------------------------
@@ -211,19 +210,10 @@
                         saved ? { label: 'Batalkan', onClick: () => undoDelete(saved) } : undefined,
                     );
                 };
-                if (item && window.gsap && !prefersReduced) {
-                    return new Promise((resolve) => {
-                        gsap.to(item, {
-                            autoAlpha: 0,
-                            y: 14,
-                            duration: 0.4,
-                            ease: 'power2.in',
-                            onComplete: () => {
-                                leave();
-                                resolve();
-                            },
-                        });
-                    });
+                if (item && !prefersReduced) {
+                    item.classList.add('is-leaving');
+                    window.setTimeout(leave, 180);
+                    return;
                 }
                 leave();
             })
@@ -280,8 +270,9 @@
                 node.classList.toggle('is-done', todo.completed);
 
                 list.insertBefore(node, list.querySelector('#empty-filtered'));
-                if (window.gsap && !prefersReduced) {
-                    gsap.fromTo(node, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out' });
+                if (!prefersReduced) {
+                    node.classList.add('is-entering');
+                    requestAnimationFrame(() => requestAnimationFrame(() => node.classList.remove('is-entering')));
                 } else {
                     node.hidden = false;
                 }
@@ -540,8 +531,6 @@
                     `Tandai ${nowDone ? 'belum selesai' : 'selesai'}: ${namePartOf(button.getAttribute('aria-label'))}`,
                 );
 
-                /* 1080 — P2: completing a recurring plan spawned its next
-                   occurrence; append it like quick-add does. */
                 if (nowDone && payload.next?.html) {
                     const wrapper = new DOMParser().parseFromString(payload.next.html, 'text/html');
                     const next = wrapper.body.firstElementChild;
@@ -550,8 +539,9 @@
                         const firstDone = [...list.querySelectorAll('.todo-item')].find((n) => n.classList.contains('is-done'));
                         list.insertBefore(next, firstDone || document.getElementById('empty-filtered'));
                         wireItem(next);
-                        if (window.gsap && !prefersReduced) {
-                            gsap.fromTo(next, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out' });
+                        if (!prefersReduced) {
+                            next.classList.add('is-entering');
+                            requestAnimationFrame(() => requestAnimationFrame(() => next.classList.remove('is-entering')));
                         }
                         refreshDnD();
                     }
@@ -705,46 +695,8 @@
        handlers always follow the fresh DOM.
     ------------------------------------------------------------------ */
     function runPage() {
-        /* Enter animations for the freshly rendered content. */
-        if (window.gsap && !prefersReduced) {
-            introMasthead();
-            runReveals();
-
-            /* Staggered entrance for todo items */
-            const todoItems = document.querySelectorAll('.todo-item');
-            if (todoItems.length) {
-                gsap.fromTo(
-                    todoItems,
-                    { autoAlpha: 0, y: 16, scale: 0.99 },
-                    {
-                        autoAlpha: 1,
-                        y: 0,
-                        scale: 1,
-                        duration: 0.5,
-                        stagger: 0.04,
-                        ease: 'power2.out',
-                        delay: 0.2,
-                    },
-                );
-            }
-
-            /* Ledger stat count-up — mono numbers climb smoothly */
-            document.querySelectorAll('.ledger-num strong').forEach((el) => {
-                const target = Math.max(0, parseInt(el.textContent, 10));
-                if (!target) return;
-                const state = { value: 0 };
-                el.textContent = '0';
-                gsap.to(state, {
-                    value: target,
-                    duration: 1.4,
-                    ease: 'power2.out',
-                    delay: 0.3,
-                    onUpdate: () => {
-                        el.textContent = String(Math.round(state.value));
-                    },
-                });
-            });
-        }
+        /* Enter: CSS-only, tidak ada yang disembunyikan via inline style. */
+        runReveals();
 
         /* ----------------------------------------
            Destructive forms confirm via native dialog.
@@ -953,12 +905,8 @@
             todoList.addEventListener('drop', (event) => {
                 if (!dragging) return;
                 event.preventDefault();
-                const item = dragging;
                 cleanupDrag();
                 persistOrder();
-                if (item && window.gsap && !prefersReduced) {
-                    gsap.fromTo(item, { scale: 0.98 }, { scale: 1, duration: 0.35, ease: 'power2.out' });
-                }
             });
 
             todoList.addEventListener('dragend', cleanupDrag);
@@ -1074,8 +1022,9 @@
                     list.insertBefore(item, firstDone || document.getElementById('empty-filtered'));
                     wireItem(item);
                     wrapper.remove();
-                    if (window.gsap && !prefersReduced) {
-                        gsap.fromTo(item, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out' });
+                    if (!prefersReduced) {
+                        item.classList.add('is-entering');
+                        requestAnimationFrame(() => requestAnimationFrame(() => item.classList.remove('is-entering')));
                     }
                     quickInput.value = '';
                     refreshStats();
@@ -1188,33 +1137,20 @@
         })();
 
         /* ----------------------------------------
-           Magnetic CTA — follows the cursor smoothly via CSS vars (--mx/--my).
-           Only used with a precise pointer (mouse), not touch screens.
+           Show/hide password — brutal auth upgrade, no dependency.
         ---------------------------------------- */
-        (() => {
-            const btn = document.querySelector('.btn-cta');
-            if (!btn || window.matchMedia('(pointer: coarse)').matches) return;
-            const MAX = 8;
-            let frame = 0;
-            const place = (mx, my) => {
-                const rect = btn.getBoundingClientRect();
-                const dx = Math.max(-MAX, Math.min(MAX, mx - (rect.left + rect.width / 2)));
-                const dy = Math.max(-MAX, Math.min(MAX, my - (rect.top + rect.height / 2)));
-                btn.style.setProperty('--mx', `${dx}px`);
-                btn.style.setProperty('--my', `${dy}px`);
-            };
-            btn.addEventListener('pointerenter', () => btn.setAttribute('data-hover', ''));
-            btn.addEventListener('pointermove', (event) => {
-                cancelAnimationFrame(frame);
-                frame = requestAnimationFrame(() => place(event.clientX, event.clientY));
+        document.querySelectorAll('[data-pw-toggle]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const input = document.getElementById(btn.getAttribute('aria-controls') || '');
+                if (!input) return;
+                const show = input.type === 'password';
+                input.type = show ? 'text' : 'password';
+                btn.setAttribute('aria-pressed', String(show));
+                btn.querySelector('.pw-show').hidden = show;
+                btn.querySelector('.pw-hide').hidden = !show;
+                input.focus();
             });
-            btn.addEventListener('pointerleave', () => {
-                cancelAnimationFrame(frame);
-                btn.style.setProperty('--mx', '0px');
-                btn.style.setProperty('--my', '0px');
-                btn.removeAttribute('data-hover');
-            });
-        })();
+        });
 
         /* ----------------------------------------
            Loading indicator on add/edit form submit (prevents double submit)

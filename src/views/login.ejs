@@ -50,7 +50,13 @@
 
                 <div class="form-field <%= error ? 'is-error' : '' %>">
                     <label for="auth-password">Kata sandi</label>
-                    <input type="password" id="auth-password" name="password" autocomplete="current-password" placeholder="••••••••" required>
+                    <div class="pw-wrap">
+                        <input type="password" id="auth-password" name="password" autocomplete="current-password" placeholder="••••••••" required>
+                        <button type="button" class="pw-toggle" data-pw-toggle aria-controls="auth-password" aria-pressed="false" aria-label="Tampilkan kata sandi">
+                            <svg class="pw-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <svg class="pw-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M3 3l18 18M10.6 5.1A9.8 9.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 3.9M6.6 6.6A16.6 16.6 0 0 0 2 12s3.5 7 10 7a9.6 9.6 0 0 0 4.4-1.1"/></svg>
+                        </button>
+                    </div>
                 </div>
 
                 <% if (error) { %>
